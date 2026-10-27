@@ -48,7 +48,7 @@ body{background:var(--coal);color:var(--paper);font-family:var(--f-body);font-si
 .lives span{width:12px;height:15px;background:var(--ember);clip-path:path("M6 0C8 4 12 6 12 10a6 6 0 0 1-12 0C0 7 3 6 4 3c1 2 2 3 2 3S7 3 6 0Z");filter:drop-shadow(0 0 4px var(--ember))}
 .lives span.off{background:var(--ash);filter:none}
 #cvwrap{position:relative;flex:1;min-height:0}
-#cv{position:absolute;inset:0;display:block;touch-action:none}
+#cv{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 .screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(23,19,15,.84);backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);overflow:auto;box-sizing:border-box;z-index:5}
 .card{width:100%;max-width:560px;display:flex;flex-direction:column;gap:14px;margin:auto}
 h1,h2{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.08}
@@ -279,6 +279,7 @@ function drawFace(c,r,o){
   else{if(m==='sad')c.arc(0,r*.52,r*.2,1.15*Math.PI,1.85*Math.PI);else if(m==='sleep'){c.moveTo(-r*.1,r*.32);c.lineTo(r*.1,r*.32)}else c.arc(0,r*.2,r*.22,.15*Math.PI,.85*Math.PI);c.stroke()}
   c.fillStyle='rgba(255,107,31,.4)';for(const s of[-1,1]){c.beginPath();c.arc(s*r*.56,r*.15,r*.1,0,7);c.fill()}
 }
+function fitText(c,txt,x,y,maxW,size,weight='700',fam='Unbounded, Manrope, sans-serif'){let s=size;do{c.font=`${weight} ${s}px ${fam}`;if(c.measureText(txt).width<=maxW)break;s-=.5}while(s>7);c.fillText(txt,x,y)}
 function bubble(c,x,y,txt,maxW){
   c.font='700 13px Manrope, system-ui, sans-serif';
   const words=txt.split(' '),lines=[];let cur='';
@@ -409,8 +410,8 @@ function BagMode(L){
     // chute
     c.fillStyle='#120f0c';c.fillRect(0,0,W,30);c.fillStyle='#ff6b1f';c.fillRect(0,30,W,3);
     c.fillStyle='rgba(255,180,60,.18)';for(let x=(-g.t*60)%40;x<W;x+=40){c.fillRect(x,8,18,14)}
-    c.fillStyle='#ab9c8c';c.font='700 10px Unbounded, sans-serif';c.fillText('ЛІНІЯ ФАСУВАННЯ · '+L.sub.toUpperCase(),10,52);
-    if(L.wind&&Math.abs(g.wind)>15){c.fillStyle='#ab9c8c';c.fillText('протяг '+(g.wind>0?'→':'←'),W-90,52)}
+    c.fillStyle='#ab9c8c';fitText(c,'ЛІНІЯ ФАСУВАННЯ',72,50,W-82,10);fitText(c,L.sub,72,64,W-82,11,'600','Manrope, sans-serif');
+    if(L.wind&&Math.abs(g.wind)>15){c.fillStyle='#ffb43c';fitText(c,'протяг '+(g.wind>0?'→':'←'),W-90,84,80,11,'700','Manrope, sans-serif')}
     // floor
     c.fillStyle='#120f0c';c.fillRect(0,H-14,W,14);
     // items
@@ -435,8 +436,8 @@ function BagMode(L){
     c.fillStyle='#3b3229';rr(c,-lw/2+6,ly+lh-11,lw-12,5,2.5);c.fill();c.fillStyle='#ffb43c';rr(c,-lw/2+6,ly+lh-11,(lw-12)*fill,5,2.5);c.fill();
     c.textAlign='left';c.restore();
     // hero
-    const hx=36,hy=86;drawCoal(c,hx,hy,22,{hero:1,seed:7,t:g.t,glow:.7,mood:g.sayT>0&&/!/.test(g.say||'')&&g.lives<3?'wow':'happy',lookX:clamp((g.bagX-hx)/W*2,-1,1),lookY:1});
-    if(g.sayT>0&&g.say)bubble(c,hx+26,hy-58,g.say,Math.min(260,W-80));
+    const hx=36,hy=100;drawCoal(c,hx,hy,22,{hero:1,seed:7,t:g.t,glow:.7,mood:g.sayT>0&&/!/.test(g.say||'')&&g.lives<3?'wow':'happy',lookX:clamp((g.bagX-hx)/W*2,-1,1),lookY:1});
+    if(g.sayT>0&&g.say)bubble(c,hx+28,hy-30,g.say,Math.min(240,W-90));
   };
   g.stars=()=>g.lives;
   g.talk('Тягни мішок пальцем або стрілками ← →',2.6);
@@ -497,12 +498,12 @@ function TruckMode(L){
     // ceiling
     c.fillStyle='#120f0c';c.fillRect(0,0,W,ceilY-8);
     c.setLineDash([8,6]);c.strokeStyle='#ff5a4a';c.lineWidth=2;c.beginPath();c.moveTo(0,ceilY-6);c.lineTo(W,ceilY-6);c.stroke();c.setLineDash([]);
-    c.fillStyle='#ff5a4a';c.font='700 10px Unbounded, sans-serif';c.fillText(`ДАХ ФУРИ (${L.truck.toUpperCase()}) · ВИСОТА ПАЛЕТИ ≤ ${L.ceil}`,10,ceilY-14);
+    c.fillStyle='#ff5a4a';fitText(c,`ДАХ ФУРИ (${L.truck.toUpperCase()}) · ВИСОТА ПАЛЕТИ ≤ ${L.ceil}`,10,ceilY-14,W-20,10);
     // mini truck
     const tw=Math.min(150,W*.34),tx=W-tw-10,ty=10,th=34;
     c.fillStyle='#2b241e';rr(c,tx,ty,tw,th,6);c.fill();c.fillStyle='#ff6b1f';rr(c,tx+tw-4,ty+8,14,th-8,4);c.fill();
     const sw=(tw-12)/L.pallets;for(let i=0;i<L.pallets;i++){c.fillStyle=i<g.p?'#c99a62':'#3b3229';rr(c,tx+6+i*sw,ty+6,sw-4,th-12,3);c.fill()}
-    c.fillStyle='#ab9c8c';c.font='700 9px Unbounded, sans-serif';c.fillText(L.sub.split('·')[1].trim().toUpperCase(),tx,ty+th+12);
+    c.fillStyle='#ab9c8c';fitText(c,L.sub.split('·')[1].trim().toUpperCase(),tx,ty+th+12,tw,9);
     // floor
     c.fillStyle='#120f0c';c.fillRect(0,ground,W,H-ground);
     // ruler
@@ -596,7 +597,7 @@ function GrillMode(L){
     for(let i=0;i<L.maxOrders;i++){const o=g.orders[i],x=10+i*(ow+8),y=8;
       if(!o){c.strokeStyle='#3b3229';c.setLineDash([5,5]);rr(c,x,y,ow,l.oh-8,10);c.stroke();c.setLineDash([]);c.fillStyle='#5a4e42';c.font='600 11px Manrope, sans-serif';c.fillText('чекаємо гостя…',x+10,y+22);continue}
       c.fillStyle='#f4ece0';rr(c,x,y,ow,l.oh-8,10);c.fill();
-      c.fillStyle='#17130f';c.font='800 10px Unbounded, sans-serif';c.fillText('ЗАМОВЛЕННЯ',x+10,y+16);
+      c.fillStyle='#17130f';fitText(c,'ЗАМОВЛЕННЯ',x+10,y+16,ow-20,10,'800');
       const counts={};o.items.forEach(f=>counts[f]=(counts[f]||0)+1);const keys=Object.keys(counts);
       const iw=Math.min(54,(ow-16)/Math.max(1,keys.length));
       keys.forEach((f,j)=>{const fx=x+10+j*iw+iw/2-6,fy=y+(l.oh-8)*.55;drawFood(c,f,fx,fy,Math.min(11,iw*.2),1);c.fillStyle='#17130f';c.font='800 12px Manrope, sans-serif';c.fillText('×'+counts[f],fx+12,fy+16)});
@@ -630,11 +631,11 @@ function GrillMode(L){
     if(L.heat){const b=l.heatBar;c.fillStyle='#0d0b09';rr(c,b.x,b.y,b.w,b.h,8);c.fill();
       const z=(a,bb,col)=>{c.fillStyle=col;c.fillRect(b.x+b.w*a/1.15,b.y+3,b.w*(bb-a)/1.15,b.h-6)};z(0,.3,'#3b3229');z(.3,.55,'#6d5130');z(.55,.9,'rgba(143,212,111,.5)');z(.9,1.15,'rgba(255,90,74,.5)');
       const hx=b.x+b.w*clamp(g.heat,0,1.15)/1.15;c.fillStyle='#f4ece0';c.fillRect(hx-2,b.y-3,4,b.h+6);
-      c.fillStyle='#f4ece0';c.font='700 10px Unbounded, sans-serif';c.fillText('ЖАР '+Math.round(150+g.heat*200)+'°C',b.x+8,b.y+b.h/2+4);
-      const hb=l.heatBtn;c.fillStyle=g.heatCd>0?'#3b3229':'#ff6b1f';rr(c,hb.x,hb.y,hb.w,hb.h,9);c.fill();c.fillStyle='#17130f';c.font='800 12px Manrope, sans-serif';c.textAlign='center';c.fillText('Підкинути вугілля',hb.x+hb.w/2,hb.y+19);c.textAlign='left'}
+      c.fillStyle='#f4ece0';fitText(c,'ЖАР '+Math.round(150+g.heat*200)+'°C',b.x+8,b.y+b.h/2+4,b.w-16,10);
+      const hb=l.heatBtn;c.fillStyle=g.heatCd>0?'#3b3229':'#ff6b1f';rr(c,hb.x,hb.y,hb.w,hb.h,9);c.fill();c.fillStyle='#17130f';c.textAlign='center';fitText(c,'Підкинути вугілля',hb.x+hb.w/2,hb.y+19,hb.w-10,12,'800','Manrope, sans-serif');c.textAlign='left'}
     // tray
     for(const b of l.tray){c.fillStyle='#2b241e';rr(c,b.x,b.y,b.w,b.h,12);c.fill();c.strokeStyle='#3b3229';c.lineWidth=1;c.stroke();
-      drawFood(c,b.f,b.x+b.w/2,b.y+b.h*.4,Math.min(13,b.w*.17),0);c.fillStyle='#f4ece0';c.font=`700 ${b.w<70?10:12}px Manrope, sans-serif`;c.textAlign='center';c.fillText(FOODS[b.f].name,b.x+b.w/2,b.y+b.h-9);c.textAlign='left'}
+      drawFood(c,b.f,b.x+b.w/2,b.y+b.h*.4,Math.min(13,b.w*.17),0);c.fillStyle='#f4ece0';c.textAlign='center';fitText(c,FOODS[b.f].name,b.x+b.w/2,b.y+b.h-9,b.w-6,12,'700','Manrope, sans-serif');c.textAlign='left'}
     if(g.sayT>0&&g.say){bubble(c,W/2-110,gy+8,g.say,Math.min(240,W-40))}
   };
   g.stars=()=>g.lives;
