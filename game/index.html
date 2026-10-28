@@ -105,6 +105,10 @@ th{font:600 10px var(--f-body);letter-spacing:.12em;text-transform:uppercase;col
 td:last-child,th:last-child{text-align:right}
 tr.me td{color:var(--green);font-weight:700}
 .note{font-size:12px}
+.note:empty{display:none}
+select{background:var(--raise);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:11px 12px;font:600 15px var(--f-body)}
+.namebox{display:flex;flex-direction:column;gap:10px;background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:14px}
+td.nm{overflow-wrap:anywhere}
 .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding-inline:2px}
 .foot b{color:var(--text);font-weight:600}
 @media (prefers-reduced-motion:reduce){.btn{transition:none}}
@@ -135,7 +139,7 @@ tr.me td{color:var(--green);font-weight:700}
           </div>
           <div class="feats"><div><b>Мішок</b>Фасуй вуглинки, оминай відсів і березу</div><div><b>Фура</b>Склади палети за схемою 33*45</div><div><b>Гриль</b>Розпали смаки на жару Carbonis</div></div>
           <label class="fld" for="playerName">Твоє ім'я для рейтингу
-            <input id="playerName" type="text" maxlength="18" placeholder="Напр., Оксана з логістики" autocomplete="nickname">
+            <input id="playerName" type="text" maxlength="20" placeholder="Напр., Оксана з логістики" autocomplete="nickname">
           </label>
           <div class="row">
             <button class="btn big" id="btnPlay" type="button">Грати</button>
@@ -183,6 +187,14 @@ tr.me td{color:var(--green);font-weight:700}
           <div class="res-stars" id="resStars"></div>
           <div class="big-score" id="resScore">0</div>
           <p id="resNote"></p>
+          <form id="resNameForm" class="namebox" hidden>
+            <label class="fld" for="resNameIn">Впиши ім'я, щоб потрапити в рейтинг
+              <input id="resNameIn" type="text" maxlength="20" placeholder="Напр., Оксана з логістики" autocomplete="nickname">
+            </label>
+            <div class="row"><button class="btn" type="submit">Зберегти в рейтинг</button></div>
+            <p class="note" id="resNameErr"></p>
+          </form>
+          <p class="note" id="resBoardNote"></p>
           <div class="row"><button class="btn" id="btnNext" type="button">Далі</button><button class="btn ghost" id="btnAgain" type="button">Ще раз</button><button class="btn ghost" id="btnResMap" type="button">Рівні</button></div>
         </div>
       </section>
@@ -191,8 +203,11 @@ tr.me td{color:var(--green);font-weight:700}
         <div class="card" style="max-width:460px">
           <div class="eyebrow">Рейтинг</div>
           <h2>Найгарячіші гравці</h2>
-          <table><thead><tr><th>#</th><th>Гравець</th><th>Очки</th></tr></thead><tbody id="boardBody"></tbody></table>
-          <p class="note">Зараз рейтинг зберігається на цьому пристрої. Спільний онлайн-лідерборд підключимо наступним кроком.</p>
+          <label class="fld" for="boardScope">Таблиця
+            <select id="boardScope"></select>
+          </label>
+          <table><thead><tr><th>#</th><th>Гравець</th><th id="boardCol">Очки</th></tr></thead><tbody id="boardBody"></tbody></table>
+          <p class="note" id="boardNote"></p>
           <div class="row"><button class="btn ghost" id="btnBoardBack" type="button">Назад</button></div>
         </div>
       </section>
@@ -213,21 +228,61 @@ const store={
   get(k,d){try{const v=localStorage.getItem('carbonis.'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
   set(k,v){try{localStorage.setItem('carbonis.'+k,JSON.stringify(v))}catch(e){}}
 };
-// Replace the body of submit/top with API calls when the online leaderboard is ready.
-const Leaderboard={
-  async submit(name,score){
-    const list=store.get('lb',[]);const i=list.findIndex(r=>r.name===name);
-    if(i>=0){if(score>list[i].score)list[i]={name,score,date:Date.now()}}else list.push({name,score,date:Date.now()});
-    list.sort((a,b)=>b.score-a.score);store.set('lb',list.slice(0,50));return true;
-  },
-  async top(n=10){return store.get('lb',[]).slice(0,n)}
+/* Online leaderboard: Firebase Firestore, one document per player (anonymous auth uid).
+   Fill FIREBASE from Firebase console → Project settings → Your apps → Web app.
+   Online mode runs on github.io (or with #online in the URL); elsewhere results stay on this device. */
+const FIREBASE={
+  apiKey:'',
+  authDomain:'',
+  projectId:'',
+  storageBucket:'',
+  messagingSenderId:'',
+  appId:''
 };
+const BOARD_COLLECTION='carbonis_players';
+const ONLINE=!!FIREBASE.projectId&&(/(^|\.)github\.io$/.test(location.hostname)||location.hash==='#online');
+const NAME_RE=/^[\p{L}\p{N}][\p{L}\p{N} .'’\-]{1,19}$/u;
+const cleanName=v=>v.replace(/\s+/g,' ').trim();
+function boardPayload(name){
+  const levels={};let stars=0;
+  for(const L of LEVELS){if(progress.best[L.id])levels['l'+L.id]=progress.best[L.id];stars+=progress.stars[L.id]||0}
+  return{name,total:total(),stars,levels};
+}
+const scoreOf=(r,scope)=>scope==='total'?r.total:(r.levels||{})['l'+scope];
+const localBoard={
+  async submit(p){const list=store.get('lb2',[]).filter(r=>r.name!==p.name);list.push(p);store.set('lb2',list.slice(-100))},
+  async top(scope,n=20){return store.get('lb2',[]).filter(r=>scoreOf(r,scope)>0).sort((a,b)=>scoreOf(b,scope)-scoreOf(a,scope)).slice(0,n).map(r=>({...r,me:r.name===playerName}))}
+};
+let fbPromise=null;
+function firebase(){
+  if(!fbPromise){
+    const v='10.12.2',base='https://www.gstatic.com/firebasejs/'+v+'/';
+    fbPromise=Promise.all([import(base+'firebase-app.js'),import(base+'firebase-firestore.js'),import(base+'firebase-auth.js')])
+      .then(async([appM,fs,au])=>{
+        const app=appM.initializeApp(FIREBASE),auth=au.getAuth(app);
+        if(!auth.currentUser)await au.signInAnonymously(auth);
+        return{db:fs.getFirestore(app),fs,uid:auth.currentUser.uid};
+      });
+    fbPromise.catch(()=>{fbPromise=null});
+  }
+  return fbPromise;
+}
+const remoteBoard={
+  async submit(p){const{db,fs,uid}=await firebase();await fs.setDoc(fs.doc(db,BOARD_COLLECTION,uid),{...p,ts:fs.serverTimestamp()})},
+  async top(scope,n=20){
+    const{db,fs,uid}=await firebase();
+    const field=scope==='total'?'total':'levels.l'+scope;
+    const snap=await fs.getDocs(fs.query(fs.collection(db,BOARD_COLLECTION),fs.orderBy(field,'desc'),fs.limit(n)));
+    return snap.docs.map(d=>({...d.data(),me:d.id===uid}));
+  }
+};
+const Leaderboard=ONLINE?remoteBoard:localBoard;
 window.CarbonisLeaderboard=Leaderboard;
 
 const progress=Object.assign({best:{},stars:{}},store.get('progress',{}));
 const saveProgress=()=>store.set('progress',progress);
 const total=()=>Object.values(progress.best).reduce((a,b)=>a+b,0);
-let playerName=store.get('name','');
+let playerName=cleanName(store.get('name',''));
 
 /* ---------- sound ---------- */
 const Snd={ctx:null,on:store.get('snd',true),
@@ -665,8 +720,8 @@ const screens=['scrMenu','scrMap','scrIntro','scrPause','scrResult','scrBoard'];
 function show(id){screens.forEach(s=>$('#'+s).hidden=s!==id);$('#btnPause').hidden=!(game&&game.running&&!id)}
 let game=null,paused=false,curLevel=null,boardReturn='scrMenu';
 const nameIn=$('#playerName');nameIn.value=playerName;
-nameIn.addEventListener('input',()=>{playerName=nameIn.value.trim();store.set('name',playerName)});
-const who=()=>playerName||'Гравець';
+nameIn.addEventListener('input',()=>{playerName=cleanName(nameIn.value);store.set('name',playerName)});
+nameIn.addEventListener('change',()=>{if(NAME_RE.test(playerName)&&total()>0)submitBoard()});
 
 function starsHtml(n){return [0,1,2].map(i=>i<n?'<b>★</b>':'★').join('')}
 function renderMap(){
@@ -697,13 +752,17 @@ function endLevel(win,reason){
   let stars=0;
   if(win){g.score+=Math.round(Math.max(0,g.time)*5);stars=clamp(g.stars(),1,3);Snd.win();sparks(W/2,H/2,30)}else Snd.lose();
   const prevBest=progress.best[L.id]||0,isBest=g.score>prevBest&&win;
-  if(win){if(isBest)progress.best[L.id]=g.score;progress.stars[L.id]=Math.max(progress.stars[L.id]||0,stars);saveProgress();Leaderboard.submit(who(),total())}
+  if(win){if(isBest)progress.best[L.id]=g.score;progress.stars[L.id]=Math.max(progress.stars[L.id]||0,stars);saveProgress()}
   setTimeout(()=>{
     $('#resEyebrow').textContent=`Рівень ${L.id} · ${L.title}`;
     $('#resTitle').textContent=win?(L.id===LEVELS.length?'Ти справжній майстер Carbonis!':'Рівень пройдено!'):'Ще не вийшло';
     $('#resStars').innerHTML=starsHtml(stars);$('#resScore').textContent=g.score;
     $('#resNote').innerHTML=win?(isBest?`Новий рекорд рівня. Загальний рахунок: <strong>${total()}</strong>.`:`Рекорд рівня: ${prevBest}. Загальний рахунок: <strong>${total()}</strong>.`)+(L.time?' Залишок часу дав бонус.':''):reason;
     const nextL=LEVELS[L.id];const nb=$('#btnNext');nb.hidden=!(win&&nextL);
+    const named=NAME_RE.test(playerName);
+    $('#resNameForm').hidden=!(win&&!named);$('#resNameErr').textContent='';$('#resNameIn').value=playerName;
+    $('#resBoardNote').textContent='';
+    if(win&&named)submitBoard();
     show('scrResult');
   },700);
 }
@@ -719,10 +778,38 @@ $('#btnPause').onclick=pause;
 $('#btnResume').onclick=()=>{paused=false;show(null)};
 $('#btnRestart').onclick=()=>{paused=false;startLevel()};
 $('#btnQuit').onclick=()=>{paused=false;game=null;renderMap();show('scrMap')};
-async function openBoard(from){boardReturn=from;const rows=await Leaderboard.top(10);
-  $('#boardBody').innerHTML=rows.length?rows.map((r,i)=>`<tr class="${r.name===who()?'me':''}"><td>${i+1}</td><td></td><td>${r.score}</td></tr>`).join(''):'<tr><td colspan="3">Поки порожньо. Пройди перший рівень і стань першим!</td></tr>';
-  rows.forEach((r,i)=>{const td=$('#boardBody').rows[i]&&$('#boardBody').rows[i].cells[1];if(td)td.textContent=r.name});
-  show('scrBoard')}
+let boardBusy=null;
+async function submitBoard(){
+  if(!NAME_RE.test(playerName)||total()<=0)return;
+  const note=$('#resBoardNote');
+  try{boardBusy=Leaderboard.submit(boardPayload(playerName));await boardBusy;note.textContent=ONLINE?'Результат у загальному рейтингу.':''}
+  catch(e){console.error('Leaderboard error',e);note.textContent='Не вдалося зберегти в онлайн-рейтинг. Перевір інтернет, результат збережено на пристрої.'}
+  finally{boardBusy=null}
+}
+$('#resNameForm').addEventListener('submit',e=>{
+  e.preventDefault();const v=cleanName($('#resNameIn').value);
+  if(!NAME_RE.test(v)){$('#resNameErr').textContent="Ім'я: від 2 до 20 букв або цифр.";return}
+  playerName=v;store.set('name',v);nameIn.value=v;$('#resNameForm').hidden=true;submitBoard();
+});
+const scopeSel=$('#boardScope');
+scopeSel.innerHTML='<option value="total">Загальний рахунок</option>'+LEVELS.map(L=>`<option value="${L.id}">Рівень ${L.id} · ${L.title}</option>`).join('');
+scopeSel.addEventListener('change',renderBoard);
+async function renderBoard(){
+  const scope=scopeSel.value,body=$('#boardBody'),note=$('#boardNote');
+  $('#boardCol').textContent=scope==='total'?'Очки':'Рекорд';
+  body.textContent='';note.textContent='Завантажую…';
+  try{
+    if(boardBusy)await boardBusy.catch(()=>{});
+    const rows=await Leaderboard.top(scope==='total'?'total':+scope,20);
+    rows.forEach((r,i)=>{const tr=document.createElement('tr');if(r.me)tr.className='me';
+      [[String(i+1),''],[String(r.name||'Гравець'),'nm'],[String(scoreOf(r,scope==='total'?'total':+scope)),'']].forEach(([t,c])=>{const td=document.createElement('td');td.textContent=t;if(c)td.className=c;tr.appendChild(td)});
+      body.appendChild(tr)});
+    note.textContent=rows.length?'':'Поки порожньо. Пройди рівень і стань першим!';
+    if(!ONLINE)note.textContent=(note.textContent?note.textContent+' ':'')+'Тестовий режим: результати зберігаються лише на цьому пристрої. Онлайн-рейтинг працює у версії гри на GitHub Pages.';
+    if(!NAME_RE.test(playerName))note.textContent+=(note.textContent?' ':'')+"Щоб потрапити в таблицю, впиши ім'я в меню.";
+  }catch(e){console.error('Leaderboard error',e);note.textContent='Рейтинг тимчасово недоступний. Спробуй пізніше.'}
+}
+async function openBoard(from){boardReturn=from;show('scrBoard');renderBoard()}
 $('#btnBoard').onclick=()=>openBoard('scrMenu');$('#btnMapBoard').onclick=()=>openBoard('scrMap');
 $('#btnBoardBack').onclick=()=>{if(boardReturn==='scrMap')renderMap();show(boardReturn)};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
@@ -732,7 +819,7 @@ const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clien
 cv.addEventListener('pointerdown',e=>{if(!game||!game.running||paused)return;Snd.init();const[x,y]=pos(e);game.onDown&&game.onDown(x,y);e.preventDefault()});
 cv.addEventListener('pointermove',e=>{if(!game||!game.running||paused)return;const[x,y]=pos(e);game.onMove&&game.onMove(x,y)});
 const keyMap={ArrowLeft:'left',ArrowRight:'right',ArrowUp:'up',' ':'space',a:'left',d:'right'};
-addEventListener('keydown',e=>{if(e.target===nameIn)return;if(e.key==='Escape'||e.key==='p'){paused?(paused=false,show(null)):pause();return}const k=keyMap[e.key];if(k&&game&&game.running&&!paused){game.onKey&&game.onKey(k,true);e.preventDefault()}});
+addEventListener('keydown',e=>{if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;if(e.key==='Escape'||e.key==='p'){paused?(paused=false,show(null)):pause();return}const k=keyMap[e.key];if(k&&game&&game.running&&!paused){game.onKey&&game.onKey(k,true);e.preventDefault()}});
 addEventListener('keyup',e=>{const k=keyMap[e.key];if(k&&game&&game.onKey)game.onKey(k,false)});
 
 /* ---------- idle scene + loop ---------- */
