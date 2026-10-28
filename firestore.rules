@@ -1,0 +1,29 @@
+rules_version = '2';
+// Leaderboard for "Пригоди Вуглинки". One document per player, keyed by the anonymous auth uid.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function okLevel(levels, k) {
+      return !(k in levels) || (levels[k] is int && levels[k] > 0 && levels[k] <= 50000);
+    }
+    function okLevels(levels) {
+      return levels is map
+        && levels.keys().hasOnly(['l1','l2','l3','l4','l5','l6','l7','l8','l9'])
+        && okLevel(levels,'l1') && okLevel(levels,'l2') && okLevel(levels,'l3')
+        && okLevel(levels,'l4') && okLevel(levels,'l5') && okLevel(levels,'l6')
+        && okLevel(levels,'l7') && okLevel(levels,'l8') && okLevel(levels,'l9');
+    }
+    function okPlayer(d) {
+      return d.keys().hasOnly(['name','total','stars','levels','ts'])
+        && d.name is string && d.name.size() >= 2 && d.name.size() <= 20
+        && d.total is int && d.total >= 0 && d.total <= 450000
+        && d.stars is int && d.stars >= 0 && d.stars <= 27
+        && okLevels(d.levels)
+        && d.ts == request.time;
+    }
+    match /carbonis_players/{uid} {
+      allow read: if true;
+      allow create, update: if request.auth != null && request.auth.uid == uid && okPlayer(request.resource.data);
+      allow delete: if false;
+    }
+  }
+}
