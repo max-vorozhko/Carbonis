@@ -18,6 +18,7 @@
   ],
   "shortcuts": [
     { "name": "BBQ-калькулятор", "short_name": "Калькулятор", "url": "./calculator/?source=pwa", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
+    { "name": "Гід приготування", "short_name": "Гід", "url": "./guide/?source=pwa", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] },
     { "name": "Пригоди Вуглинки", "short_name": "Ігри", "url": "./game/?source=pwa", "icons": [{ "src": "assets/icons/icon-192.png", "sizes": "192x192" }] }
   ]
 }
