@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Гід приготування Carbonis</title>
+<meta name="description" content="Покрокові інструкції для камадо і мангала: вугілля, розпал, температура, час і готовність страви.">
+<meta name="theme-color" content="#141414">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../assets/icons/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Carbonis BBQ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Golos+Text:wght@400;600&family=Unbounded:wght@300;400&display=swap">
+<style>
+/* Carbonis design system: dark grill at night. One column: pick dish and grill, then a step player —
+   an animated cutaway of the grill on top, the instruction and a timer below. Single dark theme by choice (brand). */
+:root {
+  color-scheme: dark;
+  --surface-page: #141414;
+  --surface-card: #1e1e1e;
+  --surface-raised: #272727;
+  --line: #353535;
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.7);
+  --ink-muted: #a3a3a3;
+  --brand-green: #56b947;
+  --on-brand: #000000;
+  --ember: #ff7a1f;
+  --font-display: Unbounded, "Arial Black", sans-serif;
+  --font-sans: Inter, "Golos Text", system-ui, sans-serif;
+  --font-label: "Golos Text", system-ui, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--surface-page); color: var(--ink); font: 400 16px/1.45 var(--font-sans); -webkit-tap-highlight-color: transparent; }
+.wrap { max-width: 560px; margin: 0 auto; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 24px; }
+.topbar { display: flex; align-items: center; gap: 10px; }
+.back { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font: 300 18px var(--font-display); letter-spacing: .04em; }
+.back img { width: 34px; height: 34px; }
+.back span.arrow { font: 400 18px var(--font-sans); color: var(--ink-muted); }
+.sp { flex: 1; }
+.lang-switch { display: flex; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.lang-switch button { appearance: none; background: transparent; border: 0; color: var(--ink-muted); font: 600 13px var(--font-label); padding: 8px 11px; cursor: pointer; }
+.lang-switch button[aria-pressed="true"] { background: var(--brand-green); color: var(--on-brand); }
+.head { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { margin: 0; color: var(--brand-green); font: 600 11px/1.3 var(--font-label); letter-spacing: 0.16em; text-transform: uppercase; }
+h1 { margin: 0; font: 400 clamp(26px, 7vw, 32px)/1.2 var(--font-display); text-transform: uppercase; text-wrap: balance; }
+h2 { margin: 0; font: 400 18px/1.25 var(--font-display); text-transform: uppercase; text-wrap: balance; }
+.lead { margin: 0; color: var(--ink-muted); }
+form { display: flex; flex-direction: column; gap: 20px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 var(--font-sans); color: var(--ink-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips input, .seg input { position: absolute; opacity: 0; pointer-events: none; }
+.chips label, .seg label { display: block; padding: 11px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); font-weight: 600; cursor: pointer; user-select: none; }
+.chips label:hover, .seg label:hover { border-color: var(--brand-green); }
+.chips input:checked + label, .seg input:checked + label { background: var(--brand-green); border-color: var(--brand-green); color: var(--on-brand); }
+.chips input:focus-visible + label, .seg input:focus-visible + label, button:focus-visible, a:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg label { text-align: center; padding: 14px 10px; }
+.seg small { display: block; font-weight: 400; font-size: 12px; opacity: 0.75; }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 0; padding: 16px; background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--radius-md); }
+.facts div { min-width: 0; }
+.facts dt { font: 600 11px/1.3 var(--font-label); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2px; }
+.facts dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.facts dd.hot { color: var(--ember); }
+@media (max-width: 380px) { .facts { grid-template-columns: 1fr; } }
+.player { background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--radius-md); overflow: hidden; display: flex; flex-direction: column; }
+.scene { display: block; width: 100%; height: auto; background: radial-gradient(120% 100% at 40% 110%, #2a1a10 0%, #161210 60%); border-bottom: 1px solid var(--line); }
+.scene text { font-family: "Golos Text", system-ui, sans-serif; }
+.scene .big { font-family: Unbounded, "Arial Black", sans-serif; }
+.scene .lid { transition: transform .7s cubic-bezier(.3,.7,.3,1); transform-box: view-box; transform-origin: 70px 98px; }
+.scene .needle { transition: transform 1.1s cubic-bezier(.3,.7,.3,1); transform-box: view-box; transform-origin: 262px 58px; }
+.scene .flame { animation: flick .5s ease-in-out infinite alternate; transform-box: fill-box; transform-origin: 50% 100%; }
+.scene .flame:nth-child(2n) { animation-duration: .38s; }
+.scene .heat { stroke-dasharray: 3 6; animation: rise 1s linear infinite; }
+.scene .smoke circle { animation: puff 3s ease-out infinite; opacity: 0; }
+.scene .smoke circle:nth-child(2) { animation-delay: 1s; }
+.scene .smoke circle:nth-child(3) { animation-delay: 2s; }
+.scene .pulse { animation: glow 1.6s ease-in-out infinite alternate; }
+@keyframes flick { from { transform: scaleY(.82) scaleX(1.06); } to { transform: scaleY(1.12) scaleX(.94); } }
+@keyframes rise { to { stroke-dashoffset: -18; } }
+@keyframes puff { 0% { opacity: 0; transform: translate(0, 0) scale(.6); } 20% { opacity: .5; } 100% { opacity: 0; transform: translate(10px, -26px) scale(1.8); } }
+@keyframes glow { from { opacity: .55; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .scene .flame, .scene .heat, .scene .smoke circle, .scene .pulse { animation: none; } .scene .smoke circle { opacity: .35; } .scene .lid, .scene .needle { transition: none; } }
+.step { padding: 18px 16px 16px; display: flex; flex-direction: column; gap: 12px; }
+.step .count { display: flex; align-items: center; gap: 10px; }
+.dots { display: flex; gap: 4px; flex: 1; }
+.dots i { height: 4px; flex: 1; border-radius: 2px; background: var(--line); }
+.dots i.on { background: var(--brand-green); }
+.step p { margin: 0; color: var(--ink-soft); }
+.params { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+.params li { padding: 6px 10px; border-radius: var(--radius-sm); background: var(--surface-raised); border: 1px solid var(--line); font-size: 13px; font-weight: 600; }
+.params li b { font: 600 10px var(--font-label); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); margin-right: 6px; }
+.warn { margin: 0; padding: 10px 12px; border-left: 3px solid var(--ember); background: var(--surface-raised); border-radius: var(--radius-sm); font-size: 14px; color: var(--ink); }
+.timer { display: flex; align-items: center; flex-wrap: wrap; gap: 10px 14px; padding: 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); }
+.timer .clock { font: 400 34px/1 var(--font-display); color: var(--ember); font-variant-numeric: tabular-nums; min-width: 4.2ch; }
+.timer .tbtns { display: flex; gap: 8px; flex-wrap: wrap; }
+.timer .msg { flex-basis: 100%; margin: 0; font-size: 13px; color: var(--brand-green); }
+.timer .msg:empty { display: none; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--brand-green); border-radius: var(--radius-sm); padding: 12px 16px; font: 600 15px var(--font-sans); text-decoration: none; color: var(--on-brand); background: var(--brand-green); cursor: pointer; }
+.btn:hover { background: #68cc59; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn.ghost:hover { background: rgba(255, 255, 255, .08); }
+.btn.small { padding: 9px 12px; font-size: 14px; }
+.btn:disabled { opacity: .35; cursor: default; }
+.nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.outline { display: flex; flex-direction: column; gap: 12px; }
+.outline ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; counter-reset: s; }
+.outline li button { appearance: none; width: 100%; text-align: left; display: flex; align-items: baseline; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-card); color: var(--ink); font: 600 15px var(--font-sans); cursor: pointer; }
+.outline li button::before { counter-increment: s; content: counter(s); font: 400 14px var(--font-display); color: var(--brand-green); min-width: 1.2em; }
+.outline li button small { margin-left: auto; font-weight: 400; color: var(--ink-muted); white-space: nowrap; }
+.outline li button[aria-current="step"] { border-color: var(--brand-green); }
+.promo { display: flex; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-card); text-decoration: none; color: var(--ink); }
+.promo:hover { border-color: var(--brand-green); }
+.promo b { display: block; font-weight: 600; }
+.promo small { color: var(--ink-muted); }
+.promo .arrow { margin-left: auto; color: var(--brand-green); font-weight: 600; flex: none; }
+.note { margin: 0; font-size: 12px; color: var(--ink-muted); }
+.foot { margin: 0; font-size: 11px; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
+.foot b { color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <a class="back" href="../" data-i18n-aria="home"><span class="arrow">←</span><img src="../assets/icons/badge.svg" alt="" width="34" height="34">CARBONIS</a>
+    <div class="sp"></div>
+    <div class="lang-switch" data-lang-switch></div>
+  </div>
+
+  <header class="head">
+    <p class="eyebrow" data-i18n="eyebrow">Гід приготування · камадо і мангал</p>
+    <h1 data-i18n="h1">Від вугілля до страви</h1>
+    <p class="lead" data-i18n="lead">Оберіть страву і гриль. Покажемо кожен крок: як розкласти вугілля, до якої температури розігріти і скільки готувати.</p>
+  </header>
+
+  <form id="pick" novalidate>
+    <fieldset>
+      <legend data-i18n="qDish">Що готуєте</legend>
+      <div class="chips" id="dishes"></div>
+    </fieldset>
+    <fieldset>
+      <legend data-i18n="qDevice">На чому готуєте</legend>
+      <div class="seg">
+        <div>
+          <input type="radio" name="device" id="dev-kamado" value="kamado" checked>
+          <label for="dev-kamado"><span data-i18n="kamado">Камадо</span><small data-i18n="kamadoSub">керамічний гриль з кришкою</small></label>
+        </div>
+        <div>
+          <input type="radio" name="device" id="dev-mangal" value="mangal">
+          <label for="dev-mangal"><span data-i18n="mangal">Мангал</span><small data-i18n="mangalSub">відкритий жар</small></label>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <dl class="facts" id="facts"></dl>
+
+  <section class="player" aria-labelledby="stepTitle">
+    <svg class="scene" id="scene" viewBox="0 0 320 200" role="img" aria-labelledby="stepTitle"></svg>
+    <div class="step" aria-live="polite">
+      <div class="count"><span class="eyebrow" id="stepCount"></span><span class="dots" id="dots" aria-hidden="true"></span></div>
+      <h2 id="stepTitle"></h2>
+      <p id="stepText"></p>
+      <ul class="params" id="stepParams"></ul>
+      <p class="warn" id="stepWarn" hidden></p>
+      <div class="timer" id="timer" hidden>
+        <span class="clock" id="clock">00:00</span>
+        <span class="tbtns">
+          <button type="button" class="btn small" id="tGo"></button>
+          <button type="button" class="btn ghost small" id="tPlus"></button>
+          <button type="button" class="btn ghost small" id="tReset"></button>
+        </span>
+        <p class="msg" id="tMsg" role="status"></p>
+      </div>
+      <a class="btn ghost small" id="stepLink" hidden></a>
+      <div class="nav">
+        <button type="button" class="btn ghost" id="prev" data-i18n="prev">Назад</button>
+        <button type="button" class="btn" id="next"></button>
+      </div>
+    </div>
+  </section>
+
+  <section class="outline" aria-labelledby="outlineTitle">
+    <h2 id="outlineTitle" data-i18n="outlineTitle">Усі кроки</h2>
+    <ol id="outline"></ol>
+  </section>
+
+  <a class="promo" id="calcPromo" href="../calculator/">
+    <img src="../assets/icons/icon-192.png" alt="" width="44" height="44" style="border-radius:10px">
+    <span><b data-i18n="promoTitle">Скільки вугілля взяти</b><small data-i18n="promoTxt">Калькулятор порахує кілограми і мішки Carbonis для цієї страви.</small></span>
+    <span class="arrow" data-i18n="promoGo">Порахувати →</span>
+  </a>
+
+  <p class="note" data-i18n="note">Час і температури орієнтовні: вони залежать від товщини шматків, погоди й моделі гриля. Готовність м'яса і птиці перевіряйте термометром.</p>
+  <p class="foot"><span>© Carbonis charcoal group</span><span>Powered by <b>Max Vorozhko</b></span></p>
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.Carbonis, t = C.t;
+  var L = function (uk, en) { return { uk: uk, en: en }; };
+  var T = function (uk, en) { return C.lang === 'en' ? en : uk; };
+
+  var DICT = {
+    home: L('На головну', 'Home'),
+    eyebrow: L('Гід приготування · камадо і мангал', 'Cooking guide · kamado and brazier'),
+    h1: L('Від вугілля до страви', 'From charcoal to plate'),
+    lead: L('Оберіть страву і гриль. Покажемо кожен крок: як розкласти вугілля, до якої температури розігріти і скільки готувати.', 'Pick a dish and a grill. We show every step: how to lay the charcoal, what temperature to reach and how long to cook.'),
+    qDish: L('Що готуєте', 'What are you cooking'),
+    qDevice: L('На чому готуєте', 'What are you cooking on'),
+    kamado: L('Камадо', 'Kamado'), kamadoSub: L('керамічний гриль з кришкою', 'ceramic grill with a lid'),
+    mangal: L('Мангал', 'Brazier'), mangalSub: L('відкритий жар', 'open fire'),
+    prev: L('Назад', 'Back'),
+    outlineTitle: L('Усі кроки', 'All steps'),
+    promoTitle: L('Скільки вугілля взяти', 'How much charcoal to bring'),
+    promoTxt: L('Калькулятор порахує кілограми і мішки Carbonis для цієї страви.', 'The calculator works out kilograms and Carbonis bags for this dish.'),
+    promoGo: L('Порахувати →', 'Calculate →'),
+    note: L("Час і температури орієнтовні: вони залежать від товщини шматків, погоди й моделі гриля. Готовність м'яса і птиці перевіряйте термометром.", 'Times and temperatures are a guide: they depend on thickness, weather and your grill model. Check meat and poultry with a thermometer.')
+  };
+
+  // ---- Рецепти: усі цифри тут. cook і heat — хвилини [від, до]; flip — секунди між перевертаннями;
+  //      vents — нижня й верхня заслінки камадо, 0..1; hand — тест долонею для мангала, секунди.
+  //      video: посилання на відеоогляд (коли з'явиться) — кнопка «Дивитись відео» покажеться сама.
+  var DISHES = [
+    { id: 'steak', name: L('Стейк', 'Steak'), video: '',
+      prep: L("Стейк 2,5–3 см (рибай, стриплойн) дістаньте з холодильника за 30–40 хв. Обсушіть рушником і посоліть крупною сіллю перед самим грилем.", 'Take a 2.5–3 cm steak (ribeye, striploin) out of the fridge 30–40 min ahead. Pat it dry and salt with coarse salt right before grilling.'),
+      core: L('54–57°C medium rare, 60–63°C medium', '54–57°C medium rare, 60–63°C medium'), rest: 5,
+      kamado: { method: 'direct', coal: 'pile', temp: [250, 300], vents: [1, 1], heat: [10, 15], cook: [4, 6], flip: 150,
+        how: L('Покладіть стейк над жаром і закрийте кришку. 2–3 хв з кожного боку. Товстий стейк доведіть ще 2–4 хв, прикривши заслінки наполовину.', 'Put the steak over the heat and close the lid. 2–3 min per side. Give a thick steak 2–4 min more with the vents half closed.') },
+      mangal: { method: 'twozone', coal: 'twozone', hand: '2–3', level: 3, cook: [6, 8], flip: 180,
+        how: L('Решітка над жаром. 3–4 хв з кожного боку, не рухайте стейк між перевертаннями. Якщо спалахує жир, пересуньте на бік без вугілля.', "Grate over the heat. 3–4 min per side; don't move the steak between flips. If fat flares up, shift it to the side without coals.") } },
+    { id: 'shashlik', name: L('Шашлик', 'Kebabs'), video: '',
+      prep: L("Свинину (ошийок) наріжте кубиками 4–5 см і маринуйте 3–12 год. Нанизуйте щільно, цибулю з поверхні зніміть, щоб не горіла.", "Cut pork neck into 4–5 cm cubes and marinate for 3–12 h. Thread the meat snugly and brush off the onion so it doesn't burn."),
+      core: L('70–72°C, сік прозорий', '70–72°C, juices run clear'), rest: 3,
+      kamado: { method: 'direct', coal: 'even', temp: [180, 200], vents: [.3, .3], heat: [10, 15], cook: [15, 20], flip: 180,
+        how: L('Шампури на решітку, кришка закрита. Перевертайте кожні 3 хв, відкриваючи кришку лише для цього.', 'Skewers on the grate, lid closed. Turn every 3 min, opening the lid only for that.') },
+      mangal: { method: 'direct', coal: 'even', hand: '3–4', level: 2, cook: [15, 20], flip: 150,
+        how: L('Шампури на висоті 10–15 см над жаром. Перевертайте кожні 2–3 хв. Полум\'я від жиру збивайте, зсунувши шампур, а не водою.', 'Skewers 10–15 cm above the coals. Turn every 2–3 min. Tame fat flare-ups by moving the skewer, not with water.') } },
+    { id: 'chicken', name: L('Курка', 'Chicken'), video: '',
+      prep: L('Стегна або гомілки обсушіть і натріть сіллю та спеціями за 1–2 год. Солодкий соус наносьте лише в останні 5 хв, інакше згорить.', 'Pat thighs or drumsticks dry and rub with salt and spices 1–2 h ahead. Brush on sweet sauce only in the last 5 min or it will burn.'),
+      core: L('75°C біля кістки (стегна соковитіші при 80°C)', '75°C at the bone (thighs are juicier at 80°C)'), rest: 5,
+      kamado: { method: 'indirect', coal: 'pile', temp: [180, 190], vents: [.3, .3], heat: [15, 20], cook: [35, 45], flip: 1050,
+        how: L('Курка шкірою догори над дефлектором, кришка закрита. Переверніть один раз посередині. Камадо працює як духовка: м\'ясо не пересихає.', 'Chicken skin side up over the deflector, lid closed. Turn once halfway. The kamado works like an oven, so the meat stays juicy.') },
+      mangal: { method: 'twozone', coal: 'twozone', hand: '4–5', level: 2, cook: [30, 40], flip: 300,
+        how: L('Почніть на боці без вугілля, шкірою догори. Перевертайте кожні 5 хв. В останні 5 хв пересуньте над жар, щоб шкірка стала хрусткою.', 'Start on the side without coals, skin side up. Turn every 5 min. For the last 5 min move it over the coals to crisp the skin.') } },
+    { id: 'ribs', name: L('Реберця', 'Ribs'), video: '',
+      prep: L('Зніміть плівку з кісткового боку і натріть реберця сухими спеціями за 2–12 год.', 'Peel the membrane off the bone side and rub the ribs with dry spices 2–12 h ahead.'),
+      core: L("88–92°C, м'ясо відходить від кістки", '88–92°C, the meat pulls back from the bone'), rest: 10,
+      kamado: { method: 'indirect', coal: 'low', temp: [110, 130], vents: [.1, .1], heat: [20, 30], cook: [150, 180], flip: 0,
+        how: L("Реберця кісткою донизу над дефлектором. Кришку не відкривайте: кожне відкриття додає 10–15 хв. Для диму покладіть на вугілля шматок фруктового дерева.", "Ribs bone side down over the deflector. Keep the lid shut: every peek adds 10–15 min. For smoke, put a chunk of fruit wood on the coals."),
+        finish: { title: L('Глазур', 'Glaze'), text: L('Змастіть реберця соусом BBQ і тримайте ще 20–30 хв, доки скоринка не стане липкою.', 'Brush the ribs with BBQ sauce and keep them on for 20–30 min more, until the bark turns sticky.'), cook: [20, 30] } },
+      mangal: { method: 'twozone', coal: 'twozone', hand: '6–8', level: 1, cook: [90, 120], flip: 1500,
+        how: L('Загорніть реберця у фольгу і покладіть на бік без вугілля. Перевертайте раз на 25 хв і підкладайте по жмені вугілля, щоб жар не згас.', 'Wrap the ribs in foil and put them on the side without coals. Turn every 25 min and add a handful of charcoal to keep the heat alive.'),
+        finish: { title: L('Глазур', 'Glaze'), text: L('Розгорніть фольгу, змастіть соусом BBQ і підрум\'яньте над жаром 10–15 хв, часто перевертаючи.', 'Unwrap, brush with BBQ sauce and brown over the coals for 10–15 min, turning often.'), cook: [10, 15] } } },
+    { id: 'fish', name: L('Риба', 'Fish'), video: '',
+      prep: L('Цілу дорадо, сибаса або стейки лосося обсушіть. Змастіть олією шкіру і решітку, щоб риба не прилипла.', "Pat a whole sea bream, sea bass or salmon steaks dry. Oil the skin and the grate so the fish doesn't stick."),
+      core: L("60–63°C, м'ясо легко відділяється", '60–63°C, the flesh flakes easily'), rest: 2,
+      kamado: { method: 'direct', coal: 'even', temp: [180, 200], vents: [.3, .3], heat: [10, 15], cook: [10, 15], flip: 360,
+        how: L('Риба на змащену решітку, кришка закрита. Переверніть один раз, коли шкіра сама відійде від решітки.', 'Fish on the oiled grate, lid closed. Turn once, when the skin releases from the grate by itself.') },
+      mangal: { method: 'direct', coal: 'even', hand: '4–5', level: 2, cook: [10, 15], flip: 300,
+        how: L('Найзручніше в решітці-кошику. 5–7 хв з кожного боку на середньому жарі.', 'A grill basket is easiest. 5–7 min per side over medium heat.') } },
+    { id: 'sausage', name: L('Ковбаски', 'Sausages'), video: '',
+      prep: L('Сирі ковбаски дістаньте з холодильника за 15 хв. Не проколюйте: сік має лишитися всередині.', "Take raw sausages out of the fridge 15 min ahead. Don't prick them: the juice should stay inside."),
+      core: L('72°C', '72°C'), rest: 2,
+      kamado: { method: 'direct', coal: 'even', temp: [160, 180], vents: [.25, .25], heat: [10, 15], cook: [12, 15], flip: 180,
+        how: L('Ковбаски на решітку, кришка закрита. Перевертайте кожні 3 хв до рівної рум\'яної скоринки.', 'Sausages on the grate, lid closed. Turn every 3 min until evenly browned.') },
+      mangal: { method: 'direct', coal: 'even', hand: '4–5', level: 2, cook: [10, 12], flip: 150,
+        how: L('Середній жар без полум\'я. Перевертайте кожні 2–3 хв. На сильному жарі оболонка лусне.', 'Medium heat with no flames. Turn every 2–3 min. High heat will split the casing.') } },
+    { id: 'veg', name: L('Овочі', 'Veggies'), video: '',
+      prep: L('Перець, кабачок, баклажан і гриби наріжте крупно, змастіть олією і посоліть. Кукурудзу готуйте цілою.', 'Cut peppers, courgette, aubergine and mushrooms into large pieces, oil and salt them. Cook corn whole.'),
+      core: L("м'які, з підпаленими смужками", 'tender, with char marks'), rest: 0,
+      kamado: { method: 'direct', coal: 'even', temp: [180, 200], vents: [.3, .3], heat: [10, 15], cook: [8, 12], flip: 180,
+        how: L('Овочі на решітку, кришка закрита. Перевертайте кожні 3 хв. Гриби й перець готові першими.', 'Veggies on the grate, lid closed. Turn every 3 min. Mushrooms and peppers are done first.') },
+      mangal: { method: 'direct', coal: 'even', hand: '5–6', level: 1, cook: [8, 12], flip: 150,
+        how: L("Слабкий жар, найкраще після м'яса. Перевертайте кожні 2–3 хв.", 'Low heat, best after the meat. Turn every 2–3 min.') } }
+  ];
+  var METHOD = { direct: L('Прямий жар', 'Direct heat'), indirect: L('Непрямий жар, дефлектор', 'Indirect heat, deflector'), twozone: L('Дві зони', 'Two zones') };
+  var COAL = {
+    pile: L('Гіркою по центру', 'A mound in the centre'), even: L('Рівним шаром 5–7 см', 'An even 5–7 cm layer'),
+    twozone: L('З одного боку, другий бік порожній', 'On one side, the other side empty'), low: L('Невелика купка по центру', 'A small pile in the centre')
+  };
+
+  function rng(a, unit) { return a[0] === a[1] ? a[0] + ' ' + unit : a[0] + '–' + a[1] + ' ' + unit; }
+  function mins(a) {
+    if (a[1] >= 90) { var f = function (m) { var h = m / 60; return (h % 1 ? h.toFixed(1) : String(h)).replace('.', T(',', '.')); }; return f(a[0]) + '–' + f(a[1]) + ' ' + T('год', 'h'); }
+    return rng(a, T('хв', 'min'));
+  }
+  function ventLabel(f) {
+    if (f >= .95) return T('відкрита повністю', 'fully open');
+    if (f >= .45) return T('наполовину', 'half open');
+    if (f >= .2) return T('на чверть', 'a quarter open');
+    if (f > 0) return T('щілина 0,5–1 см', 'a 0.5–1 cm gap');
+    return T('закрита', 'closed');
+  }
+  function heatWord(level) { return [T('Жар згасає', 'Heat is fading'), T('Слабкий жар', 'Low heat'), T('Середній жар', 'Medium heat'), T('Сильний жар', 'High heat')][level]; }
+
+  // ---- Кроки для вибраної страви і гриля ----
+  function buildSteps(dish, dev) {
+    var r = dish[dev], k = dev === 'kamado', steps = [];
+    var base = { device: dev, coal: r.coal, fire: 0, flames: false, lid: 'open', deflector: false, food: null, arrows: null, smoke: false, temp: null, vb: 1, vt: 1, level: 0 };
+    var sc = function (o) { var s = {}; for (var a in base) s[a] = base[a]; for (var b in o) s[b] = o[b]; return s; };
+    var tempTxt = k ? r.temp[0] + '–' + r.temp[1] + '°C' : '';
+    var mid = k ? (r.temp[0] + r.temp[1]) / 2 : null;
+    var foodPos = r.method === 'twozone' ? 'right' : 'center';
+
+    steps.push({ title: T('Підготуйте продукти', 'Prepare the food'), text: t(dish.prep), short: '',
+      scene: sc({ coal: 'none', side: { big: '1', cap: T('підготовка', 'prep') } }) });
+
+    steps.push({ title: T('Розкладіть вугілля', 'Lay the charcoal'), short: '',
+      text: k
+        ? T('Насипте вугілля Carbonis у чашу: ' + t(COAL[r.coal]).toLowerCase() + '. Великі шматки вниз, дрібніші зверху: так повітря проходить краще. Обидві заслінки відкрийте повністю.', 'Fill the firebox with Carbonis charcoal: ' + t(COAL[r.coal]).toLowerCase() + '. Large pieces at the bottom, smaller on top, so air flows better. Open both vents fully.')
+        : T('Насипте вугілля Carbonis гіркою посередині мангала: так воно розгориться швидше. Розрівняєте пізніше.', 'Pour Carbonis charcoal into a mound in the middle of the brazier: it lights faster that way. You will spread it later.'),
+      params: [[T('Розкладка', 'Layout'), k ? t(COAL[r.coal]) : t(COAL.pile)]],
+      link: { href: '../calculator/?dish=' + dish.id + '&device=' + (k ? 'grill' : 'mangal'), text: T('Порахувати, скільки вугілля →', 'Work out how much charcoal →') },
+      scene: sc({ coal: k ? r.coal : 'pile' }) });
+
+    var lightT = k ? [10, 15] : [20, 25];
+    steps.push({ title: T('Розпаліть', 'Light it'), short: mins(lightT),
+      text: k
+        ? T('Покладіть у вугілля 1–2 кубики розпалювача і підпаліть. Кришка відкрита, заслінки відкриті. Рідину для розпалу не використовуйте: кераміка вбирає запах.', "Tuck 1–2 firelighter cubes into the charcoal and light them. Lid open, vents open. Don't use lighter fluid: the ceramic absorbs the smell.")
+        : T('Підкладіть розпалювач або сухі тріски під гірку і підпаліть. Чекайте, доки вугілля вкриється білим попелом. На відкритому полум\'ї не готуйте.', "Put a firelighter or dry kindling under the mound and light it. Wait until the charcoal is covered in white ash. Don't cook over open flames."),
+      params: [[T('Час', 'Time'), mins(lightT)]], timer: lightT[0] * 60,
+      scene: sc({ coal: k ? r.coal : 'pile', fire: .45, flames: true, temp: k ? 60 : null, side: k ? null : { big: lightT[0] + '–' + lightT[1], cap: T('хв до білого попелу', 'min until white ash') } }) });
+
+    if (k) {
+      steps.push({ title: T('Наберіть ', 'Bring it to ') + tempTxt, short: mins(r.heat),
+        text: (r.method === 'indirect' ? T('Поставте дефлектор і решітку. ', 'Fit the deflector and the grate. ') : T('Поставте решітку. ', 'Fit the grate. ')) +
+          T('Закрийте кришку. Коли до цілі лишиться близько 30°C, виставте заслінки, як на схемі: камадо легше нагріти, ніж остудити. Дайте температурі постояти 5 хв.', 'Close the lid. About 30°C before the target, set the vents as shown: a kamado is easier to heat up than to cool down. Let the temperature settle for 5 min.'),
+        params: [[T('Ціль', 'Target'), tempTxt], [T('Нижня заслінка', 'Bottom vent'), ventLabel(r.vents[0])], [T('Верхня заслінка', 'Top vent'), ventLabel(r.vents[1])]],
+        timer: r.heat[0] * 60,
+        scene: sc({ fire: .8, lid: 'closed', deflector: r.method === 'indirect', temp: mid, tempLabel: tempTxt, vb: r.vents[0], vt: r.vents[1], smoke: true }) });
+    } else {
+      steps.push({ title: T('Розрівняйте жар', 'Spread the coals'), short: heatWord(r.level),
+        text: T('Розкладіть вугілля: ' + t(COAL[r.coal]).toLowerCase() + '. Перевірте жар долонею на висоті шампурів: якщо витримуєте ' + r.hand + ' с, температура правильна.', 'Spread the charcoal: ' + t(COAL[r.coal]).toLowerCase() + '. Test the heat with your palm at skewer height: if you can hold it for ' + r.hand + ' s, the temperature is right.'),
+        params: [[T('Розкладка', 'Layout'), t(COAL[r.coal])], [T('Тест долонею', 'Hand test'), r.hand + ' ' + T('с', 's')], [T('Жар', 'Heat'), heatWord(r.level)]],
+        scene: sc({ fire: .85, level: r.level, side: { big: r.hand, cap: T('с — долоня над жаром', 's — palm over the coals'), hand: true } }) });
+    }
+
+    var cookScene = sc({ fire: .9, lid: k ? 'closed' : 'open', deflector: k && r.method === 'indirect', food: dish.id, foodPos: foodPos, arrows: r.method === 'direct' ? 'direct' : 'indirect', smoke: k, temp: mid, tempLabel: tempTxt, vb: k ? r.vents[0] : 1, vt: k ? r.vents[1] : 1, level: r.level, side: k ? null : { big: mins(r.cook).replace(/ .*/, ''), cap: mins(r.cook).replace(/^\S+ /, '') + ' · ' + heatWord(r.level).toLowerCase() } });
+    var cookParams = [[T('Час', 'Time'), mins(r.cook)], [T('Спосіб', 'Method'), t(METHOD[r.method])]];
+    if (k) cookParams.push([T('Температура', 'Temperature'), tempTxt]);
+    if (r.flip) cookParams.push([T('Перевертати', 'Turn'), T('кожні ', 'every ') + (r.flip >= 120 ? Math.round(r.flip / 60) + ' ' + T('хв', 'min') : r.flip + ' ' + T('с', 's'))]);
+    steps.push({ title: T('Готуйте', 'Cook'), short: mins(r.cook), text: t(r.how), params: cookParams, timer: r.cook[0] * 60, every: r.flip,
+      warn: k && r.temp[0] >= 180 ? T('Гарячу кришку відкривайте у два етапи: спершу підніміть на 3–5 см і зачекайте 2–3 секунди. Різкий доступ повітря дає спалах полум\'я.', 'Open a hot lid in two stages: lift it 3–5 cm first and wait 2–3 seconds. A sudden rush of air causes a flare of flame.') : '',
+      scene: cookScene });
+
+    if (r.finish) {
+      var fs = {}; for (var a in cookScene) fs[a] = cookScene[a];
+      if (!k) { fs.foodPos = 'center'; fs.arrows = 'direct'; fs.level = 2; fs.side = { big: mins(r.finish.cook).replace(/ .*/, ''), cap: mins(r.finish.cook).replace(/^\S+ /, '') + ' · ' + T('над жаром', 'over the coals') }; }
+      steps.push({ title: t(r.finish.title), short: mins(r.finish.cook), text: t(r.finish.text), params: [[T('Час', 'Time'), mins(r.finish.cook)]], timer: r.finish.cook[0] * 60, scene: fs });
+    }
+
+    steps.push({ title: dish.rest ? T('Перевірте готовність і дайте відпочити', 'Check doneness and let it rest') : T('Перевірте готовність', 'Check doneness'), short: dish.rest ? dish.rest + ' ' + T('хв', 'min') : '',
+      text: (dish.id === 'veg' ? T('Овочі готові, коли вони ', 'The veggies are done when they are ') + t(dish.core) + '.' : T('Виміряйте температуру в найтовщому місці: ', 'Measure the temperature at the thickest point: ') + t(dish.core) + '.') +
+        (dish.rest ? T(' Зніміть з вогню і дайте постояти ' + dish.rest + ' хв під фольгою: соки розійдуться рівномірно.', ' Take it off the heat and rest it for ' + dish.rest + ' min under foil: the juices will spread evenly.') : ''),
+      params: [[T('Готовність', 'Doneness'), t(dish.core)]].concat(dish.rest ? [[T('Відпочинок', 'Rest'), dish.rest + ' ' + T('хв', 'min')]] : []),
+      timer: dish.rest ? dish.rest * 60 : 0,
+      scene: sc({ fire: .6, lid: 'open', deflector: k && r.method === 'indirect', food: dish.id, foodPos: 'plate', temp: k ? Math.max(90, mid - 60) : null, level: 1, side: k ? null : { big: '✓', cap: T('страва готова', 'the dish is ready') } }) });
+
+    steps.push({ title: T('Після готування', 'After cooking'), short: '',
+      text: k
+        ? T('Закрийте кришку й обидві заслінки: без кисню вугілля згасне за 15–20 хв. Залишки використаєте наступного разу: струсіть попіл і досипте свіжого вугілля.', 'Close the lid and both vents: without oxygen the charcoal goes out in 15–20 min. Reuse what is left next time: shake off the ash and top up with fresh charcoal.')
+        : T('Дайте вугіллю догоріти або залийте водою. Попіл викидайте тільки повністю холодним.', 'Let the charcoal burn out or douse it with water. Bin the ash only when it is completely cold.'),
+      params: k ? [[T('Заслінки', 'Vents'), T('обидві закриті', 'both closed')]] : [],
+      scene: sc({ fire: .12, lid: k ? 'closed' : 'open', temp: k ? 70 : null, vb: 0, vt: 0, level: 0, side: k ? null : { big: '0', cap: T('жар згасає', 'the heat is fading') } }) });
+    return steps;
+  }
+
+  // ---- Схема гриля в розрізі (SVG 320×200) ----
+  var CHUNK = 'M-8 2L-5-6 3-8 8-2 6 6-3 7Z';
+  var COALS = {
+    kamado: { pile: [[112, 160], [130, 162], [148, 160], [121, 152], [139, 152], [130, 144]], even: [[100, 158], [115, 160], [130, 161], [145, 160], [160, 158], [108, 151], [123, 152], [138, 152], [152, 151]], low: [[120, 161], [134, 161], [127, 154]], none: [] },
+    mangal: { pile: [[112, 152], [126, 152], [140, 152], [154, 152], [168, 152], [119, 144], [133, 144], [147, 144], [161, 144], [126, 136], [140, 136], [154, 136], [140, 128]], even: [[62, 152], [77, 153], [92, 152], [107, 153], [122, 152], [137, 153], [152, 152], [167, 153], [182, 152], [197, 153], [212, 152], [70, 145], [100, 145], [130, 145], [160, 145], [190, 145]], twozone: [[62, 152], [77, 153], [92, 152], [107, 153], [122, 152], [70, 145], [85, 145], [100, 145], [115, 145], [78, 138], [93, 138], [108, 138]], none: [] }
+  };
+  function mix(f) { var a = [43, 36, 30], b = [255, 122, 31], c = a.map(function (v, i) { return Math.round(v + (b[i] - v) * f); }); return 'rgb(' + c.join(',') + ')'; }
+  function food(id, x, y) {
+    var g = '<g transform="translate(' + x + ',' + y + ')">';
+    if (id === 'steak') g += '<path d="M-20-2C-18-10 6-12 16-7 24-3 22 5 12 7-2 10-22 8-20-2Z" fill="#a8553f" stroke="#ead3b8" stroke-width="2"/><path d="M-8-5l-4 9M2-6l-4 11M12-5l-4 9" stroke="#5a2a1c" stroke-width="1.6"/>';
+    else if (id === 'shashlik') [-5, 4].forEach(function (dy) { g += '<path d="M-32 ' + dy + 'H32" stroke="#cfcfcf" stroke-width="1.4"/>'; for (var i = 0; i < 4; i++) g += '<rect x="' + (-24 + i * 12) + '" y="' + (dy - 4) + '" width="10" height="8" rx="2" fill="' + (i % 2 ? '#8a4a2f' : '#a8553f') + '"/>'; });
+    else if (id === 'chicken') [-13, 11].forEach(function (dx) { g += '<ellipse cx="' + dx + '" cy="0" rx="11" ry="7" fill="#c98a4b"/><path d="M' + (dx + 10) + ' 0h8" stroke="#f1e6d6" stroke-width="3" stroke-linecap="round"/>'; });
+    else if (id === 'ribs') { g += '<rect x="-28" y="-7" width="56" height="13" rx="5" fill="#8a4a2f"/>'; for (var j = 0; j < 6; j++) g += '<path d="M' + (-21 + j * 8.4) + '-6v11" stroke="#ead3b8" stroke-width="2" stroke-linecap="round"/>'; }
+    else if (id === 'fish') g += '<ellipse cx="-3" cy="0" rx="22" ry="7.5" fill="#9fb3c1"/><path d="M18 0l12-7v14Z" fill="#9fb3c1"/><circle cx="-17" cy="-2" r="1.5" fill="#1a1a1a"/><path d="M-6-6l-3 12M2-6l-3 12M10-5l-3 10" stroke="#6f8492" stroke-width="1.3"/>';
+    else if (id === 'sausage') [-6, 1, 8].forEach(function (dy, i) { g += '<rect x="' + (-22 + i * 3) + '" y="' + (dy - 3) + '" width="40" height="6" rx="3" fill="#c8603a"/>'; });
+    else g += '<circle cx="-20" cy="0" r="7" fill="#e23b2e"/><ellipse cx="-2" cy="0" rx="9" ry="6" fill="#7fae4a"/><circle cx="16" cy="0" r="6.5" fill="#f2d04b"/><circle cx="29" cy="1" r="5" fill="#d9cdbb"/>';
+    return g + '</g>';
+  }
+  function scene(s) {
+    var k = s.device === 'kamado', o = '';
+    var pts = (COALS[s.device][s.coal] || []), gx = k ? 130 : (s.coal === 'twozone' ? 92 : 140);
+    // glow
+    if (s.fire > 0 && pts.length) o += '<ellipse class="pulse" cx="' + gx + '" cy="150" rx="' + (k ? 52 : (s.coal === 'even' ? 92 : 56)) + '" ry="26" fill="rgba(255,122,31,' + (.12 + s.fire * .3) + ')"/>';
+    if (k) {
+      o += '<path d="M88 168L78 190M172 168L182 190M70 190H190" stroke="#4a4a4a" stroke-width="4" stroke-linecap="round" fill="none"/>';
+      o += '<path d="M70 100C70 150 92 172 130 172 168 172 190 150 190 100Z" fill="#191919"/>';
+    } else {
+      o += '<path d="M56 162L46 190M224 162L234 190" stroke="#4a4a4a" stroke-width="4" stroke-linecap="round"/>';
+      o += '<path d="M48 118H232V162H48Z" fill="#191919"/>';
+    }
+    // coals
+    pts.forEach(function (p, i) { o += '<path d="' + CHUNK + '" transform="translate(' + p[0] + ',' + p[1] + ') rotate(' + (i * 47 % 360) + ')" fill="' + mix(Math.max(0, s.fire * (.75 + (i % 3) * .12))) + '" stroke="#0d0b09" stroke-width="1"/>'; });
+    // flames
+    if (s.flames) { o += '<g>'; [-18, 0, 16].forEach(function (dx, i) { var fy = k ? 142 : 128; o += '<path class="flame" d="M' + (gx + dx - 7) + ' ' + fy + 'q-2-14 6-26q2 10 7 12q5-8 2-16q10 10 6 30z" fill="' + (i === 1 ? '#ffb43c' : '#ff7a1f') + '"/>'; }); o += '</g>'; }
+    // heat arrows
+    if (s.arrows === 'direct') [-22, 0, 22].forEach(function (dx) { o += '<path class="heat" d="M' + (gx + dx) + ' ' + (k ? 138 : 132) + 'V' + (k ? 116 : 112) + '" stroke="#ff7a1f" stroke-width="2" fill="none"/>'; });
+    if (s.arrows === 'indirect') o += k
+      ? '<path class="heat" d="M98 142C80 132 80 116 94 106" stroke="#ff7a1f" stroke-width="2" fill="none"/><path class="heat" d="M162 142C180 132 180 116 166 106" stroke="#ff7a1f" stroke-width="2" fill="none"/>'
+      : '<path class="heat" d="M104 128C118 102 150 96 176 104" stroke="#ff7a1f" stroke-width="2" fill="none"/><path class="heat" d="M84 128C100 92 150 84 190 98" stroke="#ff7a1f" stroke-width="2" fill="none"/>';
+    if (k) {
+      if (s.deflector) o += '<rect x="92" y="126" width="76" height="6" rx="2" fill="#8d8d8d"/><text x="130" y="124" text-anchor="middle" font-size="7" fill="#a3a3a3">' + T('дефлектор', 'deflector') + '</text>';
+      if (s.lid === 'closed' || s.food || s.deflector) o += '<path d="M76 112H184" stroke="#bdbdbd" stroke-width="2" stroke-dasharray="6 3"/>';
+      o += '<path d="M70 100C70 150 92 172 130 172 168 172 190 150 190 100" fill="none" stroke="#3f3f3f" stroke-width="6" stroke-linejoin="round"/>';
+      o += '<rect x="119" y="170" width="22" height="7" rx="2" fill="' + (s.vb > 0 ? '#ff7a1f' : '#4a4a4a') + '"/>';
+      o += '<path d="M66 100H194" stroke="#56b947" stroke-width="4" stroke-linecap="round"/>';
+      o += '<g class="lid" style="transform:rotate(' + (s.lid === 'open' ? -50 : 0) + 'deg)"><path d="M70 96C70 46 95 26 130 26 165 26 190 46 190 96Z" fill="rgba(35,35,35,.55)" stroke="#3f3f3f" stroke-width="6" stroke-linejoin="round"/><rect x="119" y="15" width="22" height="9" rx="3" fill="' + (s.vt > 0 ? '#bdbdbd' : '#4a4a4a') + '"/><rect x="194" y="74" width="8" height="18" rx="3" fill="#8a6338"/></g>';
+      if (s.smoke && s.vt > 0) o += '<g class="smoke"><circle cx="130" cy="10" r="5" fill="#9a9a9a"/><circle cx="134" cy="8" r="4" fill="#9a9a9a"/><circle cx="126" cy="9" r="4.5" fill="#9a9a9a"/></g>';
+    } else {
+      o += '<path d="M48 118V162H232V118" fill="none" stroke="#3f3f3f" stroke-width="6" stroke-linejoin="round"/>';
+      [70, 100, 130, 160, 190, 210].forEach(function (x) { o += '<circle cx="' + x + '" cy="156" r="2" fill="#0d0b09"/>'; });
+      if (s.food && s.foodPos !== 'plate') o += '<path d="M44 112H236" stroke="#bdbdbd" stroke-width="2" stroke-dasharray="6 3"/>';
+    }
+    // food
+    if (s.food) {
+      if (s.foodPos === 'plate') o += '<ellipse cx="' + (k ? 130 : 140) + '" cy="' + (k ? 84 : 96) + '" rx="42" ry="9" fill="#e9e4da"/>' + food(s.food, k ? 130 : 140, k ? 78 : 90);
+      else o += food(s.food, s.foodPos === 'right' ? 184 : (k ? 130 : 140), k ? 104 : 103);
+    }
+    // side panel
+    if (k) {
+      var ang = -135 + Math.max(0, Math.min(350, s.temp == null ? 20 : s.temp)) / 350 * 270;
+      o += '<circle cx="262" cy="58" r="34" fill="#141414" stroke="#3f3f3f" stroke-width="3"/>';
+      o += '<path d="M238 82A34 34 0 1 1 286 82" fill="none" stroke="#353535" stroke-width="5" stroke-linecap="round"/>';
+      [0, 100, 200, 300].forEach(function (v) { var a = (-135 + v / 350 * 270) * Math.PI / 180; o += '<text x="' + (262 + Math.sin(a) * 23).toFixed(1) + '" y="' + (58 - Math.cos(a) * 23 + 3).toFixed(1) + '" text-anchor="middle" font-size="7" fill="#a3a3a3">' + v + '</text>'; });
+      o += '<g class="needle" id="needle" data-a="' + ang.toFixed(1) + '"><path d="M262 58V32" stroke="#ff7a1f" stroke-width="3" stroke-linecap="round"/></g><circle cx="262" cy="58" r="4" fill="#fff"/>';
+      o += '<text class="big" x="262" y="112" text-anchor="middle" font-size="' + (s.tempLabel ? 13 : 9) + '" fill="' + (s.tempLabel ? '#ff7a1f' : '#a3a3a3') + '">' + (s.tempLabel || (s.lid === 'open' ? T('кришка відкрита', 'lid open') : T('остигає', 'cooling'))) + '</text>';
+      [[T('Верхня заслінка', 'Top vent'), s.vt, 127], [T('Нижня заслінка', 'Bottom vent'), s.vb, 163]].forEach(function (v) {
+        o += '<text x="222" y="' + v[2] + '" font-size="8" fill="#a3a3a3">' + v[0] + '</text><rect x="222" y="' + (v[2] + 5) + '" width="80" height="7" rx="3.5" fill="#353535"/><rect x="222" y="' + (v[2] + 5) + '" width="' + Math.max(0, 80 * v[1]) + '" height="7" rx="3.5" fill="#56b947"/><text x="302" y="' + (v[2] + 21) + '" text-anchor="end" font-size="7.5" fill="#fff">' + ventLabel(v[1]) + '</text>';
+      });
+    } else if (s.side) {
+      if (s.side.hand) o += '<path d="M252 44v-18a4 4 0 0 1 8 0v-6a4 4 0 0 1 8 0v6a4 4 0 0 1 8 0v8a4 4 0 0 1 8 0v20c0 12-8 18-18 18s-16-6-20-14l-6-12a4 4 0 0 1 7-4z" fill="none" stroke="#fff" stroke-width="2.5" stroke-linejoin="round"/>';
+      o += '<text class="big" x="272" y="' + (s.side.hand ? 104 : 74) + '" text-anchor="middle" font-size="' + (String(s.side.big).length > 4 ? 17 : 24) + '" fill="#ff7a1f">' + s.side.big + '</text>';
+      var words = s.side.cap.split(' '), l1 = '', l2 = ''; words.forEach(function (w) { if ((l1 + ' ' + w).length <= 17 && !l2) l1 = (l1 + ' ' + w).trim(); else l2 = (l2 + ' ' + w).trim(); });
+      o += '<text x="272" y="' + (s.side.hand ? 118 : 90) + '" text-anchor="middle" font-size="8.5" fill="#a3a3a3">' + l1 + '</text><text x="272" y="' + (s.side.hand ? 129 : 101) + '" text-anchor="middle" font-size="8.5" fill="#a3a3a3">' + l2 + '</text>';
+      o += '<text x="242" y="150" font-size="8" fill="#a3a3a3">' + T('Жар', 'Heat') + '</text>';
+      [0, 1, 2].forEach(function (i) { o += '<rect x="' + (242 + i * 21) + '" y="155" width="18" height="7" rx="3.5" fill="' + (i < s.level ? ['#ffb43c', '#ff7a1f', '#ff4a1f'][i] : '#353535') + '"/>'; });
+    }
+    return o;
+  }
+
+  // ---- Стан і відображення ----
+  var $ = function (id) { return document.getElementById(id); };
+  var dishesEl = $('dishes');
+  DISHES.forEach(function (d, i) {
+    var wrap = document.createElement('div'), input = document.createElement('input'), label = document.createElement('label');
+    input.type = 'radio'; input.name = 'dish'; input.id = 'dish-' + d.id; input.value = d.id; if (i === 0) input.checked = true;
+    label.htmlFor = input.id; label.dataset.dish = d.id;
+    wrap.appendChild(input); wrap.appendChild(label); dishesEl.appendChild(wrap);
+  });
+  var stepIdx = 0, steps = [], lastAngle = -120;
+  (function fromUrl() {
+    var q = new URLSearchParams(location.search), d = q.get('dish'), dev = q.get('device'), s = parseInt(q.get('step'), 10);
+    if (d && $('dish-' + d)) $('dish-' + d).checked = true;
+    if (dev === 'grill') dev = 'kamado';
+    if (dev && $('dev-' + dev)) $('dev-' + dev).checked = true;
+    if (!isNaN(s)) stepIdx = Math.max(0, s - 1);
+  })();
+  function cur() {
+    var id = document.querySelector('input[name="dish"]:checked').value, dev = document.querySelector('input[name="device"]:checked').value;
+    return { dish: DISHES.filter(function (d) { return d.id === id; })[0], dev: dev };
+  }
+
+  // таймер
+  var tm = { left: 0, total: 0, run: false, id: 0, every: 0, sinceFlip: 0, ctx: null, lock: null };
+  function beep(n) {
+    try {
+      tm.ctx = tm.ctx || new (window.AudioContext || window.webkitAudioContext)();
+      for (var i = 0; i < n; i++) { var o = tm.ctx.createOscillator(), g = tm.ctx.createGain(), at = tm.ctx.currentTime + i * .28; o.frequency.value = 880; g.gain.setValueAtTime(.18, at); g.gain.exponentialRampToValueAtTime(.001, at + .22); o.connect(g).connect(tm.ctx.destination); o.start(at); o.stop(at + .25); }
+    } catch (e) {}
+    if (navigator.vibrate) navigator.vibrate(n > 1 ? [200, 100, 200, 100, 200] : 150);
+  }
+  function clock() { var s = Math.max(0, Math.ceil(tm.left)); $('clock').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+  function paintTimer() {
+    $('tGo').textContent = tm.run ? T('Пауза', 'Pause') : (tm.left < tm.total && tm.left > 0 ? T('Далі', 'Resume') : T('Запустити таймер', 'Start timer'));
+    $('tPlus').textContent = T('+1 хв', '+1 min'); $('tReset').textContent = T('Скинути', 'Reset'); clock();
+  }
+  function stopTimer() { tm.run = false; clearInterval(tm.id); if (tm.lock) { try { tm.lock.release(); } catch (e) {} tm.lock = null; } }
+  function setTimer(sec, every) { stopTimer(); tm.left = tm.total = sec; tm.every = every || 0; tm.sinceFlip = 0; $('tMsg').textContent = ''; $('timer').hidden = !sec; paintTimer(); }
+  $('tGo').addEventListener('click', function () {
+    if (tm.run) { stopTimer(); paintTimer(); return; }
+    if (tm.left <= 0) tm.left = tm.total;
+    tm.run = true; beep(0); var last = Date.now();
+    if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (l) { tm.lock = l; }, function () {});
+    C.event('guide-timer', 'Гід: таймер');
+    tm.id = setInterval(function () {
+      var now = Date.now(), d = (now - last) / 1000; last = now; tm.left -= d; tm.sinceFlip += d;
+      if (tm.every && tm.sinceFlip >= tm.every && tm.left > 5) { tm.sinceFlip = 0; beep(1); $('tMsg').textContent = T('Час перевернути!', 'Time to turn!'); setTimeout(function () { if ($('tMsg').textContent === T('Час перевернути!', 'Time to turn!')) $('tMsg').textContent = ''; }, 6000); }
+      if (tm.left <= 0) { tm.left = 0; stopTimer(); beep(3); $('tMsg').textContent = T('Час вийшов. Перевірте і переходьте до наступного кроку.', 'Time is up. Check and move to the next step.'); }
+      paintTimer();
+    }, 250);
+    paintTimer();
+  });
+  $('tPlus').addEventListener('click', function () { tm.left += 60; tm.total = Math.max(tm.total, tm.left); $('tMsg').textContent = ''; paintTimer(); });
+  $('tReset').addEventListener('click', function () { setTimer(tm.total, tm.every); });
+
+  function renderStep(keepTimer) {
+    var s = steps[stepIdx], c = cur();
+    $('scene').innerHTML = scene(s.scene);
+    var n = $('needle');
+    if (n) { var a = parseFloat(n.dataset.a); n.style.transform = 'rotate(' + lastAngle + 'deg)'; requestAnimationFrame(function () { requestAnimationFrame(function () { n.style.transform = 'rotate(' + a + 'deg)'; }); }); lastAngle = a; }
+    $('stepCount').textContent = T('Крок ', 'Step ') + (stepIdx + 1) + T(' із ', ' of ') + steps.length;
+    $('dots').innerHTML = steps.map(function (_, i) { return '<i class="' + (i <= stepIdx ? 'on' : '') + '"></i>'; }).join('');
+    $('stepTitle').textContent = s.title; $('stepText').textContent = s.text;
+    var ul = $('stepParams'); ul.textContent = '';
+    (s.params || []).forEach(function (p) { var li = document.createElement('li'), b = document.createElement('b'); b.textContent = p[0]; li.appendChild(b); li.appendChild(document.createTextNode(p[1])); ul.appendChild(li); });
+    $('stepWarn').hidden = !s.warn; $('stepWarn').textContent = s.warn || '';
+    var link = $('stepLink'), vid = c.dish.video && s.timer && s.every !== undefined;
+    link.hidden = !(s.link || vid);
+    if (s.link) { link.href = s.link.href; link.textContent = s.link.text; link.removeAttribute('target'); }
+    else if (vid) { link.href = c.dish.video; link.textContent = T('Дивитись відео →', 'Watch the video →'); link.target = '_blank'; link.rel = 'noopener'; }
+    if (!keepTimer) setTimer(s.timer || 0, s.every || 0); else paintTimer();
+    $('prev').disabled = stepIdx === 0;
+    $('next').textContent = stepIdx === steps.length - 1 ? T('Почати спочатку', 'Start over') : T('Далі', 'Next');
+    document.querySelectorAll('#outline button').forEach(function (b, i) { if (i === stepIdx) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    history.replaceState(null, '', '?' + new URLSearchParams({ dish: c.dish.id, device: c.dev, step: String(stepIdx + 1) }).toString());
+  }
+  function render(keepStep) {
+    var c = cur(), r = c.dish[c.dev], k = c.dev === 'kamado';
+    steps = buildSteps(c.dish, c.dev);
+    if (!keepStep) stepIdx = 0;
+    stepIdx = Math.min(stepIdx, steps.length - 1);
+    document.querySelectorAll('#dishes label').forEach(function (l) { l.textContent = t(DISHES.filter(function (d) { return d.id === l.dataset.dish; })[0].name); });
+    var total = (k ? 10 + r.heat[0] : 20) + r.cook[0] + (r.finish ? r.finish.cook[0] : 0) + c.dish.rest;
+    var total2 = (k ? 15 + r.heat[1] : 25) + r.cook[1] + (r.finish ? r.finish.cook[1] : 0) + c.dish.rest;
+    var facts = [
+      [k ? T('Температура', 'Temperature') : T('Жар', 'Heat'), k ? r.temp[0] + '–' + r.temp[1] + '°C' : heatWord(r.level) + ', ' + T('долоня ', 'palm ') + r.hand + ' ' + T('с', 's'), 'hot'],
+      [T('Спосіб', 'Method'), t(METHOD[r.method])],
+      [T('Готування', 'Cooking'), mins(r.cook) + (r.finish ? ' + ' + mins(r.finish.cook) : '')],
+      [T('Усього з розпалом', 'Total with lighting'), '≈ ' + mins([total, total2])]
+    ];
+    var dl = $('facts'); dl.textContent = '';
+    facts.forEach(function (f) { var d = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = f[0]; dd.textContent = f[1]; if (f[2]) dd.className = f[2]; d.appendChild(dt); d.appendChild(dd); dl.appendChild(d); });
+    var ol = $('outline'); ol.textContent = '';
+    steps.forEach(function (s, i) {
+      var li = document.createElement('li'), b = document.createElement('button'), sp = document.createElement('span');
+      b.type = 'button'; sp.textContent = s.title; b.appendChild(sp);
+      if (s.short) { var sm = document.createElement('small'); sm.textContent = s.short; b.appendChild(sm); }
+      b.addEventListener('click', function () { stepIdx = i; renderStep(); $('scene').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+      li.appendChild(b); ol.appendChild(li);
+    });
+    $('calcPromo').href = '../calculator/?dish=' + c.dish.id + '&device=' + (k ? 'grill' : 'mangal');
+    renderStep(keepStep === 'lang');
+  }
+  $('prev').addEventListener('click', function () { if (stepIdx > 0) { stepIdx--; renderStep(); } });
+  $('next').addEventListener('click', function () {
+    if (stepIdx === steps.length - 1) { stepIdx = 0; C.event('guide-done-' + cur().dish.id, 'Гід: пройдено ' + cur().dish.id); }
+    else stepIdx++;
+    renderStep();
+  });
+  $('pick').addEventListener('change', function () { var c = cur(); C.event('guide-' + c.dish.id + '-' + c.dev, 'Гід: ' + c.dish.id + ' / ' + c.dev); render(false); });
+  $('pick').addEventListener('submit', function (e) { e.preventDefault(); });
+
+  function paint(first) {
+    C.applyDict(DICT);
+    document.title = T('Гід приготування Carbonis', 'Carbonis cooking guide');
+    render(first === true ? true : 'lang');
+  }
+  C.onLang(function () { paint(); });
+  paint(true);
+})();
+</script>
+</body>
+</html>

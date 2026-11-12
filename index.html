@@ -61,7 +61,7 @@ h2{margin:0 0 6px;font:400 clamp(19px,3.6vw,26px)/1.2 var(--f-display);text-tran
 .sub{margin:0 0 16px;color:var(--muted);max-width:60ch}
 .calc{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:20px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:clamp(18px,4vw,32px);text-decoration:none}
 .calc:hover{border-color:var(--green)}
-.calc .num{font:400 clamp(44px,9vw,72px)/1 var(--f-display);color:var(--ember);font-variant-numeric:tabular-nums}
+.calc .num{font:400 clamp(38px,8vw,64px)/1 var(--f-display);color:var(--ember);font-variant-numeric:tabular-nums}
 .calc .num small{font-size:.38em;color:var(--text);margin-left:8px}
 .calc ul{list-style:none;margin:14px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:8px}
 .calc li{padding:7px 12px;border:1px solid var(--line);border-radius:6px;background:var(--raise);font-weight:600;font-size:14px}
@@ -101,6 +101,7 @@ footer .sp{flex:1}
     <p class="lead" data-i18n="lead">Порахуйте, скільки деревного вугілля взяти на пікнік, і пограйте в міні-ігри про шлях вугілля Carbonis від виробництва до вашого гриля.</p>
     <div class="btns">
       <a class="btn" href="calculator/" data-i18n="ctaCalc">Порахувати вугілля</a>
+      <a class="btn ghost" href="guide/" data-i18n="ctaGuide">Як готувати</a>
       <a class="btn ghost" href="game/" data-i18n="ctaGames">Грати</a>
     </div>
   </div>
@@ -119,6 +120,24 @@ footer .sp{flex:1}
       <div>
         <p class="sub" data-i18n="calcPoints">Мангал чи гриль з кришкою, час готування, порада щодо жару і список, що взяти з собою. Розрахунком можна поділитися з друзями.</p>
         <span class="btn cta" data-i18n="ctaOpen">Відкрити калькулятор</span>
+      </div>
+    </a>
+  </section>
+
+  <section aria-labelledby="guideTitle">
+    <h2 id="guideTitle" data-i18n="guideTitle">Гід приготування</h2>
+    <p class="sub" data-i18n="guideSub">Покрокові інструкції для камадо і мангала: від розкладки вугілля до готової страви.</p>
+    <a class="calc" href="guide/">
+      <div>
+        <p class="eyebrow" data-i18n="guideExample">Приклад: стейк на камадо</p>
+        <div class="num">250–300<small>°C</small></div>
+        <ul>
+          <li class="on" data-i18n="gs1">Вугілля</li><li data-i18n="gs2">Розпал</li><li data-i18n="gs3">Температура</li><li data-i18n="gs4">Готування</li><li data-i18n="gs5">Відпочинок</li>
+        </ul>
+      </div>
+      <div>
+        <p class="sub" data-i18n="guidePoints">На кожному кроці анімована схема гриля: де лежить вугілля, як стоять заслінки, куди йде жар. Є таймери з нагадуванням перевернути.</p>
+        <span class="btn cta" data-i18n="ctaGuideOpen">Відкрити гід</span>
       </div>
     </a>
   </section>
@@ -167,6 +186,13 @@ footer .sp{flex:1}
     lead: { uk: 'Порахуйте, скільки деревного вугілля взяти на пікнік, і пограйте в міні-ігри про шлях вугілля Carbonis від виробництва до вашого гриля.', en: 'Work out how much charcoal to bring to your barbecue, then play mini-games about the journey of Carbonis charcoal from the kiln to your grill.' },
     ctaCalc: { uk: 'Порахувати вугілля', en: 'Calculate charcoal' },
     ctaGames: { uk: 'Грати', en: 'Play' },
+    ctaGuide: { uk: 'Як готувати', en: 'How to cook' },
+    guideTitle: { uk: 'Гід приготування', en: 'Cooking guide' },
+    guideSub: { uk: 'Покрокові інструкції для камадо і мангала: від розкладки вугілля до готової страви.', en: 'Step-by-step instructions for kamado and brazier: from laying the charcoal to the finished dish.' },
+    guideExample: { uk: 'Приклад: стейк на камадо', en: 'Example: steak on a kamado' },
+    gs1: { uk: 'Вугілля', en: 'Charcoal' }, gs2: { uk: 'Розпал', en: 'Lighting' }, gs3: { uk: 'Температура', en: 'Temperature' }, gs4: { uk: 'Готування', en: 'Cooking' }, gs5: { uk: 'Відпочинок', en: 'Resting' },
+    guidePoints: { uk: 'На кожному кроці анімована схема гриля: де лежить вугілля, як стоять заслінки, куди йде жар. Є таймери з нагадуванням перевернути.', en: 'Every step has an animated cutaway of the grill: where the charcoal sits, how the vents are set, where the heat goes. Timers remind you when to turn.' },
+    ctaGuideOpen: { uk: 'Відкрити гід', en: 'Open the guide' },
     calcTitle: { uk: 'BBQ-калькулятор', en: 'BBQ calculator' },
     calcSub: { uk: 'Три питання: що готуєте, скільки гостей і на чому. Відповідь у кілограмах і мішках Carbonis.', en: 'Three questions: what you cook, how many guests, and on what. The answer comes in kilograms and Carbonis bags.' },
     calcExample: { uk: 'Приклад: шашлик на 6 людей', en: 'Example: kebabs for 6 people' },

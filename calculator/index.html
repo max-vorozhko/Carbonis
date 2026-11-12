@@ -169,6 +169,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     <p class="tip" id="tip"></p>
     <div class="actions">
       <button type="button" class="btn" id="share" data-i18n="share">Поділитися розрахунком</button>
+      <a class="btn ghost" id="howto" href="../guide/" data-i18n="howto">Як приготувати: кроки</a>
       <a class="btn ghost" id="buy" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="buy">Де купити Carbonis</a>
     </div>
     <p class="toast" id="toast" role="status"></p>
@@ -237,6 +238,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     lightVal: { uk: "20–25 хв до білого попелу", en: "20–25 min until white ash" },
     share: { uk: "Поділитися розрахунком", en: "Share the result" },
     buy: { uk: "Де купити Carbonis", en: "Where to buy Carbonis" },
+    howto: { uk: "Як приготувати: кроки", en: "How to cook it: steps" },
     copied: { uk: "Посилання скопійовано. Надішліть його друзям.", en: "Link copied. Send it to your friends." },
     copyFail: { uk: "Не вдалося скопіювати. Скопіюйте адресу сторінки вручну.", en: "Couldn't copy. Copy the page address manually." },
     checkTitle: { uk: "Що взяти з собою", en: "Packing checklist" },
@@ -376,6 +378,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     document.getElementById("time").textContent = t(s.dish.time);
     document.getElementById("tip").textContent = t(r.device.tip);
     renderChecklist(r, s);
+    document.getElementById("howto").href = "../guide/?dish=" + s.dishId + "&device=" + (s.deviceId === "grill" ? "kamado" : "mangal");
     // Адреса сторінки = поточний розрахунок, щоб ним було легко поділитися
     var q = new URLSearchParams({ dish: s.dishId, people: String(s.people), device: s.deviceId });
     history.replaceState(null, "", "?" + q.toString());
