@@ -153,10 +153,9 @@ td.nm{overflow-wrap:anywhere}
             <div>
               <div class="eyebrow" data-i18n="menuEyebrow">Деревне вугілля · тверді породи</div>
               <h1 data-i18n-html="menuH1">Пригоди <span>Вуглинки</span></h1>
-              <p data-i18n-html="menuP">Вуглинка пройде весь шлях Carbonis: стрибне в мішок на лінії фасування, складе палети у фуру і розпалить гриль. <strong>9 рівнів</strong>, три зміни, зірки за точність.</p>
+              <p data-i18n-html="menuP"><strong>Три гри по три рівні:</strong> фасуй вугілля, складай палети, смаж на грилі.</p>
             </div>
           </div>
-          <div class="feats"><div data-i18n-html="featBag"><b>Мішок</b>Фасуй вуглинки, оминай відсів і березу</div><div data-i18n-html="featTruck"><b>Фура</b>Склади палети за схемою 33*45</div><div data-i18n-html="featGrill"><b>Гриль</b>Розпали смаки на жару Carbonis</div></div>
           <label class="fld" for="playerName"><span data-i18n="nameLabel">Твоє ім'я для рейтингу</span>
             <input id="playerName" type="text" maxlength="20" placeholder="Напр., Оксана" data-i18n-ph="namePh" autocomplete="nickname">
           </label>
@@ -215,7 +214,7 @@ td.nm{overflow-wrap:anywhere}
             <p class="note" id="resNameErr"></p>
           </form>
           <p class="note" id="resBoardNote"></p>
-          <div class="row"><button class="btn" id="btnNext" type="button" data-i18n="next">Далі</button><button class="btn ghost" id="btnAgain" type="button" data-i18n="again">Ще раз</button><button class="btn ghost" id="btnResMap" type="button" data-i18n="levels">Рівні</button></div>
+          <div class="row"><button class="btn" id="btnNext" type="button" data-i18n="next">Далі</button><button class="btn ghost" id="btnShare" type="button" data-i18n="shareRes">Поділитися</button><button class="btn ghost" id="btnAgain" type="button" data-i18n="again">Ще раз</button><button class="btn ghost" id="btnResMap" type="button" data-i18n="levels">Рівні</button></div>
         </div>
       </section>
 
@@ -744,7 +743,7 @@ const DICT={
   pause:{uk:'Пауза',en:'Pause'},
   menuEyebrow:{uk:'Деревне вугілля · тверді породи',en:'Lump charcoal · hardwood'},
   menuH1:{uk:'Пригоди <span>Вуглинки</span>',en:'Coalie’s <span>Adventures</span>'},
-  menuP:{uk:'Вуглинка пройде весь шлях Carbonis: стрибне в мішок на лінії фасування, складе палети у фуру і розпалить гриль. <strong>Три гри по три рівні</strong>, зірки за точність.',en:'Coalie travels the whole Carbonis journey: jumps into a bag on the packing line, stacks pallets into a truck and lights up the grill. <strong>Three games, three levels each</strong>, stars for precision.'},
+  menuP:{uk:'<strong>Три гри по три рівні:</strong> фасуй вугілля, складай палети, смаж на грилі.',en:'<strong>Three games, three levels each:</strong> pack charcoal, stack pallets, grill.'},
   featBag:{uk:'<b>Мішок</b>Фасуй вуглинки, оминай відсів і березу',en:'<b>Bag</b>Pack the coals, dodge fines and birch'},
   featTruck:{uk:'<b>Фура</b>Склади палети за схемою 33*45',en:'<b>Truck</b>Stack pallets to the 33*45 pattern'},
   featGrill:{uk:'<b>Гриль</b>Розпали смаки на жару Carbonis',en:'<b>Grill</b>Ignite flavour on Carbonis heat'},
@@ -764,6 +763,7 @@ const DICT={
   saveBoard:{uk:'Зберегти в рейтинг',en:'Save to leaderboard'},
   next:{uk:'Далі',en:'Next'},
   again:{uk:'Ще раз',en:'Play again'},
+  shareRes:{uk:'Поділитися',en:'Share'},
   levels:{uk:'Рівні',en:'Levels'},
   boardTitle:{uk:'Найгарячіші гравці',en:'The hottest players'},
   table:{uk:'Таблиця',en:'Board'},
@@ -873,6 +873,14 @@ $('#btnMapBack').onclick=()=>show('scrMenu');
 $('#btnStart').onclick=startLevel;
 $('#btnIntroBack').onclick=()=>{renderMap();show('scrMap')};
 $('#btnAgain').onclick=()=>openIntro(curLevel);
+$('#btnShare').onclick=()=>{
+  if(!lastResult)return;const{L,win,score}=lastResult;
+  const text=win
+    ?T(`Я набрав ${score} очок у грі «Пригоди Вуглинки» від Carbonis (рівень ${L.id}: ${tx(L.title)}). Спробуй побити! 🔥`,`I scored ${score} in Coalie’s Adventures by Carbonis (level ${L.id}: ${tx(L.title)}). Try to beat it! 🔥`)
+    :T(`Граю в «Пригоди Вуглинки» від Carbonis. Рівень ${L.id} мене поки переміг. Спробуй і ти! 🔥`,`I’m playing Coalie’s Adventures by Carbonis. Level ${L.id} beat me this time. Give it a try! 🔥`);
+  C.event('game-share','Гра: поділились результатом');
+  C.share({title:'Carbonis BBQ',text,url:C.ROOT+'game/'}).then(r=>{$('#resBoardNote').textContent=C.shareMsg(r)});
+};
 $('#btnNext').onclick=()=>{const n=nextLevel(curLevel);if(n)openIntro(n)};
 $('#btnResMap').onclick=()=>{game=null;renderMap();show('scrMap')};
 function pause(){if(!game||!game.running||paused)return;paused=true;show('scrPause')}

@@ -141,10 +141,38 @@
   addEventListener('appinstalled', () => { const b = document.getElementById('cbInstall'); if (b) b.hidden = true; });
   listeners.push(paintInstall);
 
+  /* ---------- поділитися ---------- */
+  // Системне меню «Поділитися» (месенджери), а де його немає — копіюємо текст із посиланням. Повертає 'shared' | 'copied' | 'failed'.
+  function share(data) {
+    if (navigator.share) return navigator.share(data).then(() => 'shared', () => 'cancelled');
+    const text = [data.text, data.url].filter(Boolean).join(' ');
+    if (navigator.clipboard && navigator.clipboard.writeText) return navigator.clipboard.writeText(text).then(() => 'copied', () => 'failed');
+    return Promise.resolve('failed');
+  }
+  const SHARE_MSG = {
+    copied: { uk: 'Скопійовано. Вставте в месенджер і надішліть друзям.', en: 'Copied. Paste it into a messenger and send to friends.' },
+    failed: { uk: 'Не вдалося поділитися. Скопіюйте адресу сторінки вручну.', en: "Couldn't share. Copy the page address manually." }
+  };
+  const shareMsg = r => (SHARE_MSG[r] ? t(SHARE_MSG[r]) : '');
+
+  /* ---------- малюнки страв (спільні для калькулятора і гіда) ---------- */
+  function foodShape(id) {
+    let g = '';
+    if (id === 'steak') g = '<path d="M-20-2C-18-10 6-12 16-7 24-3 22 5 12 7-2 10-22 8-20-2Z" fill="#a8553f" stroke="#ead3b8" stroke-width="2"/><path d="M-8-5l-4 9M2-6l-4 11M12-5l-4 9" stroke="#5a2a1c" stroke-width="1.6"/>';
+    else if (id === 'shashlik') [-5, 4].forEach(dy => { g += '<path d="M-32 ' + dy + 'H32" stroke="#cfcfcf" stroke-width="1.4"/>'; for (let i = 0; i < 4; i++) g += '<rect x="' + (-24 + i * 12) + '" y="' + (dy - 4) + '" width="10" height="8" rx="2" fill="' + (i % 2 ? '#8a4a2f' : '#a8553f') + '"/>'; });
+    else if (id === 'chicken') [-13, 11].forEach(dx => { g += '<ellipse cx="' + dx + '" cy="0" rx="11" ry="7" fill="#c98a4b"/><path d="M' + (dx + 10) + ' 0h8" stroke="#f1e6d6" stroke-width="3" stroke-linecap="round"/>'; });
+    else if (id === 'ribs') { g = '<rect x="-28" y="-7" width="56" height="13" rx="5" fill="#8a4a2f"/>'; for (let j = 0; j < 6; j++) g += '<path d="M' + (-21 + j * 8.4) + '-6v11" stroke="#ead3b8" stroke-width="2" stroke-linecap="round"/>'; }
+    else if (id === 'fish') g = '<ellipse cx="-3" cy="0" rx="22" ry="7.5" fill="#9fb3c1"/><path d="M18 0l12-7v14Z" fill="#9fb3c1"/><circle cx="-17" cy="-2" r="1.5" fill="#1a1a1a"/><path d="M-6-6l-3 12M2-6l-3 12M10-5l-3 10" stroke="#6f8492" stroke-width="1.3"/>';
+    else if (id === 'sausage') [-6, 1, 8].forEach((dy, i) => { g += '<rect x="' + (-22 + i * 3) + '" y="' + (dy - 3) + '" width="40" height="6" rx="3" fill="#c8603a"/>'; });
+    else g = '<circle cx="-20" cy="0" r="7" fill="#e23b2e"/><ellipse cx="-2" cy="0" rx="9" ry="6" fill="#7fae4a"/><circle cx="16" cy="0" r="6.5" fill="#f2d04b"/><circle cx="29" cy="1" r="5" fill="#d9cdbb"/>';
+    return g;
+  }
+  const foodIcon = id => '<svg viewBox="-36 -14 72 28" aria-hidden="true">' + foodShape(id) + '</svg>';
+
   document.addEventListener('DOMContentLoaded', paintSwitches);
 
   window.Carbonis = {
-    CONFIG, LIVE, ROOT, store, t, applyDict, event, offerInstall, autoOfferInstall: false,
+    CONFIG, LIVE, ROOT, store, t, applyDict, event, offerInstall, autoOfferInstall: false, share, shareMsg, foodShape, foodIcon,
     get lang() { return lang; }, setLang,
     onLang(fn) { listeners.push(fn); },
     siteUrl() { return CONFIG.site[lang] || CONFIG.site.uk; }
