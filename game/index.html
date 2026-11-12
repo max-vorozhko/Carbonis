@@ -3,9 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../assets/icons/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
 <meta name="theme-color" content="#141414">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Carbonis BBQ">
 <title>Пригоди Вуглинки</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +23,7 @@
   --surface:#1e1e1e;   /* cards, stage */
   --raise:#272727;
   --line:#353535;
-  --green:#4cb748;     /* badge green, primary buttons */
+  --green:#56b947;     /* badge green, primary buttons */
   --green-d:#3a9437;
   --text:#ffffff;
   --muted:#a3a3a3;
@@ -65,7 +69,7 @@ p{margin:0;line-height:1.55;color:var(--muted);max-width:62ch}
 p strong{color:var(--text)}
 .row{display:flex;gap:10px;flex-wrap:wrap}
 .btn{appearance:none;border:1px solid var(--green);border-radius:6px;padding:13px 20px;font:600 15px var(--f-body);cursor:pointer;color:#111;background:var(--green);transition:background .15s,transform .08s}
-.btn:hover{background:#5cc957}
+.btn:hover{background:#68cc59}
 .btn:active{transform:translateY(1px)}
 .btn.ghost{background:transparent;color:var(--text);border-color:#ffffff}
 .btn.ghost:hover{background:rgba(255,255,255,.08)}
@@ -114,6 +118,18 @@ select{background:var(--raise);border:1px solid var(--line);color:var(--text);bo
 td.nm{overflow-wrap:anywhere}
 .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding-inline:2px}
 .foot b{color:var(--text);font-weight:600}
+.foot a{color:var(--muted)}
+.logo{text-decoration:none}
+.logo .arrow{font:400 18px var(--f-body);color:var(--muted);margin-right:-4px}
+.lang-switch{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;flex:none}
+.lang-switch button{appearance:none;background:transparent;border:0;color:var(--muted);font:600 12px var(--f-body);padding:8px 9px;cursor:pointer}
+.lang-switch button[aria-pressed="true"]{background:var(--green);color:#000}
+.tabs{display:flex;flex-wrap:wrap;gap:6px}
+.tabs button{appearance:none;border:1px solid var(--line);background:var(--raise);color:var(--text);border-radius:6px;padding:8px 12px;font:600 13px var(--f-body);cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--green);border-color:var(--green);color:#000}
+@media (max-width:520px){.logo>span:not(.arrow){display:none}}
+@media (max-width:420px){.icon-btn{padding:0 8px}.bar{gap:6px}}
+#btnSnd[aria-pressed="false"]{color:var(--muted);border-color:var(--line);text-decoration:line-through}
 @media (prefers-reduced-motion:reduce){.btn{transition:none}}
 </style>
 
@@ -121,10 +137,11 @@ td.nm{overflow-wrap:anywhere}
 <body>
 <div id="app">
   <div class="bar">
-    <div class="logo"><img id="logoImg" src="data:image/png;base64,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" alt="" width="40" height="40"><span>CARBONIS</span><small>game</small></div>
+    <a class="logo" href="../" id="homeLink"><span class="arrow">←</span><img id="logoImg" src="../assets/icons/badge.svg" alt="" width="40" height="40"><span>CARBONIS</span><small>game</small></a>
     <div class="sp"></div>
-    <button class="icon-btn" id="btnSnd" type="button" aria-label="Звук">Звук: так</button>
-    <button class="icon-btn" id="btnPause" type="button" aria-label="Пауза" hidden>Пауза</button>
+    <div class="lang-switch" data-lang-switch></div>
+    <button class="icon-btn" id="btnSnd" type="button">Звук: так</button>
+    <button class="icon-btn" id="btnPause" type="button" hidden data-i18n="pause">Пауза</button>
   </div>
   <div id="stage">
     <div id="hud"></div>
@@ -135,18 +152,18 @@ td.nm{overflow-wrap:anywhere}
           <div class="menu-top">
             <canvas id="heroCv" width="300" height="300"></canvas>
             <div>
-              <div class="eyebrow">Деревне вугілля · тверді породи</div>
-              <h1>Пригоди <span>Вуглинки</span></h1>
-              <p>Вуглинка пройде весь шлях Carbonis: стрибне в мішок на лінії фасування, складе палети у фуру і розпалить гриль. <strong>9 рівнів</strong>, три зміни, зірки за точність.</p>
+              <div class="eyebrow" data-i18n="menuEyebrow">Деревне вугілля · тверді породи</div>
+              <h1 data-i18n-html="menuH1">Пригоди <span>Вуглинки</span></h1>
+              <p data-i18n-html="menuP">Вуглинка пройде весь шлях Carbonis: стрибне в мішок на лінії фасування, складе палети у фуру і розпалить гриль. <strong>9 рівнів</strong>, три зміни, зірки за точність.</p>
             </div>
           </div>
-          <div class="feats"><div><b>Мішок</b>Фасуй вуглинки, оминай відсів і березу</div><div><b>Фура</b>Склади палети за схемою 33*45</div><div><b>Гриль</b>Розпали смаки на жару Carbonis</div></div>
-          <label class="fld" for="playerName">Твоє ім'я для рейтингу
-            <input id="playerName" type="text" maxlength="20" placeholder="Напр., Оксана з логістики" autocomplete="nickname">
+          <div class="feats"><div data-i18n-html="featBag"><b>Мішок</b>Фасуй вуглинки, оминай відсів і березу</div><div data-i18n-html="featTruck"><b>Фура</b>Склади палети за схемою 33*45</div><div data-i18n-html="featGrill"><b>Гриль</b>Розпали смаки на жару Carbonis</div></div>
+          <label class="fld" for="playerName"><span data-i18n="nameLabel">Твоє ім'я для рейтингу</span>
+            <input id="playerName" type="text" maxlength="20" placeholder="Напр., Оксана" data-i18n-ph="namePh" autocomplete="nickname">
           </label>
           <div class="row">
-            <button class="btn big" id="btnPlay" type="button">Грати</button>
-            <button class="btn ghost" id="btnBoard" type="button">Рейтинг</button>
+            <button class="btn big" id="btnPlay" type="button" data-i18n="play">Грати</button>
+            <button class="btn ghost" id="btnBoard" type="button" data-i18n="board">Рейтинг</button>
           </div>
         </div>
       </section>
@@ -155,13 +172,14 @@ td.nm{overflow-wrap:anywhere}
         <div class="card">
           <div class="row" style="align-items:flex-end;justify-content:space-between">
             <div style="display:flex;flex-direction:column;gap:6px">
-              <div class="eyebrow">Обери рівень</div>
-              <h2>Зміни Вуглинки</h2>
+              <div class="eyebrow" data-i18n="chooseLevel">Обери рівень</div>
+              <h2 id="mapTitle">Зміни Вуглинки</h2>
             </div>
-            <div><div class="eyebrow">Загальний рахунок</div><div id="mapTotal" class="big-score" style="font-size:26px">0</div></div>
+            <div><div class="eyebrow" data-i18n="totalScore">Загальний рахунок</div><div id="mapTotal" class="big-score" style="font-size:26px">0</div></div>
           </div>
+          <div class="tabs" id="modeTabs" role="group"></div>
           <div class="grid" id="lvlGrid"></div>
-          <div class="row"><button class="btn ghost" id="btnMapBack" type="button">Меню</button><button class="btn ghost" id="btnMapBoard" type="button">Рейтинг</button></div>
+          <div class="row"><button class="btn ghost" id="btnMapBack" type="button" data-i18n="menu">Меню</button><button class="btn ghost" id="btnMapBoard" type="button" data-i18n="board">Рейтинг</button></div>
         </div>
       </section>
 
@@ -171,15 +189,15 @@ td.nm{overflow-wrap:anywhere}
           <h2 id="inTitle"></h2>
           <div class="goal" id="inGoal"></div>
           <div class="tip"><canvas id="tipCv" width="128" height="128"></canvas><p id="inTip"></p></div>
-          <div class="row"><button class="btn big" id="btnStart" type="button">Старт</button><button class="btn ghost" id="btnIntroBack" type="button">До рівнів</button></div>
+          <div class="row"><button class="btn big" id="btnStart" type="button" data-i18n="start">Старт</button><button class="btn ghost" id="btnIntroBack" type="button" data-i18n="toLevels">До рівнів</button></div>
         </div>
       </section>
 
       <section class="screen" id="scrPause" hidden>
         <div class="card" style="max-width:380px">
-          <h2>Пауза</h2>
-          <p>Вуглинка тримає жар. Повертайся, коли будеш готовий.</p>
-          <div class="row"><button class="btn" id="btnResume" type="button">Продовжити</button><button class="btn ghost" id="btnRestart" type="button">Заново</button><button class="btn ghost" id="btnQuit" type="button">До рівнів</button></div>
+          <h2 data-i18n="pause">Пауза</h2>
+          <p data-i18n="pauseTxt">Вуглинка тримає жар. Повертайся, коли будеш готовий.</p>
+          <div class="row"><button class="btn" id="btnResume" type="button" data-i18n="resume">Продовжити</button><button class="btn ghost" id="btnRestart" type="button" data-i18n="restart">Заново</button><button class="btn ghost" id="btnQuit" type="button" data-i18n="toLevels">До рівнів</button></div>
         </div>
       </section>
 
@@ -191,37 +209,40 @@ td.nm{overflow-wrap:anywhere}
           <div class="big-score" id="resScore">0</div>
           <p id="resNote"></p>
           <form id="resNameForm" class="namebox" hidden>
-            <label class="fld" for="resNameIn">Впиши ім'я, щоб потрапити в рейтинг
-              <input id="resNameIn" type="text" maxlength="20" placeholder="Напр., Оксана з логістики" autocomplete="nickname">
+            <label class="fld" for="resNameIn"><span data-i18n="resNameLabel">Впиши ім'я, щоб потрапити в рейтинг</span>
+              <input id="resNameIn" type="text" maxlength="20" placeholder="Напр., Оксана" data-i18n-ph="namePh" autocomplete="nickname">
             </label>
-            <div class="row"><button class="btn" type="submit">Зберегти в рейтинг</button></div>
+            <div class="row"><button class="btn" type="submit" data-i18n="saveBoard">Зберегти в рейтинг</button></div>
             <p class="note" id="resNameErr"></p>
           </form>
           <p class="note" id="resBoardNote"></p>
-          <div class="row"><button class="btn" id="btnNext" type="button">Далі</button><button class="btn ghost" id="btnAgain" type="button">Ще раз</button><button class="btn ghost" id="btnResMap" type="button">Рівні</button></div>
+          <div class="row"><button class="btn" id="btnNext" type="button" data-i18n="next">Далі</button><button class="btn ghost" id="btnAgain" type="button" data-i18n="again">Ще раз</button><button class="btn ghost" id="btnResMap" type="button" data-i18n="levels">Рівні</button></div>
         </div>
       </section>
 
       <section class="screen" id="scrBoard" hidden>
         <div class="card" style="max-width:460px">
-          <div class="eyebrow">Рейтинг</div>
-          <h2>Найгарячіші гравці</h2>
-          <label class="fld" for="boardScope">Таблиця
+          <div class="eyebrow" data-i18n="board">Рейтинг</div>
+          <h2 data-i18n="boardTitle">Найгарячіші гравці</h2>
+          <label class="fld" for="boardScope"><span data-i18n="table">Таблиця</span>
             <select id="boardScope"></select>
           </label>
-          <table><thead><tr><th>#</th><th>Гравець</th><th id="boardCol">Очки</th></tr></thead><tbody id="boardBody"></tbody></table>
+          <table><thead><tr><th>#</th><th data-i18n="player">Гравець</th><th id="boardCol">Очки</th></tr></thead><tbody id="boardBody"></tbody></table>
           <p class="note" id="boardNote"></p>
-          <div class="row"><button class="btn ghost" id="btnBoardBack" type="button">Назад</button></div>
+          <div class="row"><button class="btn ghost" id="btnBoardBack" type="button" data-i18n="back">Назад</button></div>
         </div>
       </section>
     </div>
   </div>
-  <div class="foot"><span>© Carbonis charcoal group</span><span>Powered by <b>Max Vorozhko</b></span></div>
+  <div class="foot"><span>© Carbonis charcoal group · <a href="../calculator/" data-i18n="calcLink">BBQ-калькулятор</a></span><span>Powered by <b>Max Vorozhko</b></span></div>
 </div>
 
+<script src="../js/common.js"></script>
 <script>
 (()=>{
 'use strict';
+const C=window.Carbonis,T=(uk,en)=>C.lang==='en'?en:uk,tx=o=>o&&typeof o==='object'?(o[C.lang]!=null?o[C.lang]:o.uk):o;
+const num=(v,d)=>{const t=v.toFixed(d);return C.lang==='en'?t:t.replace('.',',')};
 const $=s=>document.querySelector(s);
 const R=Math.random, clamp=(v,a,b)=>Math.max(a,Math.min(b,v)), lerp=(a,b,t)=>a+(b-a)*t;
 const reduceMotion=matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -300,7 +321,7 @@ const Snd={ctx:null,on:store.get('snd',true),
   sizzle(){this.tone(1400,.12,'square',.02,-900)}
 };
 const sndBtn=$('#btnSnd');
-const paintSnd=()=>sndBtn.textContent='Звук: '+(Snd.on?'так':'ні');paintSnd();
+const paintSnd=()=>{sndBtn.textContent=T('Звук','Sound');sndBtn.setAttribute('aria-pressed',String(Snd.on));sndBtn.title=Snd.on?T('Вимкнути звук','Mute'):T('Увімкнути звук','Unmute')};paintSnd();
 sndBtn.onclick=()=>{Snd.on=!Snd.on;store.set('snd',Snd.on);paintSnd();Snd.init()};
 
 /* ---------- canvas ---------- */
@@ -379,62 +400,63 @@ function drawP(c){for(const p of P){const a=1-p.t/p.life;
 
 /* ---------- levels ---------- */
 const FOODS={
-  sausage:{name:'Ковбаска',cook:4.2},
-  corn:{name:'Кукурудза',cook:5.5},
-  steak:{name:'Стейк',cook:5},
-  pepper:{name:'Перець',cook:3.4},
-  mushroom:{name:'Печериці',cook:3},
-  skewer:{name:'Шашлик',cook:6.5}
+  sausage:{name:{uk:'Ковбаска',en:'Sausage'},cook:4.2},
+  corn:{name:{uk:'Кукурудза',en:'Corn'},cook:5.5},
+  steak:{name:{uk:'Стейк',en:'Steak'},cook:5},
+  pepper:{name:{uk:'Перець',en:'Pepper'},cook:3.4},
+  mushroom:{name:{uk:'Печериці',en:'Mushrooms'},cook:3},
+  skewer:{name:{uk:'Шашлик',en:'Skewer'},cook:6.5}
 };
+// Тексти рівнів UA/EN. Назви клієнтів не згадуємо: лише країни й вимоги до продукту.
 const LEVELS=[
-  {id:1,mode:'bag',title:'Перший мішок',sub:'Мішок 4 кг · середня фракція 20–50 мм',bagKg:4,kgPer:.25,time:45,speed:120,rate:.8,
-   mix:{coal:80,dust:12,stone:8},tip:'Привіт! Я Вуглинка. Лови моїх друзів у мішок, а відсів і каміння пропускай повз.'},
-  {id:2,mode:'truck',title:'Тент на Нідерланди',sub:'Мішки 10 кг · схема 33*42',layers:14,pallets:2,speed:150,inc:5,perLayer:3,ceil:'2,7 м',truck:'тент',
-   tip:'Я їду на шарі мішків. Тисни, коли шар точно над палетою. 3 мішки в шарі × 14 шарів = 42 на палету.'},
-  {id:3,mode:'grill',title:'Перший мангал',sub:'Ковбаски і кукурудза',foods:['sausage','corn'],slots:4,goal:4,time:90,heat:false,orderSize:2,maxOrders:2,patience:34,orderEvery:5,
-   tip:'Я вже розпалився! Клади їжу на решітку, перевертай, коли кільце в зеленій зоні, і віддавай клієнту.'},
-  {id:4,mode:'bag',title:'Замовлення ECHT',sub:'10 кг · мікс твердих порід без берези',bagKg:10,kgPer:.5,time:50,speed:160,rate:.62,
-   mix:{coal:64,dust:8,birch:15,drop:7,gold:4,stone:2},tip:'Для ECHT тільки тверді породи. Береза дає запах дьогтю, тож її не ловимо. Краплі води теж: вологість має бути ≤ 8%.'},
-  {id:5,mode:'truck',title:'Мега для Charcoaltrade',sub:'Мішки 10 кг · схема 33*45',layers:15,pallets:3,speed:195,inc:7,perLayer:3,ceil:'2,85 м',truck:'мега',
-   tip:'Мега вища, тому 15 шарів. Швидкість росте з кожним шаром. Ідеальні попадання дають комбо.'},
-  {id:6,mode:'grill',title:'Вечір на терасі',sub:'Жар треба тримати самому',foods:['sausage','corn','steak','pepper'],slots:6,goal:6,time:110,heat:true,decay:.03,orderSize:3,maxOrders:3,patience:38,orderEvery:5,
-   tip:'Тепер я згасаю сам. Тримай жар у зеленій зоні кнопкою «Підкинути вугілля». Перегрієш — усе згорить швидше.'},
-  {id:7,mode:'bag',title:'Ресторанна фракція',sub:'10 кг · 40–150 мм для HoReCa',bagKg:10,kgPer:.5,time:50,speed:200,rate:.5,wind:true,
-   mix:{coal:57,dust:12,xxl:10,drop:7,stone:6,gold:5,birch:3},tip:'На складі протяг. Великі XXL-шматки не ловимо: вони дають недопал. Оптимум 40–150 мм.'},
-  {id:8,mode:'truck',title:'Реф для Esschert',sub:'Oak 10 кг · схема 33*36',layers:12,pallets:3,speed:230,inc:9,perLayer:3,ceil:'2,23 м',truck:'реф',wobble:true,
-   tip:'У рефі низька стеля, тільки 12 шарів. Шар їздить нерівно, тож лови момент.'},
-  {id:9,mode:'grill',title:'Майстер гриля',sub:'Повне меню, черга клієнтів',foods:['sausage','corn','steak','pepper','mushroom','skewer'],slots:6,goal:8,time:120,heat:true,decay:.045,orderSize:3,maxOrders:3,patience:30,orderEvery:4,
-   tip:'Фінал! Шість страв і черга гостей. Покажи, що Carbonis горить рівно і довго.'}
+  {id:1,mode:'bag',title:{uk:'Перший мішок',en:'First bag'},sub:{uk:'Мішок 4 кг · середня фракція 20–50 мм',en:'4 kg bag · medium size 20–50 mm'},bagKg:4,kgPer:.25,time:45,speed:120,rate:.8,
+   mix:{coal:80,dust:12,stone:8},tip:{uk:'Привіт! Я Вуглинка. Лови моїх друзів у мішок, а відсів і каміння пропускай повз.',en:"Hi! I'm Coalie. Catch my friends in the bag and let the fines and stones fall past."}},
+  {id:2,mode:'truck',title:{uk:'Тент на Нідерланди',en:'Curtainsider to the Netherlands'},sub:{uk:'Мішки 10 кг · схема 33*42',en:'10 kg bags · pattern 33*42'},scheme:'33*42',layers:14,pallets:2,speed:150,inc:5,perLayer:3,ceil:{uk:'2,7 м',en:'2.7 m'},truck:{uk:'тент',en:'curtainsider'},
+   tip:{uk:'Я їду на шарі мішків. Тисни, коли шар точно над палетою. 3 мішки в шарі × 14 шарів = 42 на палету.',en:"I ride on a layer of bags. Tap when the layer is right above the pallet. 3 bags per layer × 14 layers = 42 per pallet."}},
+  {id:3,mode:'grill',title:{uk:'Перший мангал',en:'First barbecue'},sub:{uk:'Ковбаски і кукурудза',en:'Sausages and corn'},foods:['sausage','corn'],slots:4,goal:4,time:90,heat:false,orderSize:2,maxOrders:2,patience:34,orderEvery:5,
+   tip:{uk:'Я вже розпалився! Клади їжу на решітку, перевертай, коли кільце в зеленій зоні, і віддавай клієнту.',en:"I'm all fired up! Put food on the grate, flip it when the ring is in the green zone, then serve it."}},
+  {id:4,mode:'bag',title:{uk:'Замовлення для Нідерландів',en:'Order for the Netherlands'},sub:{uk:'10 кг · мікс твердих порід без берези',en:'10 kg · hardwood mix, no birch'},bagKg:10,kgPer:.5,time:50,speed:160,rate:.62,
+   mix:{coal:64,dust:8,birch:15,drop:7,gold:4,stone:2},tip:{uk:'Клієнт із Нідерландів бере тільки тверді породи. Береза дає запах дьогтю, тож її не ловимо. Краплі води теж: вологість має бути ≤ 8%.',en:'Our client in the Netherlands takes hardwood only. Birch smells of tar, so skip it. Skip water drops too: moisture must stay ≤ 8%.'}},
+  {id:5,mode:'truck',title:{uk:'Мега на Німеччину',en:'Mega truck to Germany'},sub:{uk:'Мішки 10 кг · схема 33*45',en:'10 kg bags · pattern 33*45'},scheme:'33*45',layers:15,pallets:3,speed:195,inc:7,perLayer:3,ceil:{uk:'2,85 м',en:'2.85 m'},truck:{uk:'мега',en:'mega trailer'},
+   tip:{uk:'Мега вища, тому 15 шарів. Швидкість росте з кожним шаром. Ідеальні попадання дають комбо.',en:'A mega trailer is taller, so 15 layers. Speed grows with every layer. Perfect drops build a combo.'}},
+  {id:6,mode:'grill',title:{uk:'Вечір на терасі',en:'Evening on the terrace'},sub:{uk:'Жар треба тримати самому',en:'Keep the heat up yourself'},foods:['sausage','corn','steak','pepper'],slots:6,goal:6,time:110,heat:true,decay:.03,orderSize:3,maxOrders:3,patience:38,orderEvery:5,
+   tip:{uk:'Тепер я згасаю сам. Тримай жар у зеленій зоні кнопкою «Підкинути вугілля». Перегрієш — усе згорить швидше.',en:'Now I cool down on my own. Keep the heat in the green zone with "Add charcoal". Overheat and everything burns faster.'}},
+  {id:7,mode:'bag',title:{uk:'Ресторанна фракція',en:'Restaurant grade'},sub:{uk:'10 кг · 40–150 мм для HoReCa',en:'10 kg · 40–150 mm for HoReCa'},bagKg:10,kgPer:.5,time:50,speed:200,rate:.5,wind:true,
+   mix:{coal:57,dust:12,xxl:10,drop:7,stone:6,gold:5,birch:3},tip:{uk:'На складі протяг. Великі XXL-шматки не ловимо: вони дають недопал. Оптимум 40–150 мм.',en:"There's a draught in the warehouse. Skip the huge XXL chunks: they don't carbonise fully. 40–150 mm is ideal."}},
+  {id:8,mode:'truck',title:{uk:'Реф для Бельгії',en:'Reefer to Belgium'},sub:{uk:'Дуб 10 кг · схема 33*36',en:'Oak 10 kg · pattern 33*36'},scheme:'33*36',layers:12,pallets:3,speed:230,inc:9,perLayer:3,ceil:{uk:'2,23 м',en:'2.23 m'},truck:{uk:'реф',en:'reefer'},wobble:true,
+   tip:{uk:'У рефі низька стеля, тільки 12 шарів. Шар їздить нерівно, тож лови момент.',en:'A reefer has a low roof: only 12 layers. The layer moves unevenly, so time it well.'}},
+  {id:9,mode:'grill',title:{uk:'Майстер гриля',en:'Grill master'},sub:{uk:'Повне меню, черга клієнтів',en:'Full menu, a queue of guests'},foods:['sausage','corn','steak','pepper','mushroom','skewer'],slots:6,goal:8,time:120,heat:true,decay:.045,orderSize:3,maxOrders:3,patience:30,orderEvery:4,
+   tip:{uk:'Фінал! Шість страв і черга гостей. Покажи, що Carbonis горить рівно і довго.',en:'The finale! Six dishes and a queue of guests. Show that Carbonis burns evenly and long.'}}
 ];
-const MODE_LABEL={bag:'Мішок',truck:'Фура',grill:'Гриль'};
+const MODE_LABEL={bag:{uk:'Мішок',en:'Bag'},truck:{uk:'Фура',en:'Truck'},grill:{uk:'Гриль',en:'Grill'}};
 
 /* ---------- HUD ---------- */
 const hudEl=$('#hud');let hudCache='';
 function hud(g){
   const L=g.L;const lives=[0,1,2].map(i=>`<span class="${i<g.lives?'':'off'}"></span>`).join('');
   const tm=Math.max(0,Math.ceil(g.time));
-  const html=`<span class="tag">${L.id}·${MODE_LABEL[L.mode]}</span><span class="ttl">${L.title}</span>`+
-    `<span class="stat"><em>${g.goalLabel}</em>${g.goalText()}</span>`+
-    (L.time?`<span class="stat"><em>час</em>${Math.floor(tm/60)}:${String(tm%60).padStart(2,'0')}</span>`:'')+
-    `<span class="stat"><em>очки</em>${g.score}</span><span class="lives">${lives}</span>`;
+  const html=`<span class="tag">${L.id}·${tx(MODE_LABEL[L.mode])}</span><span class="ttl">${tx(L.title)}</span>`+
+    `<span class="stat"><em>${tx(g.goalLabel)}</em>${g.goalText()}</span>`+
+    (L.time?`<span class="stat"><em>${T('час','time')}</em>${Math.floor(tm/60)}:${String(tm%60).padStart(2,'0')}</span>`:'')+
+    `<span class="stat"><em>${T('очки','score')}</em>${g.score}</span><span class="lives">${lives}</span>`;
   if(html!==hudCache){hudEl.innerHTML=html;hudCache=html}
 }
-function hudIdle(){const h=`<span class="tag">Carbonis</span><span class="ttl">Пригоди Вуглинки</span><span class="stat"><em>рахунок</em>${total()}</span>`;if(h!==hudCache){hudEl.innerHTML=h;hudCache=h}}
+function hudIdle(){const h=`<span class="tag">Carbonis</span><span class="ttl">${T('Пригоди Вуглинки','Coalie’s Adventures')}</span><span class="stat"><em>${T('рахунок','total')}</em>${total()}</span>`;if(h!==hudCache){hudEl.innerHTML=h;hudCache=h}}
 
 /* ---------- base game ---------- */
 function base(L){
   return {L,score:0,lives:3,combo:0,t:0,time:L.time||0,running:true,say:null,sayT:0,
     talk(txt,d=2.4){this.say=txt;this.sayT=d},
     addScore(n,x,y,col){this.score=Math.max(0,this.score+n);if(x!=null)floatTxt((n>0?'+':'')+n,x,y,col||(n>0?'#ffb43c':'#ff5a4a'))},
-    hurt(txt,x,y){this.lives--;this.combo=0;shake(9);Snd.bad();floatTxt(txt,x,y,'#ff5a4a');this.talk(txt,2);if(this.lives<=0)endLevel(false,'Закінчились спроби. Вуглинка вірить у тебе!')},
-    tick(dt){this.t+=dt;if(this.sayT>0)this.sayT-=dt;if(this.L.time){this.time-=dt;if(this.time<=0&&this.running){this.time=0;endLevel(false,'Час вийшов. Спробуй ще раз, швидше!')}}}
+    hurt(txt,x,y){this.lives--;this.combo=0;shake(9);Snd.bad();floatTxt(txt,x,y,'#ff5a4a');this.talk(txt,2);if(this.lives<=0)endLevel(false,T('Закінчились спроби. Вуглинка вірить у тебе!','Out of tries. Coalie believes in you!'))},
+    tick(dt){this.t+=dt;if(this.sayT>0)this.sayT-=dt;if(this.L.time){this.time-=dt;if(this.time<=0&&this.running){this.time=0;endLevel(false,T('Час вийшов. Спробуй ще раз, швидше!','Time is up. Try again, a bit faster!'))}}}
   };
 }
 
 /* ---------- mode 1: bag ---------- */
 function BagMode(L){
-  const g=base(L);g.goalLabel='мішок';g.kg=0;g.items=[];g.spawnT=.4;g.bagX=W/2;g.targetX=W/2;g.keys={};g.lost=0;
-  g.goalText=()=>`${g.kg.toFixed(g.kg%1?2:0).replace('.',',')}/${L.bagKg} кг`;
+  const g=base(L);g.goalLabel={uk:'мішок',en:'bag'};g.kg=0;g.items=[];g.spawnT=.4;g.bagX=W/2;g.targetX=W/2;g.keys={};g.lost=0;
+  g.goalText=()=>`${num(g.kg,g.kg%1?2:0)}/${L.bagKg} ${T('кг','kg')}`;
   const geo=()=>{const bw=clamp(W*.22,78,124);return{bw,bh:bw*1.1,by:H-bw*1.1-12}};
   const sizes={coal:[15,20],dust:[6,8],stone:[13,15],drop:[11,13],gold:[17,19],birch:[16,20],xxl:[30,34]};
   function spawn(){
@@ -450,13 +472,13 @@ function BagMode(L){
   function caught(it){
     const {by}=geo();const x=it.x,y=by-10;
     switch(it.type){
-      case 'coal':g.kg+=L.kgPer;g.combo++;g.addScore(10*(1+Math.floor(g.combo/5)),x,y);Snd.good();sparks(x,by,8);if(g.combo%10===0){g.talk(`Комбо ×${g.combo}! Отак фасують у Carbonis!`);Snd.perfect()}break;
-      case 'gold':g.kg+=L.kgPer*2;g.combo++;g.addScore(50,x,y,'#ffe08a');Snd.perfect();sparks(x,by,18,'#ffe08a');g.talk('Золота вуглинка! Cfix 80%, найвища якість.');break;
-      case 'dust':g.combo=0;g.addScore(-5,x,y);Snd.tap();floatTxt('відсів 0–20 мм',x,y-22,'#ab9c8c');g.talk('Це відсів, йому не місце в мішку.',1.8);break;
-      case 'xxl':g.hurt('XXL → недопал!',x,y);break;
-      case 'birch':g.hurt('Береза! ECHT не прийме',x,y);break;
-      case 'drop':g.hurt('Вологість > 8%!',x,y);break;
-      case 'stone':g.hurt('Камінь у мішку!',x,y);break;
+      case 'coal':g.kg+=L.kgPer;g.combo++;g.addScore(10*(1+Math.floor(g.combo/5)),x,y);Snd.good();sparks(x,by,8);if(g.combo%10===0){g.talk(T(`Комбо ×${g.combo}! Отак фасують у Carbonis!`,`Combo ×${g.combo}! That's how Carbonis packs!`));Snd.perfect()}break;
+      case 'gold':g.kg+=L.kgPer*2;g.combo++;g.addScore(50,x,y,'#ffe08a');Snd.perfect();sparks(x,by,18,'#ffe08a');g.talk(T('Золота вуглинка! Cfix 80%, найвища якість.','A golden coal! 80% fixed carbon, top quality.'));break;
+      case 'dust':g.combo=0;g.addScore(-5,x,y);Snd.tap();floatTxt(T('відсів 0–20 мм','fines 0–20 mm'),x,y-22,'#ab9c8c');g.talk(T('Це відсів, йому не місце в мішку.','Those are fines, they don’t belong in the bag.'),1.8);break;
+      case 'xxl':g.hurt(T('XXL → недопал!','XXL → not fully burnt!'),x,y);break;
+      case 'birch':g.hurt(T('Береза! Клієнт не прийме','Birch! The client won’t accept it'),x,y);break;
+      case 'drop':g.hurt(T('Вологість > 8%!','Moisture > 8%!'),x,y);break;
+      case 'stone':g.hurt(T('Камінь у мішку!','A stone in the bag!'),x,y);break;
     }
     if(g.kg>=L.bagKg-1e-6&&g.running){g.kg=L.bagKg;endLevel(true)}
   }
@@ -472,7 +494,7 @@ function BagMode(L){
       it.vy+=90*dt;it.x+=(it.vx+wind)*dt;it.y+=it.vy*dt;it.rot+=it.vr*dt;
       if(it.x<it.r){it.x=it.r;it.vx=Math.abs(it.vx)}if(it.x>W-it.r){it.x=W-it.r;it.vx=-Math.abs(it.vx)}
       if(it.y>=by-4&&it.y<=by+18&&Math.abs(it.x-g.bagX)<bw/2-it.r*.25){g.items.splice(i,1);caught(it);continue}
-      if(it.y>H+40){g.items.splice(i,1);if(it.type==='coal'||it.type==='gold'){g.combo=0;g.lost++;if(g.lost%6===1)g.talk('Ой, загубили друга! Лови уважніше.',1.6)}}
+      if(it.y>H+40){g.items.splice(i,1);if(it.type==='coal'||it.type==='gold'){g.combo=0;g.lost++;if(g.lost%6===1)g.talk(T('Ой, загубили друга! Лови уважніше.','Oops, we lost a friend! Catch more carefully.'),1.6)}}
     }
   };
   g.draw=c=>{
@@ -481,10 +503,10 @@ function BagMode(L){
     const bg=c.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#2a231c');bg.addColorStop(1,'#1a1612');c.fillStyle=bg;c.fillRect(0,0,W,H);
     c.strokeStyle='rgba(255,255,255,.03)';c.lineWidth=1;for(let y=40;y<H;y+=34){c.beginPath();c.moveTo(0,y);c.lineTo(W,y);c.stroke()}
     // chute
-    c.fillStyle='#120f0c';c.fillRect(0,0,W,30);c.fillStyle='#4cb748';c.fillRect(0,30,W,3);
+    c.fillStyle='#120f0c';c.fillRect(0,0,W,30);c.fillStyle='#56b947';c.fillRect(0,30,W,3);
     c.fillStyle='rgba(255,180,60,.18)';for(let x=(-g.t*60)%40;x<W;x+=40){c.fillRect(x,8,18,14)}
-    c.fillStyle='#ab9c8c';fitText(c,'ЛІНІЯ ФАСУВАННЯ',72,50,W-82,10);fitText(c,L.sub,72,64,W-82,11,'600','"Golos Text", system-ui, sans-serif');
-    if(L.wind&&Math.abs(g.wind)>15){c.fillStyle='#ffb43c';fitText(c,'протяг '+(g.wind>0?'→':'←'),W-90,84,80,11,'700','"Golos Text", system-ui, sans-serif')}
+    c.fillStyle='#ab9c8c';fitText(c,T('ЛІНІЯ ФАСУВАННЯ','PACKING LINE'),72,50,W-82,10);fitText(c,tx(L.sub),72,64,W-82,11,'600','"Golos Text", system-ui, sans-serif');
+    if(L.wind&&Math.abs(g.wind)>15){c.fillStyle='#ffb43c';fitText(c,T('протяг ','draught ')+(g.wind>0?'→':'←'),W-90,84,80,11,'700','"Golos Text", system-ui, sans-serif')}
     // floor
     c.fillStyle='#120f0c';c.fillRect(0,H-14,W,14);
     // items
@@ -506,22 +528,22 @@ function BagMode(L){
     const lw=bw*.8,lh=bh*.58,ly=bh*.18;c.fillStyle='#161616';rr(c,-lw/2,ly,lw,lh,6);c.fill();
     const bs=lh*.42;if(LOGO.complete&&LOGO.naturalWidth)c.drawImage(LOGO,-bs/2,ly+4,bs,bs);
     c.fillStyle='#fff';c.textAlign='center';fitText(c,'CARBONIS',0,ly+bs+15,lw-8,Math.round(bw*.1),'300','Unbounded, system-ui, sans-serif');
-    c.fillStyle='#161616';c.font=`700 ${Math.round(bw*.13)}px "Golos Text", system-ui, sans-serif`;c.fillText(L.bagKg+' кг',0,ly+lh+Math.round(bw*.15));
-    c.fillStyle='#353535';rr(c,-lw/2+6,ly+lh-9,lw-12,5,2.5);c.fill();c.fillStyle='#4cb748';rr(c,-lw/2+6,ly+lh-9,(lw-12)*fill,5,2.5);c.fill();
+    c.fillStyle='#161616';c.font=`700 ${Math.round(bw*.13)}px "Golos Text", system-ui, sans-serif`;c.fillText(L.bagKg+T(' кг',' kg'),0,ly+lh+Math.round(bw*.15));
+    c.fillStyle='#353535';rr(c,-lw/2+6,ly+lh-9,lw-12,5,2.5);c.fill();c.fillStyle='#56b947';rr(c,-lw/2+6,ly+lh-9,(lw-12)*fill,5,2.5);c.fill();
     c.textAlign='left';c.restore();
     // hero
     const hx=36,hy=100;drawCoal(c,hx,hy,22,{hero:1,seed:7,t:g.t,glow:.7,mood:g.sayT>0&&/!/.test(g.say||'')&&g.lives<3?'wow':'happy',lookX:clamp((g.bagX-hx)/W*2,-1,1),lookY:1});
     if(g.sayT>0&&g.say)bubble(c,hx+28,hy-30,g.say,Math.min(240,W-90));
   };
   g.stars=()=>g.lives;
-  g.talk('Тягни мішок пальцем або стрілками ← →',2.6);
+  g.talk(T('Тягни мішок пальцем або стрілками ← →','Drag the bag with your finger or the ← → keys'),2.6);
   return g;
 }
 
 /* ---------- mode 2: truck ---------- */
 function TruckMode(L){
-  const g=base(L);g.goalLabel='палети';g.p=0;g.stack=[];g.phase='stack';g.phaseT=0;g.perfects=0;g.placed=0;g.falls=[];g.dir=1;g.drop=null;
-  g.goalText=()=>`${g.p}/${L.pallets} · шар ${g.stack.length}/${L.layers}`;
+  const g=base(L);g.goalLabel={uk:'палети',en:'pallets'};g.p=0;g.stack=[];g.phase='stack';g.phaseT=0;g.perfects=0;g.placed=0;g.falls=[];g.dir=1;g.drop=null;
+  g.goalText=()=>`${g.p}/${L.pallets} · ${T('шар','layer')} ${g.stack.length}/${L.layers}`;
   const geo=()=>{const ground=H-26,ceilY=96,pw=clamp(W*.42,150,250),lh=(ground-12-ceilY-6)/L.layers,cx=W*.44;return{ground,ceilY,pw,lh,cx}};
   g.cur={x:0};
   const resetCur=()=>{const {pw,cx}=geo();g.dir=R()<.5?1:-1;g.cur.x=cx-g.dir*pw*.75};
@@ -536,10 +558,10 @@ function TruckMode(L){
     const {pw,cx,ground,lh}=geo();const ref=g.stack.length?g.stack[g.stack.length-1]:cx;const dx=g.cur.x-ref;
     const y=ground-12-(g.stack.length+.5)*lh;
     const tol=Math.max(5,pw*.04);
-    if(Math.abs(dx)<=tol){g.stack.push(ref);g.perfects++;g.combo++;g.placed++;g.addScore(20+g.combo*5,ref,y-10,'#ffe08a');Snd.perfect();sparks(ref,y,12);floatTxt('Ідеально!',ref,y-34,'#ffe08a');if(g.combo===5)g.talk('П\'ять ідеальних поспіль! Фасувальники аплодують.')}
+    if(Math.abs(dx)<=tol){g.stack.push(ref);g.perfects++;g.combo++;g.placed++;g.addScore(20+g.combo*5,ref,y-10,'#ffe08a');Snd.perfect();sparks(ref,y,12);floatTxt(T('Ідеально!','Perfect!'),ref,y-34,'#ffe08a');if(g.combo===5)g.talk(T('П\'ять ідеальних поспіль! Фасувальники аплодують.','Five perfect in a row! The packing team applauds.'))}
     else if(Math.abs(dx)<=pw*.5&&Math.abs(g.cur.x-cx)<=pw*.48){g.stack.push(g.cur.x);g.combo=0;g.placed++;g.addScore(10,g.cur.x,y-10);Snd.good()}
-    else{g.falls.push({x:g.cur.x,y,vy:0,vx:dx>0?120:-120,rot:0});g.hurt('Шар з\'їхав!',g.cur.x,y-20)}
-    if(g.stack.length>=L.layers&&g.running){g.phase='wrap';g.phaseT=0;g.addScore(100,cx,geo().ceilY+30,'#8fd46f');Snd.win();g.talk(`Палета готова: ${L.layers*L.perLayer} мішків! Стрейч і в ${L.truck}.`)}
+    else{g.falls.push({x:g.cur.x,y,vy:0,vx:dx>0?120:-120,rot:0});g.hurt(T('Шар з\'їхав!','The layer slid off!'),g.cur.x,y-20)}
+    if(g.stack.length>=L.layers&&g.running){g.phase='wrap';g.phaseT=0;g.addScore(100,cx,geo().ceilY+30,'#8fd46f');Snd.win();g.talk(T(`Палета готова: ${L.layers*L.perLayer} мішків! Стрейч і в ${tx(L.truck)}.`,`Pallet ready: ${L.layers*L.perLayer} bags! Stretch wrap and into the ${tx(L.truck)}.`))}
     resetCur();
   }
   g.onDown=()=>drop();g.onKey=(k,d)=>{if(d&&(k==='space'||k==='up'))drop()};
@@ -551,7 +573,7 @@ function TruckMode(L){
       else{g.cur.x+=g.dir*speed()*dt;const lim=pw*.75;if(g.cur.x>cx+lim){g.cur.x=cx+lim;g.dir=-1}if(g.cur.x<cx-lim){g.cur.x=cx-lim;g.dir=1}}
     }else{g.phaseT+=dt;
       if(g.phase==='wrap'&&g.phaseT>1.1){g.phase='move';g.phaseT=0}
-      else if(g.phase==='move'&&g.phaseT>.9){g.p++;g.stack=[];g.phase='stack';resetCur();if(g.p>=L.pallets)endLevel(true);else g.talk(`Наступна палета! Ще ${L.pallets-g.p}.`,1.8)}
+      else if(g.phase==='move'&&g.phaseT>.9){g.p++;g.stack=[];g.phase='stack';resetCur();if(g.p>=L.pallets)endLevel(true);else g.talk(T(`Наступна палета! Ще ${L.pallets-g.p}.`,`Next pallet! ${L.pallets-g.p} to go.`),1.8)}
     }
     for(let i=g.falls.length-1;i>=0;i--){const f=g.falls[i];f.vy+=900*dt;f.y+=f.vy*dt;f.x+=f.vx*dt;f.rot+=f.vx>0?3*dt:-3*dt;if(f.y>H+60)g.falls.splice(i,1)}
   };
@@ -561,7 +583,7 @@ function TruckMode(L){
       const gr=c.createLinearGradient(bx,y,bx+bw,y);gr.addColorStop(0,'#a87a45');gr.addColorStop(.5,'#d3a670');gr.addColorStop(1,'#a87a45');
       c.fillStyle=gr;rr(c,bx+1,y+1,bw-2,h-2,Math.min(6,h*.3));c.fill();
       c.fillStyle='#17130f';c.fillRect(bx+bw*.22,y+h*.3,bw*.56,h*.4);
-      c.fillStyle='#4cb748';c.fillRect(bx+bw*.22,y+h*.3,bw*.12,h*.4);
+      c.fillStyle='#56b947';c.fillRect(bx+bw*.22,y+h*.3,bw*.12,h*.4);
     }
   }
   g.draw=c=>{
@@ -572,12 +594,12 @@ function TruckMode(L){
     // ceiling
     c.fillStyle='#120f0c';c.fillRect(0,0,W,ceilY-8);
     c.setLineDash([8,6]);c.strokeStyle='#ff5a4a';c.lineWidth=2;c.beginPath();c.moveTo(0,ceilY-6);c.lineTo(W,ceilY-6);c.stroke();c.setLineDash([]);
-    c.fillStyle='#ff5a4a';fitText(c,`ДАХ ФУРИ (${L.truck.toUpperCase()}) · ВИСОТА ПАЛЕТИ ≤ ${L.ceil}`,10,ceilY-14,W-20,10);
+    c.fillStyle='#ff5a4a';fitText(c,T(`ДАХ ФУРИ (${tx(L.truck).toUpperCase()}) · ВИСОТА ПАЛЕТИ ≤ ${tx(L.ceil)}`,`TRUCK ROOF (${tx(L.truck).toUpperCase()}) · PALLET HEIGHT ≤ ${tx(L.ceil)}`),10,ceilY-14,W-20,10);
     // mini truck
-    const tw=Math.min(150,W*.34),tx=W-tw-10,ty=10,th=34;
-    c.fillStyle='#2b241e';rr(c,tx,ty,tw,th,6);c.fill();c.fillStyle='#4cb748';rr(c,tx+tw-4,ty+8,14,th-8,4);c.fill();
-    const sw=(tw-12)/L.pallets;for(let i=0;i<L.pallets;i++){c.fillStyle=i<g.p?'#c99a62':'#3b3229';rr(c,tx+6+i*sw,ty+6,sw-4,th-12,3);c.fill()}
-    c.fillStyle='#ab9c8c';fitText(c,L.sub.split('·')[1].trim().toUpperCase(),tx,ty+th+12,tw,9);
+    const tw=Math.min(150,W*.34),trkX=W-tw-10,ty=10,th=34;
+    c.fillStyle='#2b241e';rr(c,trkX,ty,tw,th,6);c.fill();c.fillStyle='#56b947';rr(c,trkX+tw-4,ty+8,14,th-8,4);c.fill();
+    const sw=(tw-12)/L.pallets;for(let i=0;i<L.pallets;i++){c.fillStyle=i<g.p?'#c99a62':'#3b3229';rr(c,trkX+6+i*sw,ty+6,sw-4,th-12,3);c.fill()}
+    c.fillStyle='#ab9c8c';fitText(c,T('СХЕМА ','PATTERN ')+L.scheme,trkX,ty+th+12,tw,9);
     // floor
     c.fillStyle='#120f0c';c.fillRect(0,ground,W,H-ground);
     // ruler
@@ -606,7 +628,7 @@ function TruckMode(L){
     }else if(g.sayT>0&&g.say){bubble(c,cx-100,ceilY+10,g.say,Math.min(240,W-40))}
   };
   g.stars=()=>{const r=g.perfects/Math.max(1,L.layers*L.pallets);return r>=.55&&g.lives===3?3:r>=.3||g.lives>=2?2:1};
-  g.talk('Тапни по екрану або натисни пробіл, щоб опустити шар',2.6);
+  g.talk(T('Тапни по екрану або натисни пробіл, щоб опустити шар','Tap the screen or press Space to drop the layer'),2.6);
   return g;
 }
 
@@ -624,7 +646,7 @@ function drawFood(c,type,x,y,s,cook){
   c.restore();
 }
 function GrillMode(L){
-  const g=base(L);g.goalLabel='замовлення';g.slots=Array(L.slots).fill(null);g.orders=[];g.served=0;g.heat=.7;g.heatCd=0;g.orderT=.5;g.spawned=0;g.layout=null;
+  const g=base(L);g.goalLabel={uk:'замовлення',en:'orders'};g.slots=Array(L.slots).fill(null);g.orders=[];g.served=0;g.heat=.7;g.heatCd=0;g.orderT=.5;g.spawned=0;g.layout=null;
   g.goalText=()=>`${g.served}/${L.goal}`;
   const quality=p=>p>=.85&&p<=1.3?'perfect':p>=.6&&p<=1.6?'ok':p<.6?'raw':'burnt';
   function lay(){
@@ -641,26 +663,26 @@ function GrillMode(L){
   g.resize=()=>lay();
   g.onDown=(x,y)=>{
     if(!g.running)return;const l=lay();
-    for(const b of l.tray)if(inR(x,y,b)){const i=g.slots.indexOf(null);if(i<0){floatTxt('Решітка зайнята',x,y-10,'#ab9c8c');Snd.tap();return}g.slots[i]={f:b.f,side:0,p:[0,0],flipQ:null};Snd.sizzle();smoke(l.cells[i].x,l.cells[i].y,2);return}
-    if(L.heat&&inR(x,y,l.heatBtn)){if(g.heatCd>0)return;g.heat=Math.min(1.15,g.heat+.22);g.heatCd=1;Snd.good();for(const cl of l.cells)sparks(cl.x,cl.y+cl.r*.6,4);if(g.heat>.9)g.talk('Ух, жарко! Не перегрій, бо все згорить.',1.8);return}
+    for(const b of l.tray)if(inR(x,y,b)){const i=g.slots.indexOf(null);if(i<0){floatTxt(T('Решітка зайнята','The grill is full'),x,y-10,'#ab9c8c');Snd.tap();return}g.slots[i]={f:b.f,side:0,p:[0,0],flipQ:null};Snd.sizzle();smoke(l.cells[i].x,l.cells[i].y,2);return}
+    if(L.heat&&inR(x,y,l.heatBtn)){if(g.heatCd>0)return;g.heat=Math.min(1.15,g.heat+.22);g.heatCd=1;Snd.good();for(const cl of l.cells)sparks(cl.x,cl.y+cl.r*.6,4);if(g.heat>.9)g.talk(T('Ух, жарко! Не перегрій, бо все згорить.','Phew, hot! Don’t overheat or everything burns.'),1.8);return}
     l.cells.forEach((cl,i)=>{const s=g.slots[i];if(!s||Math.hypot(x-cl.x,y-cl.y)>cl.r)return;
-      if(s.side===0){s.flipQ=quality(s.p[0]);s.side=1;Snd.tap();const lbl={perfect:'Ідеально!',ok:'Добре',raw:'Ще сире…',burnt:'Пересмажено'}[s.flipQ];floatTxt(lbl,cl.x,cl.y-cl.r*.6,s.flipQ==='perfect'?'#ffe08a':s.flipQ==='ok'?'#8fd46f':'#ff5a4a');return}
+      if(s.side===0){s.flipQ=quality(s.p[0]);s.side=1;Snd.tap();const lbl={perfect:T('Ідеально!','Perfect!'),ok:T('Добре','Good'),raw:T('Ще сире…','Still raw…'),burnt:T('Пересмажено','Overcooked')}[s.flipQ];floatTxt(lbl,cl.x,cl.y-cl.r*.6,s.flipQ==='perfect'?'#ffe08a':s.flipQ==='ok'?'#8fd46f':'#ff5a4a');return}
       const q2=quality(s.p[1]);g.slots[i]=null;
-      if(s.flipQ==='raw'||q2==='raw'){g.combo=0;g.addScore(-10,cl.x,cl.y);floatTxt('Сире! Гість незадоволений',cl.x,cl.y-26,'#ff5a4a');Snd.bad();g.talk('Сире не віддаємо! Чекай зелене кільце.',2);return}
+      if(s.flipQ==='raw'||q2==='raw'){g.combo=0;g.addScore(-10,cl.x,cl.y);floatTxt(T('Сире! Гість незадоволений','Raw! The guest is unhappy'),cl.x,cl.y-26,'#ff5a4a');Snd.bad();g.talk(T('Сире не віддаємо! Чекай зелене кільце.','Never serve it raw! Wait for the green ring.'),2);return}
       const perfect=s.flipQ==='perfect'&&q2==='perfect';const pts=perfect?40:(s.flipQ==='burnt'||q2==='burnt')?8:20;
       const o=g.orders.find(o=>o.items.includes(s.f));
       if(o){o.items.splice(o.items.indexOf(s.f),1);g.combo++;g.addScore(pts,cl.x,cl.y,perfect?'#ffe08a':undefined);perfect?Snd.perfect():Snd.good();sparks(cl.x,cl.y,perfect?14:6);
-        if(!o.items.length){g.orders.splice(g.orders.indexOf(o),1);g.served++;g.addScore(50+Math.round(o.t*2),W/2,l.oh+20,'#8fd46f');floatTxt('Замовлення готове!',W/2,l.oh+44,'#8fd46f');if(g.served>=L.goal&&g.running)endLevel(true)}}
-      else{g.addScore(5,cl.x,cl.y);floatTxt('На вітрину',cl.x,cl.y-24,'#ab9c8c');Snd.tap()}
+        if(!o.items.length){g.orders.splice(g.orders.indexOf(o),1);g.served++;g.addScore(50+Math.round(o.t*2),W/2,l.oh+20,'#8fd46f');floatTxt(T('Замовлення готове!','Order complete!'),W/2,l.oh+44,'#8fd46f');if(g.served>=L.goal&&g.running)endLevel(true)}}
+      else{g.addScore(5,cl.x,cl.y);floatTxt(T('На вітрину','To the display'),cl.x,cl.y-24,'#ab9c8c');Snd.tap()}
     });
   };
   g.update=dt=>{
     g.tick(dt);if(!g.running)return;const l=g.layout||lay();
-    if(L.heat){g.heat=Math.max(0,g.heat-L.decay*dt*(1+g.heat*.6));if(g.heatCd>0)g.heatCd-=dt;if(g.heat<.3&&!(g.sayT>0))g.talk('Я згасаю… підкинь вугілля!',1.6)}
+    if(L.heat){g.heat=Math.max(0,g.heat-L.decay*dt*(1+g.heat*.6));if(g.heatCd>0)g.heatCd-=dt;if(g.heat<.3&&!(g.sayT>0))g.talk(T('Я згасаю… підкинь вугілля!','I’m fading… add some charcoal!'),1.6)}
     const hf=!L.heat?1:g.heat<.3?.3:g.heat<.55?.7:g.heat<=.9?1:1.7;
-    g.slots.forEach((s,i)=>{if(!s)return;s.p[s.side]+=hf/FOODS[s.f].cook*dt;if(s.p[s.side]>1.5&&R()<dt*8)smoke(l.cells[i].x,l.cells[i].y-8,1);if(s.p[s.side]>=2){g.slots[i]=null;smoke(l.cells[i].x,l.cells[i].y,8);g.hurt('Згоріло!',l.cells[i].x,l.cells[i].y)}});
+    g.slots.forEach((s,i)=>{if(!s)return;s.p[s.side]+=hf/FOODS[s.f].cook*dt;if(s.p[s.side]>1.5&&R()<dt*8)smoke(l.cells[i].x,l.cells[i].y-8,1);if(s.p[s.side]>=2){g.slots[i]=null;smoke(l.cells[i].x,l.cells[i].y,8);g.hurt(T('Згоріло!','Burnt!'),l.cells[i].x,l.cells[i].y)}});
     g.orderT-=dt;if(g.orderT<=0&&g.orders.length<L.maxOrders&&g.served+g.orders.length<L.goal){newOrder();g.orderT=L.orderEvery*(.8+R()*.5)}
-    for(let i=g.orders.length-1;i>=0;i--){const o=g.orders[i];o.t-=dt;if(o.t<=0){g.orders.splice(i,1);g.hurt('Гість пішов!',W/2,l.oh+30);g.orderT=Math.min(g.orderT,1.5)}}
+    for(let i=g.orders.length-1;i>=0;i--){const o=g.orders[i];o.t-=dt;if(o.t<=0){g.orders.splice(i,1);g.hurt(T('Гість пішов!','The guest left!'),W/2,l.oh+30);g.orderT=Math.min(g.orderT,1.5)}}
     if(hf>1&&R()<dt*10){const c=l.cells[Math.floor(R()*l.cells.length)];sparks(c.x,c.y+c.r*.5,2,'#ff6b1f')}
   };
   g.draw=c=>{
@@ -669,9 +691,9 @@ function GrillMode(L){
     // orders
     const ow=(W-20-(L.maxOrders-1)*8)/L.maxOrders;
     for(let i=0;i<L.maxOrders;i++){const o=g.orders[i],x=10+i*(ow+8),y=8;
-      if(!o){c.strokeStyle='#3b3229';c.setLineDash([5,5]);rr(c,x,y,ow,l.oh-8,10);c.stroke();c.setLineDash([]);c.fillStyle='#5a4e42';c.font='600 11px "Golos Text", system-ui, sans-serif';c.fillText('чекаємо гостя…',x+10,y+22);continue}
+      if(!o){c.strokeStyle='#3b3229';c.setLineDash([5,5]);rr(c,x,y,ow,l.oh-8,10);c.stroke();c.setLineDash([]);c.fillStyle='#5a4e42';c.font='600 11px "Golos Text", system-ui, sans-serif';c.fillText(T('чекаємо гостя…','waiting for a guest…'),x+10,y+22);continue}
       c.fillStyle='#f4ece0';rr(c,x,y,ow,l.oh-8,10);c.fill();
-      c.fillStyle='#17130f';fitText(c,'ЗАМОВЛЕННЯ',x+10,y+16,ow-20,10,'800');
+      c.fillStyle='#17130f';fitText(c,T('ЗАМОВЛЕННЯ','ORDER'),x+10,y+16,ow-20,10,'800');
       const counts={};o.items.forEach(f=>counts[f]=(counts[f]||0)+1);const keys=Object.keys(counts);
       const iw=Math.min(54,(ow-16)/Math.max(1,keys.length));
       keys.forEach((f,j)=>{const fx=x+10+j*iw+iw/2-6,fy=y+(l.oh-8)*.55;drawFood(c,f,fx,fy,Math.min(11,iw*.2),1);c.fillStyle='#17130f';c.font='800 12px "Golos Text", system-ui, sans-serif';c.fillText('×'+counts[f],fx+12,fy+16)});
@@ -699,17 +721,17 @@ function GrillMode(L){
       c.strokeStyle=q==='perfect'?'#8fd46f':q==='ok'?'#ffb43c':q==='raw'?'#f4ece0':'#ff5a4a';c.lineWidth=4;c.beginPath();c.arc(cl.x,cl.y,rr2,a0,toA(Math.min(2,p)));c.stroke();
       drawFood(c,s.f,cl.x,cl.y,cl.r*.36,p+(s.side?0:0));
       c.fillStyle=q==='perfect'?'#8fd46f':'#ab9c8c';c.font='700 10px "Golos Text", system-ui, sans-serif';c.textAlign='center';
-      c.fillText(q==='perfect'?(s.side?'ВІДДАТИ!':'ПЕРЕВЕРНИ!'):s.side?'бік 2':'бік 1',cl.x,cl.y+rr2-10);c.textAlign='left';
+      c.fillText(q==='perfect'?(s.side?T('ВІДДАТИ!','SERVE!'):T('ПЕРЕВЕРНИ!','FLIP!')):s.side?T('бік 2','side 2'):T('бік 1','side 1'),cl.x,cl.y+rr2-10);c.textAlign='left';
     });
     // heat
     if(L.heat){const b=l.heatBar;c.fillStyle='#0d0b09';rr(c,b.x,b.y,b.w,b.h,8);c.fill();
       const z=(a,bb,col)=>{c.fillStyle=col;c.fillRect(b.x+b.w*a/1.15,b.y+3,b.w*(bb-a)/1.15,b.h-6)};z(0,.3,'#3b3229');z(.3,.55,'#6d5130');z(.55,.9,'rgba(143,212,111,.5)');z(.9,1.15,'rgba(255,90,74,.5)');
       const hx=b.x+b.w*clamp(g.heat,0,1.15)/1.15;c.fillStyle='#f4ece0';c.fillRect(hx-2,b.y-3,4,b.h+6);
-      c.fillStyle='#f4ece0';fitText(c,'ЖАР '+Math.round(150+g.heat*200)+'°C',b.x+8,b.y+b.h/2+4,b.w-16,10);
-      const hb=l.heatBtn;c.fillStyle=g.heatCd>0?'#3b3229':'#4cb748';rr(c,hb.x,hb.y,hb.w,hb.h,6);c.fill();c.fillStyle='#111';c.textAlign='center';fitText(c,'Підкинути вугілля',hb.x+hb.w/2,hb.y+19,hb.w-10,12,'800','"Golos Text", system-ui, sans-serif');c.textAlign='left'}
+      c.fillStyle='#f4ece0';fitText(c,T('ЖАР ','HEAT ')+Math.round(150+g.heat*200)+'°C',b.x+8,b.y+b.h/2+4,b.w-16,10);
+      const hb=l.heatBtn;c.fillStyle=g.heatCd>0?'#3b3229':'#56b947';rr(c,hb.x,hb.y,hb.w,hb.h,6);c.fill();c.fillStyle='#111';c.textAlign='center';fitText(c,T('Підкинути вугілля','Add charcoal'),hb.x+hb.w/2,hb.y+19,hb.w-10,12,'800','"Golos Text", system-ui, sans-serif');c.textAlign='left'}
     // tray
     for(const b of l.tray){c.fillStyle='#2b241e';rr(c,b.x,b.y,b.w,b.h,12);c.fill();c.strokeStyle='#3b3229';c.lineWidth=1;c.stroke();
-      drawFood(c,b.f,b.x+b.w/2,b.y+b.h*.4,Math.min(13,b.w*.17),0);c.fillStyle='#f4ece0';c.textAlign='center';fitText(c,FOODS[b.f].name,b.x+b.w/2,b.y+b.h-9,b.w-6,12,'700','"Golos Text", system-ui, sans-serif');c.textAlign='left'}
+      drawFood(c,b.f,b.x+b.w/2,b.y+b.h*.4,Math.min(13,b.w*.17),0);c.fillStyle='#f4ece0';c.textAlign='center';fitText(c,tx(FOODS[b.f].name),b.x+b.w/2,b.y+b.h-9,b.w-6,12,'700','"Golos Text", system-ui, sans-serif');c.textAlign='left'}
     if(g.sayT>0&&g.say){bubble(c,W/2-110,gy+8,g.say,Math.min(240,W-40))}
   };
   g.stars=()=>g.lives;
@@ -719,54 +741,132 @@ function GrillMode(L){
 const MODES={bag:BagMode,truck:TruckMode,grill:GrillMode};
 
 /* ---------- screens ---------- */
+const DICT={
+  pause:{uk:'Пауза',en:'Pause'},
+  menuEyebrow:{uk:'Деревне вугілля · тверді породи',en:'Lump charcoal · hardwood'},
+  menuH1:{uk:'Пригоди <span>Вуглинки</span>',en:'Coalie’s <span>Adventures</span>'},
+  menuP:{uk:'Вуглинка пройде весь шлях Carbonis: стрибне в мішок на лінії фасування, складе палети у фуру і розпалить гриль. <strong>Три гри по три рівні</strong>, зірки за точність.',en:'Coalie travels the whole Carbonis journey: jumps into a bag on the packing line, stacks pallets into a truck and lights up the grill. <strong>Three games, three levels each</strong>, stars for precision.'},
+  featBag:{uk:'<b>Мішок</b>Фасуй вуглинки, оминай відсів і березу',en:'<b>Bag</b>Pack the coals, dodge fines and birch'},
+  featTruck:{uk:'<b>Фура</b>Склади палети за схемою 33*45',en:'<b>Truck</b>Stack pallets to the 33*45 pattern'},
+  featGrill:{uk:'<b>Гриль</b>Розпали смаки на жару Carbonis',en:'<b>Grill</b>Ignite flavour on Carbonis heat'},
+  nameLabel:{uk:'Твоє ім\'я для рейтингу',en:'Your name for the leaderboard'},
+  namePh:{uk:'Напр., Оксана',en:'e.g. Alex'},
+  play:{uk:'Грати',en:'Play'},
+  board:{uk:'Рейтинг',en:'Leaderboard'},
+  chooseLevel:{uk:'Обери рівень',en:'Choose a level'},
+  totalScore:{uk:'Загальний рахунок',en:'Total score'},
+  menu:{uk:'Меню',en:'Menu'},
+  start:{uk:'Старт',en:'Start'},
+  toLevels:{uk:'До рівнів',en:'Levels'},
+  pauseTxt:{uk:'Вуглинка тримає жар. Повертайся, коли будеш готовий.',en:'Coalie is keeping the heat. Come back when you’re ready.'},
+  resume:{uk:'Продовжити',en:'Resume'},
+  restart:{uk:'Заново',en:'Restart'},
+  resNameLabel:{uk:'Впиши ім\'я, щоб потрапити в рейтинг',en:'Enter your name to join the leaderboard'},
+  saveBoard:{uk:'Зберегти в рейтинг',en:'Save to leaderboard'},
+  next:{uk:'Далі',en:'Next'},
+  again:{uk:'Ще раз',en:'Play again'},
+  levels:{uk:'Рівні',en:'Levels'},
+  boardTitle:{uk:'Найгарячіші гравці',en:'The hottest players'},
+  table:{uk:'Таблиця',en:'Board'},
+  player:{uk:'Гравець',en:'Player'},
+  back:{uk:'Назад',en:'Back'},
+  calcLink:{uk:'BBQ-калькулятор',en:'BBQ calculator'}
+};
 const screens=['scrMenu','scrMap','scrIntro','scrPause','scrResult','scrBoard'];
-function show(id){screens.forEach(s=>$('#'+s).hidden=s!==id);$('#btnPause').hidden=!(game&&game.running&&!id)}
+let shown='scrMenu';
+function show(id){shown=id;screens.forEach(s=>$('#'+s).hidden=s!==id);$('#btnPause').hidden=!(game&&game.running&&!id)}
 let game=null,paused=false,curLevel=null,boardReturn='scrMenu';
 const nameIn=$('#playerName');nameIn.value=playerName;
 nameIn.addEventListener('input',()=>{playerName=cleanName(nameIn.value);store.set('name',playerName)});
 nameIn.addEventListener('change',()=>{if(NAME_RE.test(playerName)&&total()>0)submitBoard()});
 
+// Кожна з трьох ігор відкривається незалежно: перший рівень гри відкритий, наступний — після зірки на попередньому тієї ж гри
+const MODES_ORDER=['bag','truck','grill'];
+const modeLevels=m=>LEVELS.filter(L=>L.mode===m);
+function isOpen(L){const list=modeLevels(L.mode),i=list.indexOf(L);return i===0||(progress.stars[list[i-1].id]||0)>0}
+function nextLevel(L){
+  const list=mapMode==='all'?LEVELS:modeLevels(L.mode),i=list.indexOf(L),n=list[i+1];
+  return n&&isOpen(n)?n:null;
+}
+const qs=new URLSearchParams(location.search);
+let mapMode=MODES_ORDER.includes(qs.get('mode'))?qs.get('mode'):'all';
+
 function starsHtml(n){return [0,1,2].map(i=>i<n?'<b>★</b>':'★').join('')}
+function renderTabs(){
+  const box=$('#modeTabs');box.textContent='';
+  [['all',{uk:'Усі рівні',en:'All levels'}],...MODES_ORDER.map(m=>[m,MODE_LABEL[m]])].forEach(([m,label])=>{
+    const b=document.createElement('button');b.type='button';b.textContent=tx(label);b.setAttribute('aria-pressed',String(m===mapMode));
+    b.onclick=()=>{mapMode=m;history.replaceState(null,'',m==='all'?location.pathname:'?mode='+m);renderMap()};box.appendChild(b);
+  });
+}
+function lvlButton(L,grid){
+  const b=document.createElement('button');b.type='button';b.className='lvl';b.disabled=!isOpen(L);
+  b.innerHTML=`<span class="n">${L.id}</span><span class="m">${tx(MODE_LABEL[L.mode])}</span><span class="t"></span><span class="stars">${starsHtml(progress.stars[L.id]||0)}</span>`;
+  b.querySelector('.t').textContent=tx(L.title);
+  if(!isOpen(L))b.title=T('Спершу пройди попередній рівень цієї гри','Finish the previous level of this game first');
+  b.onclick=()=>openIntro(L);grid.appendChild(b);
+}
 function renderMap(){
   $('#mapTotal').textContent=total();
+  renderTabs();
   const grid=$('#lvlGrid');grid.innerHTML='';
-  ['Зміна 1 · Знайомство','Зміна 2 · Експорт','Зміна 3 · Майстер'].forEach((ch,ci)=>{
-    const h=document.createElement('div');h.className='chapter';h.textContent=ch;grid.appendChild(h);
-    LEVELS.slice(ci*3,ci*3+3).forEach(L=>{
-      const open=L.id===1||(progress.stars[L.id-1]||0)>0;
-      const b=document.createElement('button');b.type='button';b.className='lvl';b.disabled=!open;
-      b.innerHTML=`<span class="n">${L.id}</span><span class="m">${MODE_LABEL[L.mode]}</span><span class="t">${L.title}</span><span class="stars">${starsHtml(progress.stars[L.id]||0)}</span>`;
-      b.onclick=()=>openIntro(L);grid.appendChild(b);
+  if(mapMode==='all'){
+    $('#mapTitle').textContent=T('Зміни Вуглинки','Coalie’s shifts');
+    [{uk:'Зміна 1 · Знайомство',en:'Shift 1 · Getting started'},{uk:'Зміна 2 · Експорт',en:'Shift 2 · Export'},{uk:'Зміна 3 · Майстер',en:'Shift 3 · Master'}].forEach((ch,ci)=>{
+      const h=document.createElement('div');h.className='chapter';h.textContent=tx(ch);grid.appendChild(h);
+      LEVELS.slice(ci*3,ci*3+3).forEach(L=>lvlButton(L,grid));
     });
-  });
+  }else{
+    $('#mapTitle').textContent=T('Гра «','Game: ')+tx(MODE_LABEL[mapMode])+T('»','');
+    modeLevels(mapMode).forEach(L=>lvlButton(L,grid));
+  }
+}
+function introGoal(L){
+  const goal={bag:T(`Наповни мішок ${L.bagKg} кг за ${L.time} с`,`Fill a ${L.bagKg} kg bag in ${L.time} s`),truck:T(`Склади ${L.pallets} палети по ${L.layers} шарів`,`Stack ${L.pallets} pallets of ${L.layers} layers`),grill:T(`Видай ${L.goal} замовлень за ${L.time} с`,`Serve ${L.goal} orders in ${L.time} s`)}[L.mode];
+  const ctrl={bag:T('Веди мішок пальцем, мишкою або стрілками','Move the bag with your finger, mouse or arrow keys'),truck:T('Тап, клік або пробіл опускає шар','Tap, click or Space drops the layer'),grill:T('Тап по страві в лотку кладе її на решітку. Тап по решітці: перевернути, потім віддати','Tap a dish in the tray to put it on the grill. Tap it on the grill to flip, then to serve')}[L.mode];
+  const stars=L.mode==='truck'?T('за точні («ідеальні») укладки і збережені спроби','for perfect drops and tries left'):T('за збережені спроби: 3 вогники = 3 зірки','for tries left: 3 flames = 3 stars');
+  const rows=[[T('Мета','Goal'),goal],[T('Продукт','Product'),tx(L.sub)],[T('Керування','Controls'),ctrl],[T('Зірки','Stars'),stars]];
+  const box=$('#inGoal');box.textContent='';
+  rows.forEach(([k,v])=>{const d=document.createElement('div'),b=document.createElement('b'),sp=document.createElement('span');b.textContent=k;sp.textContent=v;d.append(b,sp);box.appendChild(d)});
 }
 function openIntro(L){
   curLevel=L;game=null;
-  $('#inEyebrow').textContent=`Рівень ${L.id} · ${MODE_LABEL[L.mode]}`;$('#inTitle').textContent=L.title;
-  const goal={bag:`Наповни мішок ${L.bagKg} кг за ${L.time} с`,truck:`Склади ${L.pallets} палети по ${L.layers} шарів`,grill:`Видай ${L.goal} замовлень за ${L.time} с`}[L.mode];
-  const ctrl={bag:'Веди мішок пальцем, мишкою або стрілками',truck:'Тап, клік або пробіл опускає шар',grill:'Тап по страві в лотку кладе її на решітку. Тап по решітці: перевернути, потім віддати'}[L.mode];
-  $('#inGoal').innerHTML=`<div><b>Мета</b><span>${goal}</span></div><div><b>Продукт</b><span>${L.sub}</span></div><div><b>Керування</b><span>${ctrl}</span></div><div><b>Зірки</b><span>${L.mode==='truck'?'за точні («ідеальні») укладки і збережені спроби':'за збережені спроби: 3 вогники = 3 зірки'}</span></div>`;
-  $('#inTip').textContent=L.tip;
+  $('#inEyebrow').textContent=`${T('Рівень','Level')} ${L.id} · ${tx(MODE_LABEL[L.mode])}`;$('#inTitle').textContent=tx(L.title);
+  introGoal(L);
+  $('#inTip').textContent=tx(L.tip);
   show('scrIntro');
 }
-function startLevel(){Snd.init();P.length=0;resize();game=MODES[curLevel.mode](curLevel);paused=false;show(null);cv.focus&&cv.focus()}
+function startLevel(){Snd.init();P.length=0;resize();game=MODES[curLevel.mode](curLevel);paused=false;show(null);cv.focus&&cv.focus();C.event('game-start-l'+curLevel.id,'Гра: старт рівня '+curLevel.id)}
+let lastResult=null;
+function paintResult(){
+  if(!lastResult)return;const{L,win,stars,score,prevBest,isBest,reason}=lastResult;
+  $('#resEyebrow').textContent=`${T('Рівень','Level')} ${L.id} · ${tx(L.title)}`;
+  $('#resTitle').textContent=win?(L.id===LEVELS.length?T('Ти справжній майстер Carbonis!','You are a true Carbonis master!'):T('Рівень пройдено!','Level complete!')):T('Ще не вийшло','Not this time');
+  $('#resStars').innerHTML=starsHtml(stars);$('#resScore').textContent=score;
+  const note=$('#resNote');note.textContent='';
+  if(win){
+    note.append(isBest?T('Новий рекорд рівня. ','New level record. '):T(`Рекорд рівня: ${prevBest}. `,`Level record: ${prevBest}. `),T('Загальний рахунок: ','Total score: '));
+    const st=document.createElement('strong');st.textContent=total();note.append(st,'.');
+    if(L.time)note.append(T(' Залишок часу дав бонус.',' Time left gave a bonus.'));
+  }else note.textContent=tx(reason);
+  $('#btnNext').hidden=!(win&&nextLevel(L));
+}
 function endLevel(win,reason){
   if(!game||!game.running)return;game.running=false;const g=game,L=g.L;
   let stars=0;
   if(win){g.score+=Math.round(Math.max(0,g.time)*5);stars=clamp(g.stars(),1,3);Snd.win();sparks(W/2,H/2,30)}else Snd.lose();
   const prevBest=progress.best[L.id]||0,isBest=g.score>prevBest&&win;
   if(win){if(isBest)progress.best[L.id]=g.score;progress.stars[L.id]=Math.max(progress.stars[L.id]||0,stars);saveProgress()}
+  C.event((win?'game-win-l':'game-lose-l')+L.id,(win?'Гра: пройдено рівень ':'Гра: програно рівень ')+L.id);
   setTimeout(()=>{
-    $('#resEyebrow').textContent=`Рівень ${L.id} · ${L.title}`;
-    $('#resTitle').textContent=win?(L.id===LEVELS.length?'Ти справжній майстер Carbonis!':'Рівень пройдено!'):'Ще не вийшло';
-    $('#resStars').innerHTML=starsHtml(stars);$('#resScore').textContent=g.score;
-    $('#resNote').innerHTML=win?(isBest?`Новий рекорд рівня. Загальний рахунок: <strong>${total()}</strong>.`:`Рекорд рівня: ${prevBest}. Загальний рахунок: <strong>${total()}</strong>.`)+(L.time?' Залишок часу дав бонус.':''):reason;
-    const nextL=LEVELS[L.id];const nb=$('#btnNext');nb.hidden=!(win&&nextL);
+    lastResult={L,win,stars,score:g.score,prevBest,isBest,reason};
+    paintResult();
     const named=NAME_RE.test(playerName);
     $('#resNameForm').hidden=!(win&&!named);$('#resNameErr').textContent='';$('#resNameIn').value=playerName;
     $('#resBoardNote').textContent='';
     if(win&&named)submitBoard();
     show('scrResult');
+    if(win)C.offerInstall();
   },700);
 }
 $('#btnPlay').onclick=()=>{Snd.init();renderMap();show('scrMap')};
@@ -774,7 +874,7 @@ $('#btnMapBack').onclick=()=>show('scrMenu');
 $('#btnStart').onclick=startLevel;
 $('#btnIntroBack').onclick=()=>{renderMap();show('scrMap')};
 $('#btnAgain').onclick=()=>openIntro(curLevel);
-$('#btnNext').onclick=()=>openIntro(LEVELS[curLevel.id]);
+$('#btnNext').onclick=()=>{const n=nextLevel(curLevel);if(n)openIntro(n)};
 $('#btnResMap').onclick=()=>{game=null;renderMap();show('scrMap')};
 function pause(){if(!game||!game.running||paused)return;paused=true;show('scrPause')}
 $('#btnPause').onclick=pause;
@@ -785,37 +885,57 @@ let boardBusy=null;
 async function submitBoard(){
   if(!NAME_RE.test(playerName)||total()<=0)return;
   const note=$('#resBoardNote');
-  try{boardBusy=Leaderboard.submit(boardPayload(playerName));await boardBusy;note.textContent=ONLINE?'Результат у загальному рейтингу.':''}
-  catch(e){console.error('Leaderboard error',e);note.textContent='Не вдалося зберегти в онлайн-рейтинг. Перевір інтернет, результат збережено на пристрої.'}
+  try{boardBusy=Leaderboard.submit(boardPayload(playerName));await boardBusy;note.textContent=ONLINE?T('Результат у загальному рейтингу.','Your result is on the leaderboard.'):''}
+  catch(e){console.error('Leaderboard error',e);note.textContent=T('Не вдалося зберегти в онлайн-рейтинг. Перевір інтернет, результат збережено на пристрої.','Couldn’t save to the online leaderboard. Check your connection; the result is saved on this device.')}
   finally{boardBusy=null}
 }
 $('#resNameForm').addEventListener('submit',e=>{
   e.preventDefault();const v=cleanName($('#resNameIn').value);
-  if(!NAME_RE.test(v)){$('#resNameErr').textContent="Ім'я: від 2 до 20 букв або цифр.";return}
+  if(!NAME_RE.test(v)){$('#resNameErr').textContent=T("Ім'я: від 2 до 20 букв або цифр.",'Name: 2 to 20 letters or digits.');return}
   playerName=v;store.set('name',v);nameIn.value=v;$('#resNameForm').hidden=true;submitBoard();
 });
 const scopeSel=$('#boardScope');
-scopeSel.innerHTML='<option value="total">Загальний рахунок</option>'+LEVELS.map(L=>`<option value="${L.id}">Рівень ${L.id} · ${L.title}</option>`).join('');
+function fillScopes(){
+  const cur=scopeSel.value||'total';scopeSel.textContent='';
+  [['total',T('Загальний рахунок','Total score')],...LEVELS.map(L=>[String(L.id),`${T('Рівень','Level')} ${L.id} · ${tx(MODE_LABEL[L.mode])} · ${tx(L.title)}`])].forEach(([v,label])=>{
+    const o=document.createElement('option');o.value=v;o.textContent=label;scopeSel.appendChild(o);
+  });
+  scopeSel.value=cur;
+}
+fillScopes();
 scopeSel.addEventListener('change',renderBoard);
 async function renderBoard(){
   const scope=scopeSel.value,body=$('#boardBody'),note=$('#boardNote');
-  $('#boardCol').textContent=scope==='total'?'Очки':'Рекорд';
-  body.textContent='';note.textContent='Завантажую…';
+  $('#boardCol').textContent=scope==='total'?T('Очки','Score'):T('Рекорд','Record');
+  body.textContent='';note.textContent=T('Завантажую…','Loading…');
   try{
     if(boardBusy)await boardBusy.catch(()=>{});
     const rows=await Leaderboard.top(scope==='total'?'total':+scope,20);
     rows.forEach((r,i)=>{const tr=document.createElement('tr');if(r.me)tr.className='me';
-      [[String(i+1),''],[String(r.name||'Гравець'),'nm'],[String(scoreOf(r,scope==='total'?'total':+scope)),'']].forEach(([t,c])=>{const td=document.createElement('td');td.textContent=t;if(c)td.className=c;tr.appendChild(td)});
+      [[String(i+1),''],[String(r.name||T('Гравець','Player')),'nm'],[String(scoreOf(r,scope==='total'?'total':+scope)),'']].forEach(([t,c])=>{const td=document.createElement('td');td.textContent=t;if(c)td.className=c;tr.appendChild(td)});
       body.appendChild(tr)});
-    note.textContent=rows.length?'':'Поки порожньо. Пройди рівень і стань першим!';
-    if(!ONLINE)note.textContent=(note.textContent?note.textContent+' ':'')+'Тестовий режим: результати зберігаються лише на цьому пристрої. Онлайн-рейтинг працює у версії гри на GitHub Pages.';
-    if(!NAME_RE.test(playerName))note.textContent+=(note.textContent?' ':'')+"Щоб потрапити в таблицю, впиши ім'я в меню.";
-  }catch(e){console.error('Leaderboard error',e);note.textContent='Рейтинг тимчасово недоступний. Спробуй пізніше.'}
+    note.textContent=rows.length?'':T('Поки порожньо. Пройди рівень і стань першим!','Nothing here yet. Finish a level and be the first!');
+    if(!ONLINE)note.textContent=(note.textContent?note.textContent+' ':'')+T('Тестовий режим: результати зберігаються лише на цьому пристрої. Онлайн-рейтинг працює у версії гри на GitHub Pages.','Test mode: results stay on this device. The online leaderboard works in the GitHub Pages version.');
+    if(!NAME_RE.test(playerName))note.textContent+=(note.textContent?' ':'')+T("Щоб потрапити в таблицю, впиши ім'я в меню.",'To appear on the board, enter your name in the menu.');
+  }catch(e){console.error('Leaderboard error',e);note.textContent=T('Рейтинг тимчасово недоступний. Спробуй пізніше.','The leaderboard is unavailable right now. Try again later.')}
 }
 async function openBoard(from){boardReturn=from;show('scrBoard');renderBoard()}
 $('#btnBoard').onclick=()=>openBoard('scrMenu');$('#btnMapBoard').onclick=()=>openBoard('scrMap');
 $('#btnBoardBack').onclick=()=>{if(boardReturn==='scrMap')renderMap();show(boardReturn)};
 document.addEventListener('visibilitychange',()=>{if(document.hidden)pause()});
+
+// Мова: статичні тексти зі словника, динамічні екрани перемальовуємо
+function paintLang(){
+  C.applyDict(DICT);
+  document.title=T('Пригоди Вуглинки · Carbonis','Coalie’s Adventures · Carbonis');
+  $('#homeLink').setAttribute('aria-label',T('На головну Carbonis BBQ','Carbonis BBQ home'));
+  paintSnd();fillScopes();hudCache='';
+  if(shown==='scrMap')renderMap();
+  if(shown==='scrIntro'&&curLevel)openIntro(curLevel);
+  if(shown==='scrResult')paintResult();
+  if(shown==='scrBoard')renderBoard();
+}
+C.onLang(paintLang);
 
 /* ---------- input ---------- */
 const pos=e=>{const r=cv.getBoundingClientRect();return[e.clientX-r.left,e.clientY-r.top]};
@@ -846,7 +966,12 @@ function loop(ts){const dt=Math.min(.05,(ts-last)/1000||0);last=ts;
   if(!$('#scrMenu').hidden){hctx.clearRect(0,0,300,300);const b=Math.sin(ts/300)*6;drawCoal(hctx,150,176+b,68,{hero:1,seed:7,t:ts/1000,glow:1,mood:'happy',lookX:Math.sin(ts/1400),lookY:.2})}
   if(!$('#scrIntro').hidden){tctx.clearRect(0,0,128,128);drawCoal(tctx,64,76,30,{hero:1,seed:7,t:ts/1000,glow:.9,mood:'happy'})}
   requestAnimationFrame(loop)}
-resize();show('scrMenu');requestAnimationFrame(loop);
+resize();paintLang();
+// Вхід із головної: ?mode=bag|truck|grill — одразу рівні цієї гри; #leaderboard — рейтинг
+if(location.hash==='#leaderboard')openBoard('scrMenu');
+else if(mapMode!=='all'){renderMap();show('scrMap')}
+else show('scrMenu');
+requestAnimationFrame(loop);
 })();
 </script>
 

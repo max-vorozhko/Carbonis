@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>BBQ-калькулятор Carbonis</title>
+<meta name="description" content="Скільки деревного вугілля взяти на BBQ: кілограми, мішки Carbonis, жар, час і список, що взяти з собою.">
+<meta name="theme-color" content="#141414">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="icon" type="image/png" href="../assets/icons/favicon-64.png">
+<link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Carbonis BBQ">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Golos+Text:wght@400;600&family=Unbounded:wght@300;400&display=swap">
+<style>
+/* Carbonis design system: dark grill at night. One column: three questions, one answer card, then actions and a packing checklist.
+   Single dark theme by choice (brand). */
+:root {
+  color-scheme: dark;
+  --surface-page: #141414;
+  --surface-card: #1e1e1e;
+  --surface-raised: #272727;
+  --line: #353535;
+  --ink: #ffffff;
+  --ink-soft: rgba(255, 255, 255, 0.7);
+  --ink-muted: #a3a3a3;
+  --brand-green: #56b947;
+  --on-brand: #000000;
+  --ember: #ff7a1f;
+  --font-display: Unbounded, "Arial Black", sans-serif;
+  --font-sans: Inter, "Golos Text", system-ui, sans-serif;
+  --font-label: "Golos Text", system-ui, sans-serif;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+[hidden] { display: none !important; }
+body { background: var(--surface-page); color: var(--ink); font: 400 16px/1.4 var(--font-sans); -webkit-tap-highlight-color: transparent; }
+.wrap { max-width: 560px; margin: 0 auto; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 24px; }
+.topbar { display: flex; align-items: center; gap: 10px; }
+.back { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font: 300 18px var(--font-display); letter-spacing: .04em; }
+.back img { width: 34px; height: 34px; }
+.back span.arrow { font: 400 18px var(--font-sans); color: var(--ink-muted); }
+.sp { flex: 1; }
+.lang-switch { display: flex; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
+.lang-switch button { appearance: none; background: transparent; border: 0; color: var(--ink-muted); font: 600 13px var(--font-label); padding: 8px 11px; cursor: pointer; }
+.lang-switch button[aria-pressed="true"] { background: var(--brand-green); color: var(--on-brand); }
+.head { display: flex; flex-direction: column; gap: 12px; }
+.eyebrow { margin: 0; color: var(--brand-green); font: 600 11px/1.3 var(--font-label); letter-spacing: 0.16em; text-transform: uppercase; }
+h1 { margin: 0; font: 400 clamp(26px, 7vw, 32px)/1.2 var(--font-display); text-transform: uppercase; text-wrap: balance; }
+h2 { margin: 0; font: 400 18px/1.25 var(--font-display); text-transform: uppercase; }
+.lead { margin: 0; color: var(--ink-muted); }
+.lead b { color: var(--brand-green); }
+form { display: flex; flex-direction: column; gap: 20px; }
+fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
+legend, .label { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 var(--font-sans); color: var(--ink-soft); }
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips input, .seg input { position: absolute; opacity: 0; pointer-events: none; }
+.chips label, .seg label { display: block; padding: 11px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); font-weight: 600; cursor: pointer; user-select: none; }
+.chips label:hover, .seg label:hover { border-color: var(--brand-green); }
+.chips input:checked + label, .seg input:checked + label { background: var(--brand-green); border-color: var(--brand-green); color: var(--on-brand); }
+.chips input:focus-visible + label, .seg input:focus-visible + label, button:focus-visible, a:focus-visible, input[type="range"]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outline-offset: 0; border-color: var(--brand-green); }
+.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.seg label { text-align: center; padding: 14px 10px; }
+.seg small { display: block; font-weight: 400; font-size: 12px; opacity: 0.75; }
+.people { display: flex; align-items: center; gap: 8px; }
+.people button { width: 44px; height: 44px; flex: none; border: 1px solid var(--ink); border-radius: var(--radius-sm); background: transparent; color: var(--ink); font: 600 22px var(--font-sans); cursor: pointer; }
+.people button:hover { background: var(--ink); color: var(--surface-page); }
+.people input[type="number"] { width: 72px; height: 44px; flex: none; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); font: 600 20px var(--font-sans); font-variant-numeric: tabular-nums; text-align: center; -moz-appearance: textfield; }
+.people input[type="number"]::-webkit-outer-spin-button, .people input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.people input[type="range"] { flex: 1; min-width: 0; accent-color: var(--brand-green); }
+.result { background: var(--surface-card); border: 1px solid var(--line); border-radius: var(--radius-md); padding: 20px 16px; display: flex; flex-direction: column; gap: 16px; }
+.kg { margin: 0; font: 400 clamp(48px, 15vw, 64px)/1 var(--font-display); color: var(--ember); font-variant-numeric: tabular-nums; }
+.kg b { font-weight: 400; }
+.kg span { font-size: 0.4em; color: var(--ink); margin-left: 8px; }
+.bags { margin: 0; padding: 12px 16px; border-radius: var(--radius-sm); background: var(--surface-raised); border-left: 3px solid var(--brand-green); font-weight: 700; }
+.bags small { display: block; font-weight: 400; color: var(--ink-muted); }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 16px; margin: 0; padding-top: 16px; border-top: 1px solid var(--line); }
+.facts div { min-width: 0; }
+.facts dt { font: 600 11px/1.3 var(--font-label); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2px; }
+.facts dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.tip { margin: 0; font-size: 14px; color: var(--ink-soft); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--brand-green); border-radius: var(--radius-sm); padding: 13px 18px; font: 600 15px var(--font-sans); text-decoration: none; color: var(--on-brand); background: var(--brand-green); cursor: pointer; }
+.btn:hover { background: #68cc59; }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
+.btn.ghost:hover { background: rgba(255, 255, 255, .08); }
+.toast { margin: 0; font-size: 13px; color: var(--brand-green); min-height: 1em; }
+.check { display: flex; flex-direction: column; gap: 12px; }
+.check .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+.check .reset { appearance: none; background: none; border: 0; color: var(--ink-muted); font: 600 13px var(--font-label); text-decoration: underline; cursor: pointer; padding: 0; }
+.check ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.check li label { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-card); cursor: pointer; }
+.check li input { width: 20px; height: 20px; flex: none; accent-color: var(--brand-green); margin: 0; }
+.check li span { min-width: 0; overflow-wrap: anywhere; }
+.check li input:checked + span { color: var(--ink-muted); text-decoration: line-through; }
+.check .count { margin: 0; font-size: 13px; color: var(--ink-muted); }
+.promo { display: flex; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: linear-gradient(120deg, rgba(255, 122, 31, .18), rgba(255, 122, 31, 0) 60%), var(--surface-card); text-decoration: none; color: var(--ink); }
+.promo:hover { border-color: var(--brand-green); }
+.promo b { display: block; font-weight: 600; }
+.promo small { color: var(--ink-muted); }
+.promo .arrow { margin-left: auto; color: var(--brand-green); font-weight: 600; flex: none; }
+.note { margin: 0; font-size: 12px; color: var(--ink-muted); }
+.foot { margin: 0; font-size: 11px; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
+.foot b { color: var(--ink); font-weight: 600; }
+@media (max-width: 380px) { .facts { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<main class="wrap">
+  <div class="topbar">
+    <a class="back" href="../" data-i18n-aria="home"><span class="arrow">←</span><img src="../assets/icons/badge.svg" alt="" width="34" height="34">CARBONIS</a>
+    <div class="sp"></div>
+    <div class="lang-switch" data-lang-switch></div>
+  </div>
+
+  <header class="head">
+    <p class="eyebrow" data-i18n="eyebrow">BBQ-калькулятор · деревне вугілля</p>
+    <h1 data-i18n="h1">Скільки вугілля взяти на BBQ</h1>
+    <p class="lead" data-i18n-html="lead">Оберіть страву, кількість гостей і на чому готуєте. Ми порахуємо <b>кілограми і мішки</b>.</p>
+  </header>
+
+  <form id="calc" novalidate>
+    <fieldset>
+      <legend data-i18n="qDish">Що готуєте</legend>
+      <div class="chips" id="dishes"></div>
+    </fieldset>
+
+    <div>
+      <label class="label" for="people" data-i18n="qPeople">Скільки людей</label>
+      <div class="people">
+        <button type="button" id="minus" data-i18n-aria="less">−</button>
+        <input type="number" id="people" min="1" max="50" value="6" inputmode="numeric">
+        <button type="button" id="plus" data-i18n-aria="more">+</button>
+        <input type="range" id="peopleRange" min="1" max="50" value="6" data-i18n-aria="qPeople">
+      </div>
+    </div>
+
+    <fieldset>
+      <legend data-i18n="qDevice">На чому готуєте</legend>
+      <div class="seg">
+        <div>
+          <input type="radio" name="device" id="dev-mangal" value="mangal" checked>
+          <label for="dev-mangal"><span data-i18n="mangal">Мангал</span><small data-i18n="mangalSub">відкритий жар</small></label>
+        </div>
+        <div>
+          <input type="radio" name="device" id="dev-grill" value="grill">
+          <label for="dev-grill"><span data-i18n="grill">Гриль</span><small data-i18n="grillSub">з кришкою</small></label>
+        </div>
+      </div>
+    </fieldset>
+  </form>
+
+  <section class="result" aria-live="polite">
+    <p class="eyebrow" data-i18n="need">Вам потрібно вугілля</p>
+    <p class="kg"><b id="kg">0</b><span data-i18n="kgUnit">кг</span></p>
+    <p class="bags"><span id="bags"></span><small id="bagsNote"></small></p>
+    <dl class="facts">
+      <div><dt data-i18n="fFood">Продуктів</dt><dd id="food"></dd></div>
+      <div><dt data-i18n="fHeat">Жар</dt><dd id="heat"></dd></div>
+      <div><dt data-i18n="fTime">Час готування</dt><dd id="time"></dd></div>
+      <div><dt data-i18n="fLight">Розпал</dt><dd data-i18n="lightVal">20–25 хв до білого попелу</dd></div>
+    </dl>
+    <p class="tip" id="tip"></p>
+    <div class="actions">
+      <button type="button" class="btn" id="share" data-i18n="share">Поділитися розрахунком</button>
+      <a class="btn ghost" id="buy" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="buy">Де купити Carbonis</a>
+    </div>
+    <p class="toast" id="toast" role="status"></p>
+  </section>
+
+  <section class="check" aria-labelledby="checkTitle">
+    <div class="row">
+      <h2 id="checkTitle" data-i18n="checkTitle">Що взяти з собою</h2>
+      <button type="button" class="reset" id="checkReset" data-i18n="checkReset">Очистити</button>
+    </div>
+    <ul id="checklist"></ul>
+    <p class="count" id="checkCount"></p>
+  </section>
+
+  <a class="promo" href="../game/">
+    <img src="../assets/icons/icon-192.png" alt="" width="44" height="44" style="border-radius:10px">
+    <span><b data-i18n="promoTitle">Поки розгорається жар</b><small data-i18n="promoTxt">Пограйте в «Пригоди Вуглинки»: три міні-гри і рейтинг гравців.</small></span>
+    <span class="arrow" data-i18n="promoGo">Грати →</span>
+  </a>
+
+  <p class="note" data-i18n="note">Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше.</p>
+  <p class="foot"><span>© Carbonis charcoal group</span><span>Powered by <b>Max Vorozhko</b></span></p>
+</main>
+
+<script src="../js/common.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.Carbonis, t = C.t;
+
+  // ---- Налаштування: усі норми та коефіцієнти тут ----
+  var CONFIG = {
+    reserve: 1.1,            // запас 10%
+    bags: [10, 4, 2.5],      // фасування Carbonis, кг
+    devices: {
+      mangal: { k: 1.0,  min: 1.5, tip: { uk: "Розкладіть вугілля рівним шаром 5–7 см, шампури тримайте на висоті 10–15 см над жаром.", en: "Spread the coals in an even 5–7 cm layer and keep skewers 10–15 cm above the embers." } },
+      grill:  { k: 0.75, min: 1.0, tip: { uk: "Зробіть дві зони: вугілля з одного боку, порожньо з іншого. Кришка береже жар і вугілля.", en: "Set up two zones: coals on one side, empty on the other. The lid saves heat and charcoal." } }
+    },
+    // portion: кг сирого продукту на людину; k: кг вугілля на 1 кг продукту (для мангала)
+    dishes: [
+      { id: "shashlik", name: { uk: "Шашлик", en: "Kebabs" },     portion: 0.35, k: 1.0, heat: { uk: "Середній", en: "Medium" },             time: { uk: "15–20 хв на партію", en: "15–20 min per batch" } },
+      { id: "chicken",  name: { uk: "Курка", en: "Chicken" },     portion: 0.40, k: 1.0, heat: { uk: "Середній", en: "Medium" },             time: { uk: "25–35 хв", en: "25–35 min" } },
+      { id: "steak",    name: { uk: "Стейки", en: "Steaks" },     portion: 0.30, k: 0.9, heat: { uk: "Сильний", en: "High" },                time: { uk: "6–10 хв", en: "6–10 min" } },
+      { id: "ribs",     name: { uk: "Реберця", en: "Ribs" },      portion: 0.45, k: 1.5, heat: { uk: "Слабкий, довго", en: "Low and slow" }, time: { uk: "1,5–2 год", en: "1.5–2 h" } },
+      { id: "fish",     name: { uk: "Риба", en: "Fish" },         portion: 0.35, k: 0.7, heat: { uk: "Середній", en: "Medium" },             time: { uk: "10–15 хв", en: "10–15 min" } },
+      { id: "sausage",  name: { uk: "Ковбаски", en: "Sausages" }, portion: 0.25, k: 0.6, heat: { uk: "Середній", en: "Medium" },             time: { uk: "10–12 хв", en: "10–12 min" } },
+      { id: "veg",      name: { uk: "Овочі", en: "Veggies" },     portion: 0.30, k: 0.5, heat: { uk: "Слабкий", en: "Low" },                 time: { uk: "8–12 хв", en: "8–12 min" } }
+    ]
+  };
+
+  var DICT = {
+    home: { uk: "На головну", en: "Home" },
+    eyebrow: { uk: "BBQ-калькулятор · деревне вугілля", en: "BBQ calculator · lump charcoal" },
+    h1: { uk: "Скільки вугілля взяти на BBQ", en: "How much charcoal for your BBQ" },
+    lead: { uk: "Оберіть страву, кількість гостей і на чому готуєте. Ми порахуємо <b>кілограми і мішки</b>.", en: "Pick the dish, the number of guests and what you cook on. We'll work out the <b>kilograms and bags</b>." },
+    qDish: { uk: "Що готуєте", en: "What are you cooking" },
+    qPeople: { uk: "Скільки людей", en: "How many people" },
+    less: { uk: "Менше людей", en: "Fewer people" },
+    more: { uk: "Більше людей", en: "More people" },
+    qDevice: { uk: "На чому готуєте", en: "What are you cooking on" },
+    mangal: { uk: "Мангал", en: "Brazier" }, mangalSub: { uk: "відкритий жар", en: "open fire" },
+    grill: { uk: "Гриль", en: "Grill" }, grillSub: { uk: "з кришкою", en: "with a lid" },
+    need: { uk: "Вам потрібно вугілля", en: "You need charcoal" },
+    kgUnit: { uk: "кг", en: "kg" },
+    fFood: { uk: "Продуктів", en: "Food" }, fHeat: { uk: "Жар", en: "Heat" }, fTime: { uk: "Час готування", en: "Cooking time" }, fLight: { uk: "Розпал", en: "Lighting" },
+    lightVal: { uk: "20–25 хв до білого попелу", en: "20–25 min until white ash" },
+    share: { uk: "Поділитися розрахунком", en: "Share the result" },
+    buy: { uk: "Де купити Carbonis", en: "Where to buy Carbonis" },
+    copied: { uk: "Посилання скопійовано. Надішліть його друзям.", en: "Link copied. Send it to your friends." },
+    copyFail: { uk: "Не вдалося скопіювати. Скопіюйте адресу сторінки вручну.", en: "Couldn't copy. Copy the page address manually." },
+    checkTitle: { uk: "Що взяти з собою", en: "Packing checklist" },
+    checkReset: { uk: "Очистити", en: "Clear" },
+    promoTitle: { uk: "Поки розгорається жар", en: "While the coals heat up" },
+    promoTxt: { uk: "Пограйте в «Пригоди Вуглинки»: три міні-гри і рейтинг гравців.", en: "Play Coalie’s Adventures: three mini-games and a leaderboard." },
+    promoGo: { uk: "Грати →", en: "Play →" },
+    note: { uk: "Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше.", en: "An estimate with a 10% margin. In wind or cold, take a third more." }
+  };
+
+  // Список «що взяти»: id стабільні, щоб галочки зберігалися між візитами
+  function checklistItems(r, deviceId, dish) {
+    var items = [
+      { id: "coal", text: { uk: "Вугілля Carbonis: " + bagText(r, "uk"), en: "Carbonis charcoal: " + bagText(r, "en") } },
+      { id: "starter", text: { uk: "Розпалювач або сухі тріски, сірники", en: "Fire starter or dry kindling, matches" } },
+      deviceId === "mangal"
+        ? { id: "skewers", text: { uk: "Шампури або решітка для мангала", en: "Skewers or a grate for the brazier" } }
+        : { id: "grate", text: { uk: "Щітка для решітки гриля", en: "Grill grate brush" } },
+      { id: "tongs", text: { uk: "Щипці й термостійкі рукавиці", en: "Tongs and heat-resistant gloves" } },
+      { id: "food", text: { uk: t(dish.name) + ": " + fmt(r.food, 1) + " кг, маринад", en: t(dish.name) + ": " + fmt(r.food, 1) + " kg, marinade" } }
+    ];
+    if (dish.id === "steak" || dish.id === "chicken" || dish.id === "ribs") items.push({ id: "thermo", text: { uk: "Термометр для м'яса", en: "Meat thermometer" } });
+    items.push({ id: "water", text: { uk: "Вода, щоб загасити жар після готування", en: "Water to put out the coals afterwards" } });
+    items.push({ id: "bags", text: { uk: "Пакети для сміття й попелу", en: "Bags for rubbish and ash" } });
+    return items;
+  }
+
+  function fmt(n, digits) {
+    var s = n.toFixed(digits);
+    return C.lang === "en" ? s : s.replace(".", ",");
+  }
+
+  // Мішки, що покривають потребу: мінімум надлишку, але без купи дрібних мішків
+  function pickBags(need) {
+    var sizes = CONFIG.bags, best = null;
+    var maxBig = Math.ceil(need / sizes[0]);
+    for (var a = 0; a <= maxBig; a++) {
+      for (var b = 0; b <= 3; b++) {
+        for (var c = 0; c <= 4; c++) {
+          var total = a * sizes[0] + b * sizes[1] + c * sizes[2];
+          var count = a + b + c;
+          if (count === 0 || total < need - 1e-9) continue;
+          var score = total + 0.5 * count; // зайвий мішок "коштує" як 0,5 кг надлишку
+          if (!best || score < best.score - 1e-9) {
+            best = { total: total, count: count, counts: [a, b, c], score: score };
+          }
+        }
+      }
+    }
+    return best;
+  }
+
+  function calculate(dish, people, deviceId) {
+    var device = CONFIG.devices[deviceId];
+    var food = dish.portion * people;
+    var raw = Math.max(device.min, food * dish.k * device.k);
+    var need = Math.ceil(raw * CONFIG.reserve * 10) / 10;
+    return { food: food, need: need, bags: pickBags(need), device: device };
+  }
+
+  function bagText(r, l) {
+    var kg = l === "en" ? " kg" : " кг", parts = [];
+    r.bags.counts.forEach(function (n, i) {
+      if (n > 0) {
+        var s = String(CONFIG.bags[i]);
+        parts.push(n + " × " + (l === "en" ? s : s.replace(".", ",")) + kg);
+      }
+    });
+    return parts.join(" + ");
+  }
+
+  var dishesEl = document.getElementById("dishes");
+  CONFIG.dishes.forEach(function (d, i) {
+    var wrap = document.createElement("div");
+    var input = document.createElement("input");
+    input.type = "radio"; input.name = "dish"; input.id = "dish-" + d.id; input.value = d.id;
+    if (i === 0) input.checked = true;
+    var label = document.createElement("label");
+    label.htmlFor = input.id; label.dataset.dish = d.id;
+    wrap.appendChild(input); wrap.appendChild(label);
+    dishesEl.appendChild(wrap);
+  });
+
+  var peopleEl = document.getElementById("people");
+  var rangeEl = document.getElementById("peopleRange");
+
+  // Стан із посилання: ?dish=steak&people=8&device=grill
+  (function fromUrl() {
+    var q = new URLSearchParams(location.search);
+    var d = q.get("dish"), p = parseInt(q.get("people"), 10), dev = q.get("device");
+    if (d && document.getElementById("dish-" + d)) document.getElementById("dish-" + d).checked = true;
+    if (!isNaN(p)) { p = Math.min(50, Math.max(1, p)); peopleEl.value = p; rangeEl.value = p; }
+    if (dev && document.getElementById("dev-" + dev)) document.getElementById("dev-" + dev).checked = true;
+  })();
+
+  function getPeople() {
+    var n = parseInt(peopleEl.value, 10);
+    if (isNaN(n)) n = 1;
+    return Math.min(50, Math.max(1, n));
+  }
+  function state() {
+    var dishId = document.querySelector('input[name="dish"]:checked').value;
+    var deviceId = document.querySelector('input[name="device"]:checked').value;
+    return { dishId: dishId, deviceId: deviceId, people: getPeople(), dish: CONFIG.dishes.filter(function (d) { return d.id === dishId; })[0] };
+  }
+
+  var checked = C.store.get("calc.checked", {});
+  function renderChecklist(r, s) {
+    var ul = document.getElementById("checklist");
+    ul.textContent = "";
+    var items = checklistItems(r, s.deviceId, s.dish), done = 0;
+    items.forEach(function (it) {
+      var li = document.createElement("li"), label = document.createElement("label"), box = document.createElement("input"), span = document.createElement("span");
+      box.type = "checkbox"; box.checked = !!checked[it.id]; if (box.checked) done++;
+      box.addEventListener("change", function () { checked[it.id] = box.checked; C.store.set("calc.checked", checked); render(); });
+      span.textContent = t(it.text);
+      label.appendChild(box); label.appendChild(span); li.appendChild(label); ul.appendChild(li);
+    });
+    document.getElementById("checkCount").textContent = C.lang === "en"
+      ? done + " of " + items.length + " packed"
+      : "Зібрано " + done + " з " + items.length;
+  }
+
+  function render() {
+    var s = state(), r = calculate(s.dish, s.people, s.deviceId);
+    document.querySelectorAll("#dishes label").forEach(function (l) {
+      l.textContent = t(CONFIG.dishes.filter(function (d) { return d.id === l.dataset.dish; })[0].name);
+    });
+    document.getElementById("kg").textContent = fmt(r.need, 1);
+    document.getElementById("bags").textContent = (C.lang === "en" ? "Bags: " : "Мішки: ") + bagText(r, C.lang);
+    var tot = r.bags.total, totS = tot % 1 ? fmt(tot, 1) : String(tot);
+    document.getElementById("bagsNote").textContent = C.lang === "en" ? "total " + totS + " kg" : "разом " + totS + " кг";
+    document.getElementById("food").textContent = C.lang === "en"
+      ? fmt(r.food, 1) + " kg (" + Math.round(s.dish.portion * 1000) + " g per person)"
+      : fmt(r.food, 1) + " кг (" + Math.round(s.dish.portion * 1000) + " г на людину)";
+    document.getElementById("heat").textContent = t(s.dish.heat);
+    document.getElementById("time").textContent = t(s.dish.time);
+    document.getElementById("tip").textContent = t(r.device.tip);
+    renderChecklist(r, s);
+    // Адреса сторінки = поточний розрахунок, щоб ним було легко поділитися
+    var q = new URLSearchParams({ dish: s.dishId, people: String(s.people), device: s.deviceId });
+    history.replaceState(null, "", "?" + q.toString());
+    lastText = (C.lang === "en"
+      ? "Carbonis BBQ: " + t(s.dish.name) + " for " + s.people + " people needs " + fmt(r.need, 1) + " kg of charcoal (" + bagText(r, "en") + ")."
+      : "Carbonis BBQ: " + t(s.dish.name).toLowerCase() + " на " + s.people + " осіб, потрібно " + fmt(r.need, 1) + " кг вугілля (" + bagText(r, "uk") + ").");
+  }
+  var lastText = "";
+
+  function setPeople(n) {
+    n = Math.min(50, Math.max(1, n));
+    peopleEl.value = n; rangeEl.value = n;
+    render();
+  }
+
+  document.getElementById("minus").addEventListener("click", function () { setPeople(getPeople() - 1); });
+  document.getElementById("plus").addEventListener("click", function () { setPeople(getPeople() + 1); });
+  rangeEl.addEventListener("input", function () { setPeople(parseInt(rangeEl.value, 10)); });
+  peopleEl.addEventListener("input", function () { rangeEl.value = getPeople(); render(); });
+  peopleEl.addEventListener("blur", function () { setPeople(getPeople()); });
+  document.getElementById("calc").addEventListener("change", render);
+  document.getElementById("calc").addEventListener("submit", function (e) { e.preventDefault(); });
+
+  var toast = document.getElementById("toast"), toastTimer = 0;
+  function say(msg) { toast.textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(function () { toast.textContent = ""; }, 4000); }
+  document.getElementById("share").addEventListener("click", function () {
+    var url = location.href;
+    C.event("calc-share", "Калькулятор: поділились");
+    if (navigator.share) {
+      navigator.share({ title: "Carbonis BBQ", text: lastText, url: url }).catch(function () {});
+      return;
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(lastText + " " + url).then(function () { say(t(DICT.copied)); }, function () { say(t(DICT.copyFail)); });
+    } else say(t(DICT.copyFail));
+  });
+  document.getElementById("buy").addEventListener("click", function () { C.event("calc-buy", "Калькулятор: де купити"); });
+  document.getElementById("checkReset").addEventListener("click", function () { checked = {}; C.store.set("calc.checked", checked); render(); });
+
+  function paint() {
+    C.applyDict(DICT);
+    document.title = C.lang === "en" ? "Carbonis BBQ calculator" : "BBQ-калькулятор Carbonis";
+    document.getElementById("buy").href = C.siteUrl();
+    render();
+  }
+  C.onLang(paint);
+  paint();
+  C.autoOfferInstall = true;
+  setTimeout(function () { C.offerInstall(); }, 8000);
+})();
+</script>
+</body>
+</html>
