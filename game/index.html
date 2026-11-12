@@ -8,12 +8,10 @@
 <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
 <meta name="theme-color" content="#141414">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Carbonis BBQ">
 <title>Пригоди Вуглинки</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;400&family=Golos+Text:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
 <style>
 /* Layout: one-screen arcade. Brand bar → HUD strip → canvas stage → footer; menus are cards over the stage.
    Brand per carbonis.com.ua: near-black ground, bright tree-badge green, wide geometric caps for headings,
@@ -35,9 +33,10 @@
   color-scheme:dark;
 }
 html,body{height:100%;margin:0}
+@supports (height:100dvh){html,body{height:100dvh}}
 [hidden]{display:none!important}
 body{background:var(--bg);color:var(--text);font-family:var(--f-body);font-size:15px;overflow:hidden;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-#app{height:100%;display:flex;flex-direction:column;max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:8px 6px;box-sizing:border-box;gap:8px}
+#app{height:100%;display:flex;flex-direction:column;max-width:980px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(8px + env(safe-area-inset-top,0px)) calc(6px + env(safe-area-inset-bottom,0px));box-sizing:border-box;gap:8px}
 .bar{display:flex;align-items:center;gap:10px}
 .logo{display:flex;align-items:center;gap:10px;min-width:0;font:300 20px var(--f-display);letter-spacing:.04em;color:var(--text)}
 .logo img{height:40px;width:40px;display:block;flex:none}
@@ -113,13 +112,13 @@ td:last-child,th:last-child{text-align:right}
 tr.me td{color:var(--green);font-weight:700}
 .note{font-size:12px}
 .note:empty{display:none}
-select{background:var(--raise);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:11px 12px;font:600 15px var(--f-body)}
+select{background:var(--raise);border:1px solid var(--line);color:var(--text);border-radius:6px;padding:11px 12px;font:600 16px var(--f-body);max-width:100%}
 .namebox{display:flex;flex-direction:column;gap:10px;background:var(--raise);border:1px solid var(--line);border-radius:8px;padding:14px}
 td.nm{overflow-wrap:anywhere}
 .foot{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted);padding-inline:2px}
 .foot b{color:var(--text);font-weight:600}
 .foot a{color:var(--muted)}
-.logo{text-decoration:none}
+.logo{text-decoration:none;min-height:44px}
 .logo .arrow{font:400 18px var(--f-body);color:var(--muted);margin-right:-4px}
 .lang-switch{display:flex;border:1px solid var(--line);border-radius:6px;overflow:hidden;flex:none}
 .lang-switch button{appearance:none;background:transparent;border:0;color:var(--muted);font:600 12px var(--f-body);padding:8px 9px;cursor:pointer}

@@ -10,11 +10,9 @@
 <link rel="icon" type="image/png" href="../assets/icons/favicon-64.png">
 <link rel="apple-touch-icon" href="../assets/icons/apple-touch-icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="Carbonis BBQ">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Golos+Text:wght@400;600&family=Unbounded:wght@300;400&display=swap">
+<link rel="stylesheet" href="../assets/fonts/fonts.css">
 <style>
 /* Carbonis design system: dark grill at night. One column: three questions, one answer card, then actions and a packing checklist.
    Single dark theme by choice (brand). */
@@ -31,7 +29,7 @@
   --on-brand: #000000;
   --ember: #ff7a1f;
   --font-display: Unbounded, "Arial Black", sans-serif;
-  --font-sans: Inter, "Golos Text", system-ui, sans-serif;
+  --font-sans: "Golos Text", system-ui, sans-serif;
   --font-label: "Golos Text", system-ui, sans-serif;
   --radius-sm: 6px;
   --radius-md: 10px;
@@ -40,14 +38,14 @@
 html, body { margin: 0; }
 [hidden] { display: none !important; }
 body { background: var(--surface-page); color: var(--ink); font: 400 16px/1.4 var(--font-sans); -webkit-tap-highlight-color: transparent; }
-.wrap { max-width: 560px; margin: 0 auto; padding: calc(12px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 24px; }
-.topbar { display: flex; align-items: center; gap: 10px; }
-.back { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; font: 300 18px var(--font-display); letter-spacing: .04em; }
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 24px; }
+.topbar { display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 20; background: var(--surface-page); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) -12px; padding: calc(8px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); }
+.back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding-right: 12px; color: var(--ink); text-decoration: none; font: 300 18px var(--font-display); letter-spacing: .04em; }
 .back img { width: 34px; height: 34px; }
 .back span.arrow { font: 400 18px var(--font-sans); color: var(--ink-muted); }
 .sp { flex: 1; }
 .lang-switch { display: flex; border: 1px solid var(--line); border-radius: var(--radius-sm); overflow: hidden; }
-.lang-switch button { appearance: none; background: transparent; border: 0; color: var(--ink-muted); font: 600 13px var(--font-label); padding: 8px 11px; cursor: pointer; }
+.lang-switch button { appearance: none; background: transparent; border: 0; color: var(--ink-muted); font: 600 13px var(--font-label); padding: 10px 12px; cursor: pointer; }
 .lang-switch button[aria-pressed="true"] { background: var(--brand-green); color: var(--on-brand); }
 .head { display: flex; flex-direction: column; gap: 12px; }
 .eyebrow { margin: 0; color: var(--brand-green); font: 600 11px/1.3 var(--font-label); letter-spacing: 0.16em; text-transform: uppercase; }
@@ -102,6 +100,9 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 .check .count { margin: 0; font-size: 13px; color: var(--ink-muted); }
 .promo { display: flex; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: linear-gradient(120deg, rgba(255, 122, 31, .18), rgba(255, 122, 31, 0) 60%), var(--surface-card); text-decoration: none; color: var(--ink); }
 .promo:hover { border-color: var(--brand-green); }
+.promo > span:not(.arrow) { flex: 1; min-width: 0; }
+.promo .arrow { white-space: nowrap; }
+@media (max-width: 420px) { .promo { flex-wrap: wrap; } .promo > span:not(.arrow) { flex-basis: 60%; } .promo .arrow { margin-left: 58px; } }
 .promo b { display: block; font-weight: 600; }
 .promo small { color: var(--ink-muted); }
 .promo .arrow { margin-left: auto; color: var(--brand-green); font-weight: 600; flex: none; }
@@ -132,12 +133,12 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     </fieldset>
 
     <div>
-      <label class="label" for="people" data-i18n="qPeople">Скільки людей</label>
+      <label class="label" for="people" data-i18n="qPeople">Скільки людей (до 20)</label>
       <div class="people">
         <button type="button" id="minus" data-i18n-aria="less">−</button>
-        <input type="number" id="people" min="1" max="50" value="6" inputmode="numeric">
+        <input type="number" id="people" min="1" max="20" value="6" inputmode="numeric">
         <button type="button" id="plus" data-i18n-aria="more">+</button>
-        <input type="range" id="peopleRange" min="1" max="50" value="6" data-i18n-aria="qPeople">
+        <input type="range" id="peopleRange" min="1" max="20" value="6" data-i18n-aria="qPeople">
       </div>
     </div>
 
@@ -190,7 +191,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     <span class="arrow" data-i18n="promoGo">Грати →</span>
   </a>
 
-  <p class="note" data-i18n="note">Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше.</p>
+  <p class="note" data-i18n="note">Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше. Для компаній понад 20 людей і для закладів звертайтеся до Carbonis напряму.</p>
   <p class="foot"><span>© Carbonis charcoal group</span><span>Powered by <b>Max Vorozhko</b></span></p>
 </main>
 
@@ -202,6 +203,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 
   // ---- Налаштування: усі норми та коефіцієнти тут ----
   var CONFIG = {
+    maxPeople: 20,          // більше — це вже професійне використання
     reserve: 1.1,            // запас 10%
     bags: [10, 4, 2.5],      // фасування Carbonis, кг
     devices: {
@@ -226,7 +228,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     h1: { uk: "Скільки вугілля взяти на BBQ", en: "How much charcoal for your BBQ" },
     lead: { uk: "Оберіть страву, кількість гостей і на чому готуєте. Ми порахуємо <b>кілограми і мішки</b>.", en: "Pick the dish, the number of guests and what you cook on. We'll work out the <b>kilograms and bags</b>." },
     qDish: { uk: "Що готуєте", en: "What are you cooking" },
-    qPeople: { uk: "Скільки людей", en: "How many people" },
+    qPeople: { uk: "Скільки людей (до 20)", en: "How many people (up to 20)" },
     less: { uk: "Менше людей", en: "Fewer people" },
     more: { uk: "Більше людей", en: "More people" },
     qDevice: { uk: "На чому готуєте", en: "What are you cooking on" },
@@ -246,7 +248,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     promoTitle: { uk: "Поки розгорається жар", en: "While the coals heat up" },
     promoTxt: { uk: "Пограйте в «Пригоди Вуглинки»: три міні-гри і рейтинг гравців.", en: "Play Coalie’s Adventures: three mini-games and a leaderboard." },
     promoGo: { uk: "Грати →", en: "Play →" },
-    note: { uk: "Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше.", en: "An estimate with a 10% margin. In wind or cold, take a third more." }
+    note: { uk: "Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше. Для компаній понад 20 людей і для закладів звертайтеся до Carbonis напряму.", en: "An estimate with a 10% margin. In wind or cold, take a third more. For groups over 20 and for restaurants, contact Carbonis directly." }
   };
 
   // Список «що взяти»: id стабільні, щоб галочки зберігалися між візитами
@@ -330,14 +332,14 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     var q = new URLSearchParams(location.search);
     var d = q.get("dish"), p = parseInt(q.get("people"), 10), dev = q.get("device");
     if (d && document.getElementById("dish-" + d)) document.getElementById("dish-" + d).checked = true;
-    if (!isNaN(p)) { p = Math.min(50, Math.max(1, p)); peopleEl.value = p; rangeEl.value = p; }
+    if (!isNaN(p)) { p = Math.min(CONFIG.maxPeople, Math.max(1, p)); peopleEl.value = p; rangeEl.value = p; }
     if (dev && document.getElementById("dev-" + dev)) document.getElementById("dev-" + dev).checked = true;
   })();
 
   function getPeople() {
     var n = parseInt(peopleEl.value, 10);
     if (isNaN(n)) n = 1;
-    return Math.min(50, Math.max(1, n));
+    return Math.min(CONFIG.maxPeople, Math.max(1, n));
   }
   function state() {
     var dishId = document.querySelector('input[name="dish"]:checked').value;
@@ -389,7 +391,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   var lastText = "";
 
   function setPeople(n) {
-    n = Math.min(50, Math.max(1, n));
+    n = Math.min(CONFIG.maxPeople, Math.max(1, n));
     peopleEl.value = n; rangeEl.value = n;
     render();
   }
