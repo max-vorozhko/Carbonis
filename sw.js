@@ -1,7 +1,7 @@
 // Сервіс-воркер Carbonis BBQ: швидкий запуск з іконки на екрані й робота без інтернету (калькулятор і гра; рейтинг — лише онлайн).
 // Сторінки беремо з мережі, а якщо її немає — з кешу; решту файлів — з кешу з оновленням у фоні.
 // Firebase, шрифти Google і статистика йдуть повз кеш (інші домени).
-const CACHE = 'carbonis-bbq-v3';
+const CACHE = 'carbonis-bbq-v4';
 const CORE = [
   './', 'index.html', 'calculator/', 'calculator/index.html', 'guide/', 'guide/index.html', 'game/', 'game/index.html',
   'js/common.js', 'manifest.webmanifest', 'assets/fonts/fonts.css',

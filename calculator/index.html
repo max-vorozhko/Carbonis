@@ -56,7 +56,11 @@ h2 { margin: 0; font: 400 18px/1.25 var(--font-display); text-transform: upperca
 form { display: flex; flex-direction: column; gap: 20px; }
 fieldset { border: 0; padding: 0; margin: 0; min-width: 0; }
 legend, .label { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 var(--font-sans); color: var(--ink-soft); }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+.chips > div { display: flex; min-width: 0; }
+.chips > div > label { flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; min-height: 78px; padding: 10px 2px; font-size: 13px; line-height: 1.2; text-align: center; white-space: nowrap; }
+.chips label svg { width: 48px; height: 22px; flex: none; }
+@media (min-width: 520px) { .chips { grid-template-columns: repeat(7, minmax(0, 1fr)); } }
 .chips input, .seg input { position: absolute; opacity: 0; pointer-events: none; }
 .chips label, .seg label { display: block; padding: 11px 16px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); font-weight: 600; cursor: pointer; user-select: none; }
 .chips label:hover, .seg label:hover { border-color: var(--brand-green); }
@@ -64,7 +68,8 @@ legend, .label { display: block; padding: 0; margin-bottom: 10px; font: 600 13px
 .chips input:focus-visible + label, .seg input:focus-visible + label, button:focus-visible, a:focus-visible, input[type="range"]:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outline-offset: 0; border-color: var(--brand-green); }
 .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.seg label { text-align: center; padding: 14px 10px; }
+.seg > div { display: flex; min-width: 0; }
+.seg label { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; text-align: center; padding: 14px 10px; min-height: 64px; }
 .seg small { display: block; font-weight: 400; font-size: 12px; opacity: 0.75; }
 .people { display: flex; align-items: center; gap: 8px; }
 .people button { width: 44px; height: 44px; flex: none; border: 1px solid var(--ink); border-radius: var(--radius-sm); background: transparent; color: var(--ink); font: 600 22px var(--font-sans); cursor: pointer; }
@@ -109,7 +114,8 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 .note { margin: 0; font-size: 12px; color: var(--ink-muted); }
 .foot { margin: 0; font-size: 11px; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
 .foot b { color: var(--ink); font-weight: 600; }
-@media (max-width: 380px) { .facts { grid-template-columns: 1fr; } }
+@media (max-width: 330px) { .facts { grid-template-columns: 1fr; } }
+@media (max-width: 350px) { .chips > div > label { font-size: 12px; } }
 </style>
 </head>
 <body>
@@ -122,8 +128,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 
   <header class="head">
     <p class="eyebrow" data-i18n="eyebrow">BBQ-калькулятор · деревне вугілля</p>
-    <h1 data-i18n="h1">Скільки вугілля взяти на BBQ</h1>
-    <p class="lead" data-i18n-html="lead">Оберіть страву, кількість гостей і на чому готуєте. Ми порахуємо <b>кілограми і мішки</b>.</p>
+    <h1 data-i18n="h1">Скільки вугілля взяти</h1>
   </header>
 
   <form id="calc" novalidate>
@@ -165,11 +170,9 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
       <div><dt data-i18n="fFood">Продуктів</dt><dd id="food"></dd></div>
       <div><dt data-i18n="fHeat">Жар</dt><dd id="heat"></dd></div>
       <div><dt data-i18n="fTime">Час готування</dt><dd id="time"></dd></div>
-      <div><dt data-i18n="fLight">Розпал</dt><dd data-i18n="lightVal">20–25 хв до білого попелу</dd></div>
     </dl>
-    <p class="tip" id="tip"></p>
     <div class="actions">
-      <button type="button" class="btn" id="share" data-i18n="share">Поділитися розрахунком</button>
+      <button type="button" class="btn" id="share" data-i18n="share">Запросити друзів</button>
       <a class="btn ghost" id="howto" href="../guide/" data-i18n="howto">Як приготувати: кроки</a>
       <a class="btn ghost" id="buy" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="buy">Де купити Carbonis</a>
     </div>
@@ -185,13 +188,8 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     <p class="count" id="checkCount"></p>
   </section>
 
-  <a class="promo" href="../game/">
-    <img src="../assets/icons/icon-192.png" alt="" width="44" height="44" style="border-radius:10px">
-    <span><b data-i18n="promoTitle">Поки розгорається жар</b><small data-i18n="promoTxt">Пограйте в «Пригоди Вуглинки»: три міні-гри і рейтинг гравців.</small></span>
-    <span class="arrow" data-i18n="promoGo">Грати →</span>
-  </a>
 
-  <p class="note" data-i18n="note">Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше. Для компаній понад 20 людей і для закладів звертайтеся до Carbonis напряму.</p>
+  <p class="note" data-i18n="note">Орієнтовно, із запасом 10%. Понад 20 людей або заклад — звертайтеся до Carbonis.</p>
   <p class="foot"><span>© Carbonis charcoal group</span><span>Powered by <b>Max Vorozhko</b></span></p>
 </main>
 
@@ -225,7 +223,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   var DICT = {
     home: { uk: "На головну", en: "Home" },
     eyebrow: { uk: "BBQ-калькулятор · деревне вугілля", en: "BBQ calculator · lump charcoal" },
-    h1: { uk: "Скільки вугілля взяти на BBQ", en: "How much charcoal for your BBQ" },
+    h1: { uk: "Скільки вугілля взяти", en: "How much charcoal" },
     lead: { uk: "Оберіть страву, кількість гостей і на чому готуєте. Ми порахуємо <b>кілограми і мішки</b>.", en: "Pick the dish, the number of guests and what you cook on. We'll work out the <b>kilograms and bags</b>." },
     qDish: { uk: "Що готуєте", en: "What are you cooking" },
     qPeople: { uk: "Скільки людей (до 20)", en: "How many people (up to 20)" },
@@ -238,7 +236,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     kgUnit: { uk: "кг", en: "kg" },
     fFood: { uk: "Продуктів", en: "Food" }, fHeat: { uk: "Жар", en: "Heat" }, fTime: { uk: "Час готування", en: "Cooking time" }, fLight: { uk: "Розпал", en: "Lighting" },
     lightVal: { uk: "20–25 хв до білого попелу", en: "20–25 min until white ash" },
-    share: { uk: "Поділитися розрахунком", en: "Share the result" },
+    share: { uk: "Запросити друзів", en: "Invite friends" },
     buy: { uk: "Де купити Carbonis", en: "Where to buy Carbonis" },
     howto: { uk: "Як приготувати: кроки", en: "How to cook it: steps" },
     copied: { uk: "Посилання скопійовано. Надішліть його друзям.", en: "Link copied. Send it to your friends." },
@@ -248,7 +246,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     promoTitle: { uk: "Поки розгорається жар", en: "While the coals heat up" },
     promoTxt: { uk: "Пограйте в «Пригоди Вуглинки»: три міні-гри і рейтинг гравців.", en: "Play Coalie’s Adventures: three mini-games and a leaderboard." },
     promoGo: { uk: "Грати →", en: "Play →" },
-    note: { uk: "Розрахунок орієнтовний, із запасом 10%. У вітер і холод беріть на третину більше. Для компаній понад 20 людей і для закладів звертайтеся до Carbonis напряму.", en: "An estimate with a 10% margin. In wind or cold, take a third more. For groups over 20 and for restaurants, contact Carbonis directly." }
+    note: { uk: "Орієнтовно, із запасом 10%. Понад 20 людей або заклад — звертайтеся до Carbonis.", en: "An estimate with a 10% margin. Over 20 people or a restaurant? Contact Carbonis." }
   };
 
   // Список «що взяти»: id стабільні, щоб галочки зберігалися між візитами
@@ -319,7 +317,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     input.type = "radio"; input.name = "dish"; input.id = "dish-" + d.id; input.value = d.id;
     if (i === 0) input.checked = true;
     var label = document.createElement("label");
-    label.htmlFor = input.id; label.dataset.dish = d.id;
+    label.htmlFor = input.id; label.dataset.dish = d.id; label.innerHTML = C.foodIcon(d.id) + "<span></span>";
     wrap.appendChild(input); wrap.appendChild(label);
     dishesEl.appendChild(wrap);
   });
@@ -367,7 +365,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   function render() {
     var s = state(), r = calculate(s.dish, s.people, s.deviceId);
     document.querySelectorAll("#dishes label").forEach(function (l) {
-      l.textContent = t(CONFIG.dishes.filter(function (d) { return d.id === l.dataset.dish; })[0].name);
+      l.querySelector("span").textContent = t(CONFIG.dishes.filter(function (d) { return d.id === l.dataset.dish; })[0].name);
     });
     document.getElementById("kg").textContent = fmt(r.need, 1);
     document.getElementById("bags").textContent = (C.lang === "en" ? "Bags: " : "Мішки: ") + bagText(r, C.lang);
@@ -378,17 +376,21 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
       : fmt(r.food, 1) + " кг (" + Math.round(s.dish.portion * 1000) + " г на людину)";
     document.getElementById("heat").textContent = t(s.dish.heat);
     document.getElementById("time").textContent = t(s.dish.time);
-    document.getElementById("tip").textContent = t(r.device.tip);
     renderChecklist(r, s);
     document.getElementById("howto").href = "../guide/?dish=" + s.dishId + "&device=" + (s.deviceId === "grill" ? "kamado" : "mangal");
     // Адреса сторінки = поточний розрахунок, щоб ним було легко поділитися
     var q = new URLSearchParams({ dish: s.dishId, people: String(s.people), device: s.deviceId });
     history.replaceState(null, "", "?" + q.toString());
     lastText = (C.lang === "en"
-      ? "Carbonis BBQ: " + t(s.dish.name) + " for " + s.people + " people needs " + fmt(r.need, 1) + " kg of charcoal (" + bagText(r, "en") + ")."
-      : "Carbonis BBQ: " + t(s.dish.name).toLowerCase() + " на " + s.people + " осіб, потрібно " + fmt(r.need, 1) + " кг вугілля (" + bagText(r, "uk") + ").");
+      ? "You're invited " + INVITE[s.dishId].en + "! 🔥 There will be " + s.people + " of us. The Carbonis charcoal is sorted: " + fmt(r.need, 1) + " kg."
+      : "Запрошую " + INVITE[s.dishId].uk + "! 🔥 Нас буде " + s.people + ". Вугілля Carbonis уже пораховано: " + fmt(r.need, 1) + " кг.");
   }
   var lastText = "";
+  // «Запрошую на шашлик!»: страва у формі для запрошення
+  var INVITE = {
+    shashlik: { uk: "на шашлик", en: "for kebabs" }, chicken: { uk: "на курку з гриля", en: "for grilled chicken" }, steak: { uk: "на стейки", en: "for steaks" },
+    ribs: { uk: "на реберця", en: "for ribs" }, fish: { uk: "на рибу з гриля", en: "for grilled fish" }, sausage: { uk: "на ковбаски з гриля", en: "for grilled sausages" }, veg: { uk: "на овочі з гриля", en: "for grilled veggies" }
+  };
 
   function setPeople(n) {
     n = Math.min(CONFIG.maxPeople, Math.max(1, n));
@@ -407,15 +409,8 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   var toast = document.getElementById("toast"), toastTimer = 0;
   function say(msg) { toast.textContent = msg; clearTimeout(toastTimer); toastTimer = setTimeout(function () { toast.textContent = ""; }, 4000); }
   document.getElementById("share").addEventListener("click", function () {
-    var url = location.href;
-    C.event("calc-share", "Калькулятор: поділились");
-    if (navigator.share) {
-      navigator.share({ title: "Carbonis BBQ", text: lastText, url: url }).catch(function () {});
-      return;
-    }
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(lastText + " " + url).then(function () { say(t(DICT.copied)); }, function () { say(t(DICT.copyFail)); });
-    } else say(t(DICT.copyFail));
+    C.event("calc-share", "Калькулятор: запросили друзів");
+    C.share({ title: "Carbonis BBQ", text: lastText, url: location.href }).then(function (r) { say(C.shareMsg(r)); });
   });
   document.getElementById("buy").addEventListener("click", function () { C.event("calc-buy", "Калькулятор: де купити"); });
   document.getElementById("checkReset").addEventListener("click", function () { checked = {}; C.store.set("calc.checked", checked); render(); });

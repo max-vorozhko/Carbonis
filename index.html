@@ -60,6 +60,8 @@ h1{margin:0 0 clamp(20px,4vh,36px);font:400 clamp(24px,6vw,40px)/1.15 var(--f-di
 footer{padding-top:16px;padding-bottom:calc(20px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:6px 20px;font-size:12px;color:var(--muted)}
 footer a{color:var(--muted)}
 footer b{color:var(--text);font-weight:600}
+footer .linkbtn{appearance:none;background:none;border:0;padding:0;color:var(--green);font:600 12px var(--f-body);text-decoration:underline;cursor:pointer}
+footer #shareMsg:empty{display:none}
 </style>
 </head>
 <body>
@@ -96,8 +98,10 @@ footer b{color:var(--text);font-weight:600}
 <footer class="wrap">
   <span>© Carbonis charcoal group</span>
   <a id="siteLink" href="https://carbonis.com.ua/" target="_blank" rel="noopener">carbonis.com.ua</a>
+  <button type="button" class="linkbtn" id="shareApp" data-i18n="shareApp">Поділитися додатком</button>
   <span class="sp"></span>
   <span>Powered by <b>Max Vorozhko</b></span>
+  <span id="shareMsg" role="status" style="flex-basis:100%;color:var(--green)"></span>
 </footer>
 
 <script src="js/common.js"></script>
@@ -112,7 +116,8 @@ footer b{color:var(--text);font-weight:600}
     t2: { uk: 'Розпал і приготування', en: 'Lighting and cooking' },
     d2: { uk: 'Кроки для камадо і мангала з таймерами', en: 'Steps for kamado and brazier, with timers' },
     t3: { uk: 'Ігри', en: 'Games' },
-    d3: { uk: 'Три міні-гри про вугілля і рейтинг', en: 'Three charcoal mini-games and a leaderboard' }
+    d3: { uk: 'Три міні-гри про вугілля і рейтинг', en: 'Three charcoal mini-games and a leaderboard' },
+    shareApp: { uk: 'Поділитися додатком', en: 'Share the app' }
   };
   const paint = () => {
     C.applyDict(DICT);
@@ -120,6 +125,11 @@ footer b{color:var(--text);font-weight:600}
     document.getElementById('siteLink').href = C.siteUrl();
   };
   C.onLang(paint); paint();
+  document.getElementById('shareApp').addEventListener('click', () => {
+    C.event('app-share', 'Поділились додатком');
+    C.share({ title: 'Carbonis BBQ', text: C.lang === 'en' ? 'Carbonis BBQ: charcoal calculator, grilling steps and games 🔥' : 'Carbonis BBQ: підбір вугілля, кроки приготування на грилі та ігри 🔥', url: C.ROOT })
+      .then(r => { document.getElementById('shareMsg').textContent = C.shareMsg(r); });
+  });
   // Підказка «Встановити»: Android — коли браузер дозволить, iPhone — через кілька секунд
   C.autoOfferInstall = true;
   setTimeout(() => C.offerInstall(), 4000);
