@@ -1,22 +1,40 @@
-# Carbonis
+# Carbonis BBQ
 
-## Пригоди Вуглинки
+PWA-додаток Carbonis charcoal group: BBQ-калькулятор деревного вугілля і гра «Пригоди Вуглинки». Українська й англійська мови.
 
-Браузерна гра Carbonis на 9 рівнів: Вуглинка фасує вугілля в мішки, складає палети у фуру і смажить на грилі.
+- Відкрити: https://max-vorozhko.github.io/Carbonis/
+- Встановлення на телефон: iPhone — Safari → «Поділитися» → «На початковий екран»; Android — кнопка «Встановити» на сторінці.
 
-- Грати: https://max-vorozhko.github.io/Carbonis/
-- Код гри: [`game/index.html`](game/index.html), один файл без збірки.
+## Структура
 
-### Онлайн-рейтинг (Firebase)
+| Шлях | Що це |
+|---|---|
+| `index.html` | Головна: калькулятор і три гри |
+| `calculator/` | BBQ-калькулятор: кілограми, мішки, жар, час, чек-лист, «Поділитися» (стан у посиланні `?dish=&people=&device=`) |
+| `game/` | «Пригоди Вуглинки»: «Мішок», «Фура», «Гриль» по 3 рівні; `?mode=bag\|truck\|grill` відкриває одну гру, `#leaderboard` — рейтинг |
+| `js/common.js` | Спільне: мова UA/EN, статистика GoatCounter, сервіс-воркер, підказка «Встановити» |
+| `sw.js`, `manifest.webmanifest` | PWA: робота без інтернету, іконка на екрані |
+| `assets/icons/` | Іконки з логотипа Carbonis |
+| `firestore.rules` | Правила бази онлайн-рейтингу |
 
-Рейтинг спільний для всіх гравців: Firestore, колекція `carbonis_players`, один запис на гравця (анонімний вхід Firebase). Таблиці: загальний рахунок і рекорд кожного рівня. Онлайн-режим вмикається на `github.io` (або з `#online` в адресі); локально результати зберігаються лише в браузері.
+Норми калькулятора (порції, коефіцієнти, фасування мішків) — в об'єкті `CONFIG` у `calculator/index.html`.
+
+## Онлайн-рейтинг (Firebase)
+
+Firestore, колекція `carbonis_players`, один запис на гравця (анонімний вхід Firebase). Таблиці: загальний рахунок і рекорд кожного рівня. Онлайн-режим вмикається на `github.io` (або з `#online` в адресі); локально результати зберігаються лише в браузері.
 
 Налаштування один раз:
-1. https://console.firebase.google.com → Add project (напр. `carbonis-game`).
-2. Build → Authentication → Get started → Sign-in method → **Anonymous** → Enable.
-3. Build → Firestore Database → Create database (production mode, регіон `eur3`).
-4. Firestore → Rules: вставити вміст [`firestore.rules`](firestore.rules) → Publish.
-5. Project settings → Your apps → Web (`</>`) → зареєструвати застосунок і скопіювати `firebaseConfig` у константу `FIREBASE` в `game/index.html`.
-6. Authentication → Settings → Authorized domains: додати `max-vorozhko.github.io`.
+1. https://console.firebase.google.com → проєкт `carbonis-game`.
+2. Authentication → Sign-in method → **Anonymous** → Enable.
+3. Firestore Database → Rules: вміст [`firestore.rules`](firestore.rules) → Publish.
+4. Authentication → Settings → Authorized domains: `max-vorozhko.github.io`.
+
+## Статистика (GoatCounter)
+
+Перегляди сторінок і події (старт і проходження рівнів, «Поділитися», «Де купити», встановлення) рахує GoatCounter без cookie, лише на `github.io`. Код сайту — `goatcounter` у `js/common.js` (зараз `carbonis-bbq`); сайт з таким кодом треба зареєструвати на https://www.goatcounter.com/signup.
+
+## Оновлення
+
+Після змін у файлах, які кешує сервіс-воркер, збільшуйте номер у `CACHE` в `sw.js` (`carbonis-bbq-v1` → `v2`), щоб встановлені додатки підтягнули нову версію.
 
 Powered by Max Vorozhko
