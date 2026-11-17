@@ -103,7 +103,7 @@
     let bar = document.getElementById('cbInstall');
     if (bar) return bar;
     const css = document.createElement('style');
-    css.textContent = '.cb-install{position:fixed;left:0;right:0;bottom:0;z-index:50;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#1e1e1e;border-top:1px solid #353535;color:#fff;font:14px/1.45 "Golos Text",system-ui,sans-serif;display:flex;gap:12px;align-items:center;box-shadow:0 -8px 24px rgba(0,0,0,.4)}'
+    css.textContent = '.cb-install{position:fixed;left:0;right:0;bottom:var(--cb-nav-h,0px);z-index:50;padding:12px max(16px,env(safe-area-inset-right,0px)) calc(12px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#1e1e1e;border-top:1px solid #353535;color:#fff;font:14px/1.45 "Golos Text",system-ui,sans-serif;display:flex;gap:12px;align-items:center;box-shadow:0 -8px 24px rgba(0,0,0,.4)}'
       + '.cb-install img{width:40px;height:40px;border-radius:9px;flex:none}.cb-install div{flex:1;min-width:0}.cb-install b{font-weight:600}.cb-install strong{display:block;font-weight:600}'
       + '.cb-install p{margin:2px 0 0;color:#a3a3a3}.cb-install p b{color:#fff}.cb-install button{appearance:none;cursor:pointer;font:600 14px "Golos Text",system-ui,sans-serif;border-radius:6px}'
       + '.cb-install .go{background:#56b947;border:1px solid #56b947;color:#000;padding:10px 14px}.cb-install .x{background:transparent;border:0;color:#a3a3a3;font-size:22px;line-height:1;padding:6px 8px}';
@@ -169,10 +169,55 @@
   }
   const foodIcon = id => '<svg viewBox="-36 -14 72 28" aria-hidden="true">' + foodShape(id) + '</svg>';
 
+  /* ---------- вибір користувача: страва, люди, гриль — один на весь додаток ---------- */
+  const plan = {
+    get() { const p = store.get('plan', {}); return p && typeof p === 'object' ? p : {}; },
+    set(patch) { store.set('plan', Object.assign(plan.get(), patch)); }
+  };
+
+  /* ---------- нижня навігація ---------- */
+  const NAV = [
+    { id: 'plan', href: 'calculator/', label: { uk: 'Вугілля', en: 'Charcoal' }, icon: '<path d="M6 8h12l-1 13H7z"/><path d="M6 8c0-2 3-3 6-3s6 1 6 3"/><path d="M10 13h4"/>' },
+    { id: 'cook', href: 'guide/', label: { uk: 'Готування', en: 'Cooking' }, icon: '<path d="M12 3c2 3 5 5 5 10a5 5 0 0 1-10 0c0-3 2-4 3-6 0 2 1 2 1 2s2-3 1-6z"/><path d="M5 21h14"/>' },
+    { id: 'kamado', href: 'kamado/', label: { uk: 'Камадо', en: 'Kamado' }, icon: '<path d="M5 12a7 7 0 0 1 14 0c0 4-3 7-7 7s-7-3-7-7z"/><path d="M5 12h14M9 18.5l-1 3M15 18.5l1 3M11 5V3h2v2"/>' },
+    { id: 'games', href: 'game/', label: { uk: 'Ігри', en: 'Games' }, icon: '<path d="M8 8h8a5 5 0 0 1 5 5 4 4 0 0 1-7 2.3L13.5 15h-3l-.5.3A4 4 0 0 1 3 13a5 5 0 0 1 5-5z"/><path d="M8 11v3M6.5 12.5h3M16 12h.01"/>' }
+  ];
+  // nav('plan') — закріплена панель унизу сторінки; nav('games', { inline: el }) — вставляє панель у потік (для гри)
+  function nav(active, opts) {
+    if (!document.getElementById('cbNavCss')) {
+      const css = document.createElement('style'); css.id = 'cbNavCss';
+      css.textContent = '.cb-nav{position:fixed;left:0;right:0;bottom:0;z-index:40;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:#191919;border-top:1px solid #353535;padding:4px max(6px,env(safe-area-inset-right,0px)) calc(4px + env(safe-area-inset-bottom,0px)) max(6px,env(safe-area-inset-left,0px))}'
+        + '.cb-nav.inline{position:static;border:1px solid #353535;border-radius:10px;padding:2px 6px}'
+        + '.cb-nav a{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:52px;padding:4px 2px;color:#a3a3a3;font:600 11px/1.1 "Golos Text",system-ui,sans-serif;text-decoration:none;border-radius:8px;min-width:0}'
+        + '.cb-nav a span{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+        + '.cb-nav a[aria-current="page"]{color:#56b947}.cb-nav a:focus-visible{outline:2px solid #56b947;outline-offset:-2px}'
+        + '.cb-nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}';
+      document.head.appendChild(css);
+    }
+    const el = document.createElement('nav');
+    el.className = 'cb-nav' + (opts && opts.inline ? ' inline' : '');
+    NAV.forEach(n => {
+      const a = document.createElement('a');
+      a.href = ROOT + n.href; a.dataset.id = n.id;
+      if (n.id === active) a.setAttribute('aria-current', 'page');
+      a.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true">' + n.icon + '</svg><span></span>';
+      el.appendChild(a);
+    });
+    const paint = () => { el.setAttribute('aria-label', lang === 'en' ? 'Sections' : 'Розділи'); el.querySelectorAll('a').forEach((a, i) => { a.querySelector('span').textContent = t(NAV[i].label); }); };
+    paint(); listeners.push(paint);
+    if (opts && opts.inline) opts.inline.parentNode.insertBefore(el, opts.inline);
+    else {
+      document.body.appendChild(el);
+      document.documentElement.style.setProperty('--cb-nav-h', 'calc(61px + env(safe-area-inset-bottom, 0px))');
+      document.body.style.paddingBottom = 'calc(61px + env(safe-area-inset-bottom, 0px))';
+    }
+    return el;
+  }
+
   document.addEventListener('DOMContentLoaded', paintSwitches);
 
   window.Carbonis = {
-    CONFIG, LIVE, ROOT, store, t, applyDict, event, offerInstall, autoOfferInstall: false, share, shareMsg, foodShape, foodIcon,
+    CONFIG, LIVE, ROOT, store, t, applyDict, event, offerInstall, autoOfferInstall: false, share, shareMsg, foodShape, foodIcon, plan, nav,
     get lang() { return lang; }, setLang,
     onLang(fn) { listeners.push(fn); },
     siteUrl() { return CONFIG.site[lang] || CONFIG.site.uk; }

@@ -38,8 +38,8 @@
 html, body { margin: 0; }
 [hidden] { display: none !important; }
 body { background: var(--surface-page); color: var(--ink); font: 400 16px/1.45 var(--font-sans); -webkit-tap-highlight-color: transparent; }
-.wrap { max-width: 560px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-right, 0px)) calc(40px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 24px; }
-.topbar { display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 20; background: var(--surface-page); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) -12px; padding: calc(8px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); }
+.wrap { max-width: 560px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-right, 0px)) calc(112px + env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); display: flex; flex-direction: column; gap: 14px; }
+.topbar { display: flex; align-items: center; gap: 10px; position: sticky; top: 0; z-index: 20; background: var(--surface-page); margin: 0 calc(-1 * max(16px, env(safe-area-inset-left, 0px))) 0; padding: calc(8px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 1px solid var(--line); }
 .back { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding-right: 12px; color: var(--ink); text-decoration: none; font: 300 18px var(--font-display); letter-spacing: .04em; }
 .back img { width: 34px; height: 34px; }
 .back span.arrow { font: 400 18px var(--font-sans); color: var(--ink-muted); }
@@ -116,7 +116,16 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
 .btn.ghost:hover { background: rgba(255, 255, 255, .08); }
 .btn.small { padding: 9px 12px; font-size: 14px; }
 .btn:disabled { opacity: .35; cursor: default; }
-.nav { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.picked { appearance: none; display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; min-height: 52px; padding: 0 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-card); color: var(--ink); font: 600 16px var(--font-sans); text-align: left; cursor: pointer; }
+.picked b { flex: none; color: var(--brand-green); font-weight: 600; font-size: 14px; }
+.step p.main { font-size: 18px; line-height: 1.4; color: var(--ink); }
+.more summary { color: var(--brand-green); font: 600 14px var(--font-sans); cursor: pointer; padding: 6px 0; }
+.more p { margin-top: 4px; }
+.stepbar { position: fixed; left: 0; right: 0; bottom: var(--cb-nav-h, 0px); z-index: 30; background: rgba(20, 20, 20, .97); border-top: 1px solid var(--line); padding: 8px max(16px, env(safe-area-inset-right, 0px)) 8px max(16px, env(safe-area-inset-left, 0px)); }
+.stepbar .in { max-width: 528px; margin: 0 auto; display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+.stepbar .btn { min-height: 54px; font-size: 17px; }
+.stepbar .chip { grid-column: 1 / -1; appearance: none; min-height: 40px; padding: 0 12px; border: 1px solid var(--ember); border-radius: var(--radius-sm); background: var(--surface-raised); color: var(--ink); font: 600 14px var(--font-sans); font-variant-numeric: tabular-nums; text-align: left; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor: pointer; }
+.stepbar .chip.done { background: var(--ember); color: #000; }
 .outline { display: flex; flex-direction: column; gap: 12px; }
 .outline ol { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; counter-reset: s; }
 .outline li button { appearance: none; width: 100%; text-align: left; display: flex; align-items: baseline; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-card); color: var(--ink); font: 600 15px var(--font-sans); cursor: pointer; }
@@ -131,7 +140,7 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
 .promo b { display: block; font-weight: 600; }
 .promo small { color: var(--ink-muted); }
 .promo .arrow { margin-left: auto; color: var(--brand-green); font-weight: 600; flex: none; }
-.note { margin: 0; font-size: 12px; color: var(--ink-muted); }
+.note { margin: 0; font-size: 14px; color: #bdbdbd; }
 .foot { margin: 0; font-size: 11px; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
 .foot b { color: var(--ink); font-weight: 600; }
 </style>
@@ -144,12 +153,9 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     <div class="lang-switch" data-lang-switch></div>
   </div>
 
-  <header class="head">
-    <p class="eyebrow" data-i18n="eyebrow">Гід приготування · камадо і мангал</p>
-    <h1 data-i18n="h1">Від вугілля до страви</h1>
-  </header>
 
-  <form id="pick" novalidate>
+  <button type="button" class="picked" id="pickToggle" aria-expanded="false" aria-controls="pick"><span id="pickSummary"></span><b></b></button>
+  <form id="pick" novalidate hidden>
     <fieldset>
       <legend data-i18n="qDish">Що готуєте</legend>
       <div class="chips" id="dishes"></div>
@@ -169,14 +175,14 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     </fieldset>
   </form>
 
-  <dl class="facts" id="facts"></dl>
 
-  <section class="player" aria-labelledby="stepTitle">
+  <section class="player" id="player" aria-labelledby="stepTitle">
     <svg class="scene" id="scene" viewBox="0 0 320 200" role="img" aria-labelledby="stepTitle"></svg>
     <div class="step" aria-live="polite">
       <div class="count"><span class="eyebrow" id="stepCount"></span><span class="dots" id="dots"></span></div>
       <h2 id="stepTitle"></h2>
-      <p id="stepText"></p>
+      <p class="main" id="stepText"></p>
+      <details class="more" id="stepMoreBox" hidden><summary data-i18n="moreInfo">Докладніше</summary><p id="stepMore"></p></details>
       <ul class="params" id="stepParams"></ul>
       <p class="warn" id="stepWarn" hidden></p>
       <div class="timer" id="timer" hidden>
@@ -189,18 +195,22 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
         <p class="msg" id="tMsg" role="status"></p>
       </div>
       <a class="btn ghost small" id="stepLink" hidden></a>
-      <div class="nav">
-        <button type="button" class="btn ghost" id="prev" data-i18n="prev">Назад</button>
-        <button type="button" class="btn" id="next"></button>
-      </div>
     </div>
   </section>
 
 
 
+  <dl class="facts" id="facts"></dl>
+
   <p class="note" data-i18n="note">Час і температури орієнтовні. Готовність м'яса і птиці перевіряйте термометром.</p>
   <p class="foot"><span>© Carbonis charcoal group</span><span>Powered by <b>Max Vorozhko</b></span></p>
 </main>
+
+<div class="stepbar"><div class="in">
+  <button type="button" class="chip" id="tChip" hidden></button>
+  <button type="button" class="btn ghost" id="prev" data-i18n="prev">Назад</button>
+  <button type="button" class="btn" id="next"></button>
+</div></div>
 
 <script src="../js/common.js"></script>
 <script>
@@ -220,6 +230,7 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     kamado: L('Камадо', 'Kamado'), kamadoSub: L('з кришкою', 'with a lid'),
     mangal: L('Мангал', 'Brazier'), mangalSub: L('відкритий жар', 'open fire'),
     prev: L('Назад', 'Back'),
+    moreInfo: L('Докладніше', 'More detail'),
     outlineTitle: L('Усі кроки', 'All steps'),
     promoTitle: L('Скільки вугілля взяти', 'How much charcoal to bring'),
     promoTxt: L('Калькулятор порахує кілограми і мішки Carbonis для цієї страви.', 'The calculator works out kilograms and Carbonis bags for this dish.'),
@@ -453,11 +464,13 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     label.htmlFor = input.id; label.dataset.dish = d.id; label.innerHTML = C.foodIcon(d.id) + '<span></span>';
     wrap.appendChild(input); wrap.appendChild(label); dishesEl.appendChild(wrap);
   });
-  var stepIdx = 0, steps = [], lastAngle = -120;
-  (function fromUrl() {
-    var q = new URLSearchParams(location.search), d = q.get('dish'), dev = q.get('device'), s = parseInt(q.get('step'), 10);
-    if (d && $('dish-' + d)) $('dish-' + d).checked = true;
+  var stepIdx = 0, steps = [], lastAngle = -120, hadPlan = false;
+  // Вибір із посилання, а якщо його немає — той, що користувач зробив у «Вугіллі» чи минулого разу
+  (function init() {
+    var q = new URLSearchParams(location.search), plan = C.plan.get();
+    var d = q.get('dish') || plan.dish, dev = q.get('device') || plan.device, s = parseInt(q.get('step'), 10);
     if (dev === 'grill') dev = 'kamado';
+    if (d && $('dish-' + d)) { $('dish-' + d).checked = true; hadPlan = true; }
     if (dev && $('dev-' + dev)) $('dev-' + dev).checked = true;
     if (!isNaN(s)) stepIdx = Math.max(0, s - 1);
   })();
@@ -465,41 +478,67 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     var id = document.querySelector('input[name="dish"]:checked').value, dev = document.querySelector('input[name="device"]:checked').value;
     return { dish: DISHES.filter(function (d) { return d.id === id; })[0], dev: dev };
   }
+  function setPick(open) {
+    $('pick').hidden = !open;
+    $('pickToggle').setAttribute('aria-expanded', String(open));
+    $('pickToggle').querySelector('b').textContent = open ? T('Готово', 'Done') : T('Змінити', 'Change');
+  }
+  $('pickToggle').addEventListener('click', function () { setPick($('pick').hidden); });
 
-  // таймер
-  var tm = { left: 0, total: 0, run: false, id: 0, every: 0, sinceFlip: 0, ctx: null, lock: null };
+  // ---- Таймер: один активний, не скидається, коли гортаєш кроки ----
+  var act = null, tick = 0, actx = null, lock = null;
   function beep(n) {
     try {
-      tm.ctx = tm.ctx || new (window.AudioContext || window.webkitAudioContext)();
-      for (var i = 0; i < n; i++) { var o = tm.ctx.createOscillator(), g = tm.ctx.createGain(), at = tm.ctx.currentTime + i * .28; o.frequency.value = 880; g.gain.setValueAtTime(.18, at); g.gain.exponentialRampToValueAtTime(.001, at + .22); o.connect(g).connect(tm.ctx.destination); o.start(at); o.stop(at + .25); }
+      actx = actx || new (window.AudioContext || window.webkitAudioContext)();
+      if (actx.state === 'suspended') actx.resume();
+      for (var i = 0; i < n; i++) { var o = actx.createOscillator(), g = actx.createGain(), at = actx.currentTime + i * .28; o.frequency.value = 880; g.gain.setValueAtTime(.18, at); g.gain.exponentialRampToValueAtTime(.001, at + .22); o.connect(g).connect(actx.destination); o.start(at); o.stop(at + .25); }
     } catch (e) {}
-    if (navigator.vibrate) navigator.vibrate(n > 1 ? [200, 100, 200, 100, 200] : 150);
+    if (n && navigator.vibrate) navigator.vibrate(n > 1 ? [200, 100, 200, 100, 200] : 150);
   }
-  function clock() { var s = Math.max(0, Math.ceil(tm.left)); $('clock').textContent = String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+  function fmtClock(sec) { var s = Math.max(0, Math.ceil(sec)); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); }
+  function preset(i) { var s = steps[i]; return s && s.timer ? { step: i, left: s.timer, total: s.timer, every: s.every || 0, since: 0, run: false, msg: '', until: 0 } : null; }
+  function shown() { return act && act.step === stepIdx ? act : preset(stepIdx); }
+  function actMsg() { return act && act.msg && Date.now() < act.until ? act.msg : ''; }
   function paintTimer() {
-    $('tGo').textContent = tm.run ? T('Пауза', 'Pause') : (tm.left < tm.total && tm.left > 0 ? T('Далі', 'Resume') : T('Запустити таймер', 'Start timer'));
-    $('tPlus').textContent = T('+1 хв', '+1 min'); $('tReset').textContent = T('Скинути', 'Reset'); clock();
+    var v = shown();
+    $('timer').hidden = !v;
+    if (v) {
+      $('clock').textContent = fmtClock(v.left);
+      $('tGo').textContent = v.run ? T('Пауза', 'Pause') : (v.left < v.total && v.left > 0 ? T('Продовжити', 'Resume') : T('Запустити таймер', 'Start timer'));
+      $('tPlus').textContent = T('+1 хв', '+1 min'); $('tReset').textContent = T('Скинути', 'Reset');
+      $('tMsg').textContent = v === act ? actMsg() : '';
+    }
+    var chip = $('tChip'), elsewhere = !!act && act.step !== stepIdx && (act.run || act.left < act.total);
+    chip.hidden = !elsewhere;
+    if (elsewhere) chip.textContent = fmtClock(act.left) + ' · ' + steps[act.step].title + (actMsg() ? ' · ' + actMsg() : '');
+    chip.classList.toggle('done', elsewhere && act.left <= 0);
   }
-  function stopTimer() { tm.run = false; clearInterval(tm.id); if (tm.lock) { try { tm.lock.release(); } catch (e) {} tm.lock = null; } }
-  function setTimer(sec, every) { stopTimer(); tm.left = tm.total = sec; tm.every = every || 0; tm.sinceFlip = 0; $('tMsg').textContent = ''; $('timer').hidden = !sec; paintTimer(); }
-  $('tGo').addEventListener('click', function () {
-    if (tm.run) { stopTimer(); paintTimer(); return; }
-    if (tm.left <= 0) tm.left = tm.total;
-    tm.run = true; beep(0); var last = Date.now();
-    if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (l) { tm.lock = l; }, function () {});
-    C.event('guide-timer', 'Гід: таймер');
-    tm.id = setInterval(function () {
-      var now = Date.now(), d = (now - last) / 1000; last = now; tm.left -= d; tm.sinceFlip += d;
-      if (tm.every && tm.sinceFlip >= tm.every && tm.left > 5) { tm.sinceFlip = 0; beep(1); $('tMsg').textContent = T('Час перевернути!', 'Time to turn!'); setTimeout(function () { if ($('tMsg').textContent === T('Час перевернути!', 'Time to turn!')) $('tMsg').textContent = ''; }, 6000); }
-      if (tm.left <= 0) { tm.left = 0; stopTimer(); beep(3); $('tMsg').textContent = T('Час вийшов. Перевірте і переходьте до наступного кроку.', 'Time is up. Check and move to the next step.'); }
+  function stopTick() { clearInterval(tick); tick = 0; if (lock) { try { lock.release(); } catch (e) {} lock = null; } }
+  function startTick() {
+    if (tick) return;
+    var last = Date.now();
+    if (navigator.wakeLock) navigator.wakeLock.request('screen').then(function (l) { lock = l; }, function () {});
+    tick = setInterval(function () {
+      var now = Date.now(), d = (now - last) / 1000; last = now;
+      if (!act || !act.run) { stopTick(); return; }
+      act.left -= d; act.since += d;
+      if (act.every && act.since >= act.every && act.left > 5) { act.since = 0; beep(1); act.msg = T('Час перевернути!', 'Time to turn!'); act.until = Date.now() + 6000; }
+      if (act.left <= 0) { act.left = 0; act.run = false; stopTick(); beep(3); act.msg = T('Час вийшов', 'Time is up'); act.until = Infinity; }
       paintTimer();
     }, 250);
+  }
+  $('tGo').addEventListener('click', function () {
+    var v = shown(); if (!v) return;
+    if (act !== v) act = v;
+    if (act.run) { act.run = false; stopTick(); }
+    else { if (act.left <= 0) { act.left = act.total; act.since = 0; } act.msg = ''; act.run = true; beep(0); startTick(); C.event('guide-timer', 'Гід: таймер'); }
     paintTimer();
   });
-  $('tPlus').addEventListener('click', function () { tm.left += 60; tm.total = Math.max(tm.total, tm.left); $('tMsg').textContent = ''; paintTimer(); });
-  $('tReset').addEventListener('click', function () { setTimer(tm.total, tm.every); });
+  $('tPlus').addEventListener('click', function () { var v = shown(); if (!v) return; if (act !== v) act = v; act.left += 60; act.total = Math.max(act.total, act.left); act.msg = ''; paintTimer(); });
+  $('tReset').addEventListener('click', function () { if (act && act.step === stepIdx) { act = null; stopTick(); } paintTimer(); });
+  $('tChip').addEventListener('click', function () { if (act) { stepIdx = act.step; renderStep(); } });
 
-  function renderStep(keepTimer) {
+  function renderStep() {
     var s = steps[stepIdx], c = cur();
     $('scene').innerHTML = scene(s.scene);
     var n = $('needle');
@@ -507,7 +546,11 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     $('stepCount').textContent = T('Крок ', 'Step ') + (stepIdx + 1) + T(' із ', ' of ') + steps.length;
     var dots = $('dots'); dots.textContent = '';
     steps.forEach(function (st, i) { var b = document.createElement('button'); b.type = 'button'; b.className = i <= stepIdx ? 'on' : ''; b.setAttribute('aria-label', (i + 1) + '. ' + st.title); if (i === stepIdx) b.setAttribute('aria-current', 'step'); b.addEventListener('click', function () { stepIdx = i; renderStep(); }); dots.appendChild(b); });
-    $('stepTitle').textContent = s.title; $('stepText').textContent = s.text;
+    $('stepTitle').textContent = s.title;
+    // Головне — одним реченням великим шрифтом, решта під «Докладніше»
+    var m = s.text.match(/^([\s\S]+?[.!?])\s+([\s\S]+)$/);
+    $('stepText').textContent = m ? m[1] : s.text;
+    $('stepMoreBox').hidden = !m; $('stepMoreBox').open = false; $('stepMore').textContent = m ? m[2] : '';
     var ul = $('stepParams'); ul.textContent = '';
     (s.params || []).forEach(function (p) { var li = document.createElement('li'), b = document.createElement('b'); b.textContent = p[0]; li.appendChild(b); li.appendChild(document.createTextNode(p[1])); ul.appendChild(li); });
     $('stepWarn').hidden = !s.warn; $('stepWarn').textContent = s.warn || '';
@@ -515,18 +558,19 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     link.hidden = !(s.link || vid);
     if (s.link) { link.href = s.link.href; link.textContent = s.link.text; link.removeAttribute('target'); }
     else if (vid) { link.href = c.dish.video; link.textContent = T('Дивитись відео →', 'Watch the video →'); link.target = '_blank'; link.rel = 'noopener'; }
-    if (!keepTimer) setTimer(s.timer || 0, s.every || 0); else paintTimer();
+    paintTimer();
     $('prev').disabled = stepIdx === 0;
-    $('next').textContent = stepIdx === steps.length - 1 ? T('Почати спочатку', 'Start over') : T('Далі', 'Next');
-    document.querySelectorAll('#outline button').forEach(function (b, i) { if (i === stepIdx) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current'); });
+    $('next').textContent = stepIdx === steps.length - 1 ? T('Спочатку', 'Start over') : T('Далі', 'Next');
     history.replaceState(null, '', '?' + new URLSearchParams({ dish: c.dish.id, device: c.dev, step: String(stepIdx + 1) }).toString());
   }
   function render(keepStep) {
     var c = cur(), r = c.dish[c.dev], k = c.dev === 'kamado';
     steps = buildSteps(c.dish, c.dev);
-    if (!keepStep) stepIdx = 0;
+    if (!keepStep) { stepIdx = 0; act = null; stopTick(); }
     stepIdx = Math.min(stepIdx, steps.length - 1);
     document.querySelectorAll('#dishes label').forEach(function (l) { l.querySelector('span').textContent = t(DISHES.filter(function (d) { return d.id === l.dataset.dish; })[0].name); });
+    $('pickSummary').textContent = t(c.dish.name) + ' · ' + (k ? T('Камадо', 'Kamado') : T('Мангал', 'Brazier'));
+    C.plan.set({ dish: c.dish.id, device: c.dev });
     var total = (k ? 10 + r.heat[0] : 20) + r.cook[0] + (r.finish ? r.finish.cook[0] : 0) + c.dish.rest;
     var total2 = (k ? 15 + r.heat[1] : 25) + r.cook[1] + (r.finish ? r.finish.cook[1] : 0) + c.dish.rest;
     var facts = [
@@ -537,24 +581,28 @@ legend { display: block; padding: 0; margin-bottom: 10px; font: 600 13px/1.35 va
     ];
     var dl = $('facts'); dl.textContent = '';
     facts.forEach(function (f) { var d = document.createElement('div'), dt = document.createElement('dt'), dd = document.createElement('dd'); dt.textContent = f[0]; dd.textContent = f[1]; if (f[2]) dd.className = f[2]; d.appendChild(dt); d.appendChild(dd); dl.appendChild(d); });
-    renderStep(keepStep === 'lang');
+    renderStep();
   }
-  $('prev').addEventListener('click', function () { if (stepIdx > 0) { stepIdx--; renderStep(); } });
+  $('prev').addEventListener('click', function () { if (stepIdx > 0) { stepIdx--; renderStep(); scrollToPlayer(); } });
   $('next').addEventListener('click', function () {
     if (stepIdx === steps.length - 1) { stepIdx = 0; C.event('guide-done-' + cur().dish.id, 'Гід: пройдено ' + cur().dish.id); }
     else stepIdx++;
-    renderStep();
+    renderStep(); scrollToPlayer();
   });
+  // Після «Далі» схема кроку знову на екрані
+  function scrollToPlayer() { var top = $('player').getBoundingClientRect().top; if (top < 56 || top > innerHeight * .5) scrollBy({ top: top - 64, behavior: 'smooth' }); }
   $('pick').addEventListener('change', function () { var c = cur(); C.event('guide-' + c.dish.id + '-' + c.dev, 'Гід: ' + c.dish.id + ' / ' + c.dev); render(false); });
   $('pick').addEventListener('submit', function (e) { e.preventDefault(); });
 
   function paint(first) {
     C.applyDict(DICT);
     document.title = T('Гід приготування Carbonis', 'Carbonis cooking guide');
-    render(first === true ? true : 'lang');
+    render(true);
+    setPick(first === true ? !hadPlan : !$('pick').hidden);
   }
   C.onLang(function () { paint(); });
   paint(true);
+  C.nav('cook');
 })();
 </script>
 </body>

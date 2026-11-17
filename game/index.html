@@ -232,7 +232,7 @@ td.nm{overflow-wrap:anywhere}
       </section>
     </div>
   </div>
-  <div class="foot"><span>© Carbonis charcoal group · <a href="../calculator/" data-i18n="calcLink">BBQ-калькулятор</a></span><span>Powered by <b>Max Vorozhko</b></span></div>
+  <div class="foot" id="gameFoot"><span>© Carbonis charcoal group · <a href="../calculator/" data-i18n="calcLink">BBQ-калькулятор</a></span><span>Powered by <b>Max Vorozhko</b></span></div>
 </div>
 
 <script src="../js/common.js"></script>
@@ -773,7 +773,9 @@ const DICT={
 };
 const screens=['scrMenu','scrMap','scrIntro','scrPause','scrResult','scrBoard'];
 let shown='scrMenu';
-function show(id){shown=id;screens.forEach(s=>$('#'+s).hidden=s!==id);$('#btnPause').hidden=!(game&&game.running&&!id)}
+function show(id){shown=id;screens.forEach(s=>$('#'+s).hidden=s!==id);const playing=!!(game&&game.running&&!id);$('#btnPause').hidden=!playing;if(navEl)navEl.hidden=playing}
+// Нижня навігація видна в меню, під час рівня ховається, щоб не заважати грі
+const navEl=C.nav('games',{inline:$('#gameFoot')});
 let game=null,paused=false,curLevel=null,boardReturn='scrMenu';
 const nameIn=$('#playerName');nameIn.value=playerName;
 nameIn.addEventListener('input',()=>{playerName=cleanName(nameIn.value);store.set('name',playerName)});
