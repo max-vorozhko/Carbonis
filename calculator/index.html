@@ -88,21 +88,28 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 .facts dt { font: 600 11px/1.3 var(--font-label); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 2px; }
 .facts dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
 .tip { margin: 0; font-size: 14px; color: var(--ink-soft); }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.btn.primary { min-height: 54px; font-size: 17px; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--brand-green); border-radius: var(--radius-sm); padding: 13px 18px; font: 600 15px var(--font-sans); text-decoration: none; color: var(--on-brand); background: var(--brand-green); cursor: pointer; }
 .btn:hover { background: #68cc59; }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
 .btn.ghost:hover { background: rgba(255, 255, 255, .08); }
 .toast { margin: 0; font-size: 13px; color: var(--brand-green); min-height: 1em; }
-.check { display: flex; flex-direction: column; gap: 12px; }
+.check { border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-card); }
+.check summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 52px; padding: 0 16px; font-weight: 600; cursor: pointer; list-style: none; }
+.check summary::-webkit-details-marker { display: none; }
+.check summary::after { content: "+"; color: var(--brand-green); font-size: 22px; line-height: 1; }
+.check[open] summary::after { content: "−"; }
+.check summary .count { margin-left: auto; }
+.check ul, .check .reset { margin: 0 12px 12px !important; }
 .check .row { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
 .check .reset { appearance: none; background: none; border: 0; color: var(--ink-muted); font: 600 13px var(--font-label); text-decoration: underline; cursor: pointer; padding: 0; }
 .check ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
-.check li label { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-card); cursor: pointer; }
+.check li label { display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-raised); cursor: pointer; }
 .check li input { width: 20px; height: 20px; flex: none; accent-color: var(--brand-green); margin: 0; }
 .check li span { min-width: 0; overflow-wrap: anywhere; }
 .check li input:checked + span { color: var(--ink-muted); text-decoration: line-through; }
-.check .count { margin: 0; font-size: 13px; color: var(--ink-muted); }
+.check .count { font-size: 13px; font-weight: 400; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
 .promo { display: flex; gap: 14px; align-items: center; padding: 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: linear-gradient(120deg, rgba(255, 122, 31, .18), rgba(255, 122, 31, 0) 60%), var(--surface-card); text-decoration: none; color: var(--ink); }
 .promo:hover { border-color: var(--brand-green); }
 .promo > span:not(.arrow) { flex: 1; min-width: 0; }
@@ -111,7 +118,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 .promo b { display: block; font-weight: 600; }
 .promo small { color: var(--ink-muted); }
 .promo .arrow { margin-left: auto; color: var(--brand-green); font-weight: 600; flex: none; }
-.note { margin: 0; font-size: 12px; color: var(--ink-muted); }
+.note { margin: 0; font-size: 14px; color: #bdbdbd; }
 .foot { margin: 0; font-size: 11px; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
 .foot b { color: var(--ink); font-weight: 600; }
 @media (max-width: 330px) { .facts { grid-template-columns: 1fr; } }
@@ -127,7 +134,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   </div>
 
   <header class="head">
-    <p class="eyebrow" data-i18n="eyebrow">BBQ-калькулятор · деревне вугілля</p>
+    <p class="eyebrow" data-i18n="eyebrow">Планую BBQ</p>
     <h1 data-i18n="h1">Скільки вугілля взяти</h1>
   </header>
 
@@ -155,8 +162,8 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
           <label for="dev-mangal"><span data-i18n="mangal">Мангал</span><small data-i18n="mangalSub">відкритий жар</small></label>
         </div>
         <div>
-          <input type="radio" name="device" id="dev-grill" value="grill">
-          <label for="dev-grill"><span data-i18n="grill">Гриль</span><small data-i18n="grillSub">з кришкою</small></label>
+          <input type="radio" name="device" id="dev-kamado" value="kamado">
+          <label for="dev-kamado"><span data-i18n="grill">Камадо</span><small data-i18n="grillSub">гриль з кришкою</small></label>
         </div>
       </div>
     </fieldset>
@@ -171,22 +178,19 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
       <div><dt data-i18n="fHeat">Жар</dt><dd id="heat"></dd></div>
       <div><dt data-i18n="fTime">Час готування</dt><dd id="time"></dd></div>
     </dl>
+    <a class="btn primary" id="howto" href="../guide/" data-i18n="howto">Готувати покроково →</a>
     <div class="actions">
-      <button type="button" class="btn" id="share" data-i18n="share">Запросити друзів</button>
-      <a class="btn ghost" id="howto" href="../guide/" data-i18n="howto">Як приготувати: кроки</a>
-      <a class="btn ghost" id="buy" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="buy">Де купити Carbonis</a>
+      <button type="button" class="btn ghost" id="share" data-i18n="share">Запросити друзів</button>
+      <a class="btn ghost" id="buy" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="buy">Де купити</a>
     </div>
     <p class="toast" id="toast" role="status"></p>
   </section>
 
-  <section class="check" aria-labelledby="checkTitle">
-    <div class="row">
-      <h2 id="checkTitle" data-i18n="checkTitle">Що взяти з собою</h2>
-      <button type="button" class="reset" id="checkReset" data-i18n="checkReset">Очистити</button>
-    </div>
+  <details class="check" id="checkBox">
+    <summary><span data-i18n="checkTitle">Що взяти з собою</span><span class="count" id="checkCount"></span></summary>
     <ul id="checklist"></ul>
-    <p class="count" id="checkCount"></p>
-  </section>
+    <button type="button" class="reset" id="checkReset" data-i18n="checkReset">Очистити</button>
+  </details>
 
 
   <p class="note" data-i18n="note">Орієнтовно, із запасом 10%. Понад 20 людей або заклад — звертайтеся до Carbonis.</p>
@@ -206,7 +210,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     bags: [10, 4, 2.5],      // фасування Carbonis, кг
     devices: {
       mangal: { k: 1.0,  min: 1.5, tip: { uk: "Розкладіть вугілля рівним шаром 5–7 см, шампури тримайте на висоті 10–15 см над жаром.", en: "Spread the coals in an even 5–7 cm layer and keep skewers 10–15 cm above the embers." } },
-      grill:  { k: 0.75, min: 1.0, tip: { uk: "Зробіть дві зони: вугілля з одного боку, порожньо з іншого. Кришка береже жар і вугілля.", en: "Set up two zones: coals on one side, empty on the other. The lid saves heat and charcoal." } }
+      kamado: { k: 0.75, min: 1.0, tip: { uk: "Зробіть дві зони: вугілля з одного боку, порожньо з іншого. Кришка береже жар і вугілля.", en: "Set up two zones: coals on one side, empty on the other. The lid saves heat and charcoal." } }
     },
     // portion: кг сирого продукту на людину; k: кг вугілля на 1 кг продукту (для мангала)
     dishes: [
@@ -222,7 +226,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
 
   var DICT = {
     home: { uk: "На головну", en: "Home" },
-    eyebrow: { uk: "BBQ-калькулятор · деревне вугілля", en: "BBQ calculator · lump charcoal" },
+    eyebrow: { uk: "Планую BBQ", en: "Planning a BBQ" },
     h1: { uk: "Скільки вугілля взяти", en: "How much charcoal" },
     lead: { uk: "Оберіть страву, кількість гостей і на чому готуєте. Ми порахуємо <b>кілограми і мішки</b>.", en: "Pick the dish, the number of guests and what you cook on. We'll work out the <b>kilograms and bags</b>." },
     qDish: { uk: "Що готуєте", en: "What are you cooking" },
@@ -231,14 +235,14 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     more: { uk: "Більше людей", en: "More people" },
     qDevice: { uk: "На чому готуєте", en: "What are you cooking on" },
     mangal: { uk: "Мангал", en: "Brazier" }, mangalSub: { uk: "відкритий жар", en: "open fire" },
-    grill: { uk: "Гриль", en: "Grill" }, grillSub: { uk: "з кришкою", en: "with a lid" },
+    grill: { uk: "Камадо", en: "Kamado" }, grillSub: { uk: "гриль з кришкою", en: "grill with a lid" },
     need: { uk: "Вам потрібно вугілля", en: "You need charcoal" },
     kgUnit: { uk: "кг", en: "kg" },
     fFood: { uk: "Продуктів", en: "Food" }, fHeat: { uk: "Жар", en: "Heat" }, fTime: { uk: "Час готування", en: "Cooking time" }, fLight: { uk: "Розпал", en: "Lighting" },
     lightVal: { uk: "20–25 хв до білого попелу", en: "20–25 min until white ash" },
     share: { uk: "Запросити друзів", en: "Invite friends" },
-    buy: { uk: "Де купити Carbonis", en: "Where to buy Carbonis" },
-    howto: { uk: "Як приготувати: кроки", en: "How to cook it: steps" },
+    buy: { uk: "Де купити", en: "Where to buy" },
+    howto: { uk: "Готувати покроково →", en: "Cook step by step →" },
     copied: { uk: "Посилання скопійовано. Надішліть його друзям.", en: "Link copied. Send it to your friends." },
     copyFail: { uk: "Не вдалося скопіювати. Скопіюйте адресу сторінки вручну.", en: "Couldn't copy. Copy the page address manually." },
     checkTitle: { uk: "Що взяти з собою", en: "Packing checklist" },
@@ -325,10 +329,11 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   var peopleEl = document.getElementById("people");
   var rangeEl = document.getElementById("peopleRange");
 
-  // Стан із посилання: ?dish=steak&people=8&device=grill
+  // Стан із посилання (?dish=steak&people=8&device=kamado), а якщо його немає — останній вибір користувача
   (function fromUrl() {
-    var q = new URLSearchParams(location.search);
-    var d = q.get("dish"), p = parseInt(q.get("people"), 10), dev = q.get("device");
+    var q = new URLSearchParams(location.search), plan = C.plan.get();
+    var d = q.get("dish") || plan.dish, p = parseInt(q.get("people") || plan.people, 10), dev = q.get("device") || plan.device;
+    if (dev === "grill") dev = "kamado";
     if (d && document.getElementById("dish-" + d)) document.getElementById("dish-" + d).checked = true;
     if (!isNaN(p)) { p = Math.min(CONFIG.maxPeople, Math.max(1, p)); peopleEl.value = p; rangeEl.value = p; }
     if (dev && document.getElementById("dev-" + dev)) document.getElementById("dev-" + dev).checked = true;
@@ -357,9 +362,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
       span.textContent = t(it.text);
       label.appendChild(box); label.appendChild(span); li.appendChild(label); ul.appendChild(li);
     });
-    document.getElementById("checkCount").textContent = C.lang === "en"
-      ? done + " of " + items.length + " packed"
-      : "Зібрано " + done + " з " + items.length;
+    document.getElementById("checkCount").textContent = done + " / " + items.length;
   }
 
   function render() {
@@ -377,7 +380,8 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
     document.getElementById("heat").textContent = t(s.dish.heat);
     document.getElementById("time").textContent = t(s.dish.time);
     renderChecklist(r, s);
-    document.getElementById("howto").href = "../guide/?dish=" + s.dishId + "&device=" + (s.deviceId === "grill" ? "kamado" : "mangal");
+    document.getElementById("howto").href = "../guide/?dish=" + s.dishId + "&device=" + s.deviceId;
+    C.plan.set({ dish: s.dishId, people: s.people, device: s.deviceId });
     // Адреса сторінки = поточний розрахунок, щоб ним було легко поділитися
     var q = new URLSearchParams({ dish: s.dishId, people: String(s.people), device: s.deviceId });
     history.replaceState(null, "", "?" + q.toString());
@@ -423,6 +427,7 @@ input[type="number"]:focus-visible { outline: 2px solid var(--brand-green); outl
   }
   C.onLang(paint);
   paint();
+  C.nav("plan");
   C.autoOfferInstall = true;
   setTimeout(function () { C.offerInstall(); }, 8000);
 })();
