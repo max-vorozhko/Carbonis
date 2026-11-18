@@ -76,6 +76,47 @@ details.box li { margin: 4px 0; }
 .btn { display: inline-flex; align-items: center; justify-content: center; text-align: center; border: 1px solid var(--brand-green); border-radius: var(--radius-sm); min-height: 48px; padding: 8px 12px; font: 600 15px var(--font-sans); text-decoration: none; color: var(--on-brand); background: var(--brand-green); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
 .note { margin: 0; font-size: 14px; color: #bdbdbd; }
+.product { display: flex; flex-direction: column; gap: 14px; scroll-margin-top: 72px; }
+.product .pname { font-size: 20px; }
+.product .psub { margin: -8px 0 0; color: var(--ink-soft); }
+.gallery { display: flex; flex-direction: column; gap: 8px; }
+.stage { position: relative; aspect-ratio: 1 / 1; max-width: 100%; background: #fff; border-radius: var(--radius-md); overflow: hidden; touch-action: pan-y; }
+.stage img { width: 100%; height: 100%; object-fit: contain; display: block; user-select: none; -webkit-user-drag: none; }
+.stage .gcap { position: absolute; left: 10px; bottom: 10px; max-width: calc(100% - 20px); padding: 5px 10px; border-radius: 6px; background: rgba(20, 20, 20, .78); color: #fff; font-size: 13px; font-weight: 600; }
+.stage .gnav { position: absolute; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; border: 0; border-radius: 50%; background: rgba(20, 20, 20, .6); color: #fff; font: 600 22px var(--font-sans); cursor: pointer; }
+.stage .gnav.prev { left: 8px; } .stage .gnav.next { right: 8px; }
+.stage .gcount { position: absolute; right: 10px; top: 10px; padding: 3px 8px; border-radius: 6px; background: rgba(20, 20, 20, .6); color: #fff; font-size: 12px; font-variant-numeric: tabular-nums; }
+.thumbs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; }
+.thumbs button { appearance: none; padding: 0; aspect-ratio: 1 / 1; border: 2px solid transparent; border-radius: 8px; background: #fff; overflow: hidden; cursor: pointer; }
+.thumbs button[aria-current="true"] { border-color: var(--brand-green); }
+.thumbs img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.buy { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius-md); background: var(--surface-card); }
+.buy .plabel { display: block; font: 600 11px var(--font-sans); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-muted); }
+.buy b { font: 400 20px var(--font-display); }
+.pspec { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 0; }
+.pspec div { padding: 10px 8px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-card); min-width: 0; text-align: center; }
+.pspec dt { font: 600 10px/1.25 var(--font-sans); letter-spacing: .05em; text-transform: uppercase; color: var(--ink-muted); }
+.pspec dd { margin: 4px 0 0; font-weight: 600; font-variant-numeric: tabular-nums; }
+.pspec dd.hot { color: var(--ember); }
+@media (max-width: 380px) { .pspec { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.product h3 { margin: 6px 0 0; font: 400 15px/1.25 var(--font-display); text-transform: uppercase; }
+.modes { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.modes li { padding: 10px 12px; border: 1px solid var(--line); border-radius: var(--radius-sm); background: var(--surface-card); min-width: 0; }
+.modes b { display: block; }
+.modes span { color: var(--ember); font-weight: 600; font-variant-numeric: tabular-nums; }
+.modes small { display: block; color: var(--ink-muted); font-size: 13px; }
+.pdesc p { margin: 0 0 10px; color: var(--ink-soft); }
+.pdesc p:last-child { margin-bottom: 0; }
+.feat { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.feat li { position: relative; padding-left: 22px; color: var(--ink-soft); }
+.feat li::before { content: ""; position: absolute; left: 4px; top: .55em; width: 8px; height: 8px; border-radius: 2px; background: var(--brand-green); }
+.ptable { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.ptable th, .ptable td { padding: 9px 16px; border-top: 1px solid var(--line); text-align: left; font-size: 14px; vertical-align: top; }
+.ptable th { color: var(--ink-muted); font-weight: 600; width: 46%; }
+.pacts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.toast { margin: 0; font-size: 13px; color: var(--brand-green); }
+.toast:empty { display: none; }
+.divider { height: 1px; background: var(--line); margin: 8px 0; }
 .foot { margin: 0; font-size: 11px; color: var(--ink-muted); display: flex; flex-wrap: wrap; gap: 6px 16px; justify-content: space-between; }
 .foot b { color: var(--ink); font-weight: 600; }
 </style>
@@ -89,9 +130,53 @@ details.box li { margin: 4px 0; }
   </div>
 
   <header>
-    <p class="eyebrow" data-i18n="eyebrow">Kamado Bono · керамічні грилі</p>
+    <p class="eyebrow" data-i18n="eyebrow">Керамічні грилі</p>
     <h1 data-i18n="h1">Грилі камадо</h1>
     <p class="lead" data-i18n="lead">Товста кераміка тримає температуру годинами й економить вугілля.</p>
+  </header>
+
+  <section class="product" id="red21" aria-labelledby="pName">
+    <p class="eyebrow" data-i18n="pEyebrow">У продажу</p>
+    <h2 class="pname" id="pName"></h2>
+    <p class="psub" id="pSub"></p>
+    <div class="gallery">
+      <div class="stage" id="gStage">
+        <img id="gMain" alt="" width="800" height="800">
+        <span class="gcount" id="gCount"></span>
+        <span class="gcap" id="gCap"></span>
+        <button type="button" class="gnav prev" id="gPrev" data-i18n-aria="gPrev">‹</button>
+        <button type="button" class="gnav next" id="gNext" data-i18n-aria="gNext">›</button>
+      </div>
+      <div class="thumbs" id="gThumbs"></div>
+    </div>
+    <div class="buy">
+      <div><span class="plabel" data-i18n="price">Ціна</span><b id="pPrice"></b></div>
+      <a class="btn" id="pAsk" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="ask">Запитати ціну</a>
+    </div>
+    <dl class="pspec" id="pSpec"></dl>
+    <h3 data-i18n="modesTitle">Що можна готувати</h3>
+    <ul class="modes" id="pModes"></ul>
+    <h3 data-i18n="descTitle">Опис</h3>
+    <div class="pdesc" id="pDesc"></div>
+    <h3 data-i18n="featTitle">Особливості</h3>
+    <ul class="feat" id="pFeat"></ul>
+    <details class="box">
+      <summary data-i18n="tableTitle">Розміри та характеристики</summary>
+      <table class="ptable" id="pTable"></table>
+    </details>
+    <div class="pacts">
+      <a class="btn ghost" href="../calculator/?device=kamado" data-i18n="pCalc">Скільки вугілля</a>
+      <button type="button" class="btn ghost" id="pShare" data-i18n="pShare">Поділитися</button>
+    </div>
+    <p class="toast" id="pToast" role="status"></p>
+    <p class="note" data-i18n="pNote">Розміри й вага орієнтовні, типові для 21-дюймових камадо такої конструкції. Точні характеристики й комплектацію уточнюйте перед покупкою.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <header>
+    <p class="eyebrow" data-i18n="bonoEyebrow">Інші моделі</p>
+    <h2 data-i18n="bonoTitle">Kamado Bono</h2>
   </header>
 
   <ul class="uses" id="uses"></ul>
@@ -104,7 +189,7 @@ details.box li { margin: 4px 0; }
   </details>
 
   <section class="cta">
-    <h2 data-i18n="ctaTitle">Ціни та наявність</h2>
+    <h2 data-i18n="ctaTitle">Ціни Kamado Bono</h2>
     <p data-i18n="ctaText">Скоро з'являться в додатку. Поки що запитайте в Carbonis.</p>
     <div class="btns">
       <a class="btn" id="ask" href="https://carbonis.com.ua/" target="_blank" rel="noopener" data-i18n="ask">Запитати ціну</a>
@@ -144,13 +229,84 @@ details.box li { margin: 4px 0; }
     L('Кочерга для попелу', 'Ash tool'),
     L('Захисний чохол', 'Protective cover')
   ];
+  // ---- Товар у продажу: ціну впишіть у price (наприклад '38 900 грн'); поки порожньо — «За запитом».
+  //      Фото лежать в assets/kamado/; перше — головне. Розміри — орієнтовні, уточнити в постачальника.
+  var PRODUCT = {
+    name: L('Керамічний гриль камадо 21″', 'Ceramic kamado grill 21″'),
+    sub: L('Червона глазур · візок з нержавіючої сталі · бамбукові полиці', 'Red glaze · stainless steel cart · bamboo shelves'),
+    price: '',
+    photos: [
+      { f: 'red21-main.jpg', cap: L('Загальний вигляд', 'Overview') },
+      { f: 'red21-top.jpg', cap: L('Верхня заслінка і термометр', 'Top vent and thermometer') },
+      { f: 'red21-lid.jpg', cap: L('Ручка кришки, обручі й ущільнювач', 'Lid handle, bands and gasket') },
+      { f: 'red21-shelf.jpg', cap: L('Відкидна бамбукова полиця', 'Folding bamboo shelf') },
+      { f: 'red21-vent.jpg', cap: L('Нижня заслінка з сіткою', 'Bottom vent with mesh') },
+      { f: 'red21-cart.jpg', cap: L('Візок на чотирьох колесах', 'Cart on four castors') }
+    ],
+    spec: [
+      [L('Розмір', 'Size'), L('21″', '21″'), ''],
+      [L('Корпус', 'Body'), L('≈ 55 см', '≈ 55 cm'), ''],
+      [L('Решітка', 'Grate'), L('≈ 47 см', '≈ 47 cm'), 'hot'],
+      [L('Жар', 'Heat'), L('до 400°C', 'up to 400°C'), 'hot']
+    ],
+    modes: [
+      { n: L('Гриль', 'Grilling'), tmp: '230–400°C', d: L('стейки, бургери, ковбаски', 'steaks, burgers, sausages') },
+      { n: L('Копчення', 'Smoking'), tmp: '90–130°C', d: L('реберця, грудинка, риба', 'ribs, brisket, fish') },
+      { n: L('Випікання', 'Baking'), tmp: '250–350°C', d: L('піца, хліб, пиріг', 'pizza, bread, pies') },
+      { n: L('Запікання', 'Roasting'), tmp: '160–200°C', d: L('курка, овочі, качка', 'chicken, veggies, duck') }
+    ],
+    desc: [
+      L("Великий керамічний гриль для дому, дачі й тераси. Товсті керамічні стінки під глянцевою червоною глазур'ю тримають жар годинами: вугілля йде помітно менше, ніж у металевому грилі, а м'ясо лишається соковитим.",
+        'A large ceramic grill for the home, the country house and the terrace. Thick ceramic walls under a glossy red glaze hold the heat for hours: it uses noticeably less charcoal than a metal grill and keeps meat juicy.'),
+      L('Температуру задають дві заслінки: нижня подає повітря, верхня випускає дим. На одному грилі можна і коптити при 100°C, і смажити стейк при 400°C. Термометр у кришці показує температуру, не відкриваючи гриль.',
+        'Two vents set the temperature: the bottom one lets air in, the top one lets smoke out. The same grill smokes at 100°C and sears a steak at 400°C. The lid thermometer shows the temperature without opening the grill.'),
+      L('Гриль стоїть на візку з нержавіючої сталі з чотирма колесами, тож його легко перекотити по терасі. Дві бамбукові полиці відкидаються для тарілок та інструменту і складаються, коли не потрібні.',
+        'The grill sits on a stainless steel cart with four castors, so it rolls easily across the terrace. Two bamboo shelves fold out for plates and tools and fold away when not needed.')
+    ],
+    feat: [
+      L("Рельєфна глянцева глазур: не боїться погоди й легко миється", 'Textured glossy glaze: weatherproof and easy to clean'),
+      L('Ущільнювач між кришкою й корпусом тримає жар і дим', 'A gasket between lid and base keeps heat and smoke in'),
+      L('Сталеві обручі тримають кришку', 'Steel bands hold the lid'),
+      L("Дерев'яна ручка кришки не нагрівається", 'The wooden lid handle stays cool'),
+      L('Термометр у кришці', 'Thermometer in the lid'),
+      L('Регульована верхня заслінка', 'Adjustable top vent'),
+      L('Нижня заслінка із сіткою з нержавіючої сталі', 'Bottom vent with a stainless steel mesh'),
+      L('Візок з нержавіючої сталі на чотирьох колесах', 'Stainless steel cart on four castors'),
+      L('Дві відкидні бамбукові полиці', 'Two folding bamboo shelves')
+    ],
+    table: [
+      [L('Розмір', 'Size'), L('21″', '21″')],
+      [L('Діаметр корпусу', 'Body diameter'), L('≈ 55 см', '≈ 55 cm')],
+      [L('Діаметр решітки', 'Grate diameter'), L('≈ 47 см', '≈ 47 cm')],
+      [L('Габарити з полицями (Ш×Г×В)', 'Size with shelves (W×D×H)'), L('≈ 130 × 73 × 122 см', '≈ 130 × 73 × 122 cm')],
+      [L('Робоча висота', 'Working height'), L('≈ 86–91 см', '≈ 86–91 cm')],
+      [L('Вага', 'Weight'), L('≈ 70 кг', '≈ 70 kg')],
+      [L('Температура', 'Temperature'), L('50–400°C', '50–400°C')],
+      [L('Колір', 'Colour'), L('червоний', 'red')],
+      [L('Матеріали', 'Materials'), L('кераміка, нержавіюча сталь, бамбук', 'ceramic, stainless steel, bamboo')]
+    ]
+  };
+
   var DICT = {
     home: L('На головну', 'Home'),
-    eyebrow: L('Kamado Bono · керамічні грилі', 'Kamado Bono · ceramic grills'),
+    eyebrow: L('Керамічні грилі', 'Ceramic grills'),
+    pEyebrow: L('У продажу', 'For sale'),
+    gPrev: L('Попереднє фото', 'Previous photo'),
+    gNext: L('Наступне фото', 'Next photo'),
+    price: L('Ціна', 'Price'),
+    modesTitle: L('Що можна готувати', 'What you can cook'),
+    descTitle: L('Опис', 'Description'),
+    featTitle: L('Особливості', 'Features'),
+    tableTitle: L('Розміри та характеристики', 'Sizes and specifications'),
+    pCalc: L('Скільки вугілля', 'How much charcoal'),
+    pShare: L('Поділитися', 'Share'),
+    pNote: L('Розміри й вага орієнтовні, типові для 21-дюймових камадо такої конструкції. Точні характеристики й комплектацію уточнюйте перед покупкою.', 'Sizes and weight are approximate, typical for 21-inch kamados of this design. Check exact specifications and what is included before you buy.'),
+    bonoEyebrow: L('Інші моделі', 'Other models'),
+    bonoTitle: L('Kamado Bono', 'Kamado Bono'),
     h1: L('Грилі камадо', 'Kamado grills'),
     lead: L('Товста кераміка тримає температуру годинами й економить вугілля.', 'Thick ceramic holds the temperature for hours and saves charcoal.'),
     setTitle: L('Що в комплекті (Media, Grande, Limited)', "What's in the box (Media, Grande, Limited)"),
-    ctaTitle: L('Ціни та наявність', 'Prices and availability'),
+    ctaTitle: L('Ціни Kamado Bono', 'Kamado Bono prices'),
     ctaText: L("Скоро з'являться в додатку. Поки що запитайте в Carbonis.", 'Coming to the app soon. For now, ask Carbonis.'),
     ask: L('Запитати ціну', 'Ask for a price'),
     howto: L('Як готувати', 'How to cook'),
@@ -198,7 +354,56 @@ details.box li { margin: 4px 0; }
       body.appendChild(h); body.appendChild(dl); li.appendChild(pic); li.appendChild(body); ul.appendChild(li);
     });
   }
-  C.onLang(paint); paint();
+  // ---- Товар: галерея й опис ----
+  var gIdx = 0;
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = text; return e; }
+  function showPhoto(i) {
+    var n = PRODUCT.photos.length; gIdx = (i + n) % n;
+    var p = PRODUCT.photos[gIdx], img = document.getElementById('gMain');
+    img.src = '../assets/kamado/' + p.f; img.alt = t(PRODUCT.name) + ': ' + t(p.cap);
+    document.getElementById('gCap').textContent = t(p.cap);
+    document.getElementById('gCount').textContent = (gIdx + 1) + ' / ' + n;
+    document.querySelectorAll('#gThumbs button').forEach(function (b, k) { b.setAttribute('aria-current', String(k === gIdx)); });
+  }
+  function paintProduct() {
+    document.getElementById('pName').textContent = t(PRODUCT.name);
+    document.getElementById('pSub').textContent = t(PRODUCT.sub);
+    document.getElementById('pPrice').textContent = PRODUCT.price || (C.lang === 'en' ? 'On request' : 'За запитом');
+    document.getElementById('pAsk').href = C.siteUrl();
+    var th = document.getElementById('gThumbs'); th.textContent = '';
+    PRODUCT.photos.forEach(function (p, i) {
+      var b = el('button'); b.type = 'button'; b.setAttribute('aria-label', t(p.cap));
+      var im = el('img'); im.src = '../assets/kamado/' + p.f; im.alt = ''; im.loading = 'lazy';
+      b.appendChild(im); b.addEventListener('click', function () { showPhoto(i); }); th.appendChild(b);
+    });
+    showPhoto(gIdx);
+    var dl = document.getElementById('pSpec'); dl.textContent = '';
+    PRODUCT.spec.forEach(function (r) { var d = el('div'), dt = el('dt', '', t(r[0])), dd = el('dd', r[2], t(r[1])); d.appendChild(dt); d.appendChild(dd); dl.appendChild(d); });
+    var ul = document.getElementById('pModes'); ul.textContent = '';
+    PRODUCT.modes.forEach(function (m) { var li = el('li'); li.appendChild(el('b', '', t(m.n))); li.appendChild(el('span', '', m.tmp)); li.appendChild(el('small', '', t(m.d))); ul.appendChild(li); });
+    var de = document.getElementById('pDesc'); de.textContent = '';
+    PRODUCT.desc.forEach(function (p) { de.appendChild(el('p', '', t(p))); });
+    var fe = document.getElementById('pFeat'); fe.textContent = '';
+    PRODUCT.feat.forEach(function (f) { fe.appendChild(el('li', '', t(f))); });
+    var tb = document.getElementById('pTable'); tb.textContent = '';
+    PRODUCT.table.forEach(function (r) { var tr = el('tr'); tr.appendChild(el('th', '', t(r[0]))); tr.appendChild(el('td', '', t(r[1]))); tb.appendChild(tr); });
+  }
+  document.getElementById('gPrev').addEventListener('click', function () { showPhoto(gIdx - 1); });
+  document.getElementById('gNext').addEventListener('click', function () { showPhoto(gIdx + 1); });
+  (function swipe() {
+    var st = document.getElementById('gStage'), x0 = null;
+    st.addEventListener('pointerdown', function (e) { if (e.target.closest('button')) return; x0 = e.clientX; });
+    st.addEventListener('pointerup', function (e) { if (x0 == null) return; var dx = e.clientX - x0; x0 = null; if (Math.abs(dx) > 40) showPhoto(gIdx + (dx < 0 ? 1 : -1)); });
+    st.addEventListener('pointercancel', function () { x0 = null; });
+  })();
+  document.getElementById('pShare').addEventListener('click', function () {
+    C.event('kamado-share', 'Камадо: поділились товаром');
+    var text = C.lang === 'en' ? 'Have a look at this 21″ ceramic kamado grill from Carbonis 🔥' : 'Подивись, який керамічний гриль камадо 21″ є в Carbonis 🔥';
+    C.share({ title: t(PRODUCT.name), text: text, url: C.ROOT + 'kamado/#red21' }).then(function (r) { document.getElementById('pToast').textContent = C.shareMsg(r); });
+  });
+  document.getElementById('pAsk').addEventListener('click', function () { C.event('kamado-red21-ask', 'Камадо 21: запитати ціну'); });
+
+  C.onLang(function () { paint(); paintProduct(); }); paint(); paintProduct();
   document.getElementById('ask').addEventListener('click', function () { C.event('kamado-ask', 'Камадо: запитати ціну'); });
   C.nav('kamado');
 })();
